@@ -11,6 +11,7 @@ import { PATH_DASHBOARD } from '../../routes/paths';
 // components
 import { useSnackbar } from '../../components/snackbar';
 import FormProvider, { RHFCodes } from '../../components/hook-form';
+import { useAuthContext } from '../../auth/useAuthContext';
 
 // ----------------------------------------------------------------------
 
@@ -25,6 +26,7 @@ type FormValuesProps = {
 
 export default function AuthVerifyCodeForm() {
 	const navigate = useNavigate();
+	const { login } = useAuthContext();
 
 	const { enqueueSnackbar } = useSnackbar();
 
@@ -57,11 +59,17 @@ export default function AuthVerifyCodeForm() {
 		formState: { isSubmitting, errors },
 	} = methods;
 
+	const defaultLoginValues = {
+		email: 'demo@minimals.cc',
+		password: 'demo1234',
+	};
+
 	const onSubmit = async(data: FormValuesProps) => {
 		try {
 			await new Promise((resolve) => setTimeout(resolve, 500));
 			console.log('DATA', Object.values(data).join(''));
 			enqueueSnackbar('Verify success!');
+			await login(defaultLoginValues.email, defaultLoginValues.password);
 			navigate(PATH_DASHBOARD.root);
 		} catch (error) {
 			console.error(error);

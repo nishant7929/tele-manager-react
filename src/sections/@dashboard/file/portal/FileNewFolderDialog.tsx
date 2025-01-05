@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+// import { useEffect, useState, useCallback } from 'react';
 // @mui
 import {
 	Stack,
@@ -10,23 +10,20 @@ import {
 	DialogContent,
 	DialogActions,
 } from '@mui/material';
-// components
-import Iconify from '../../../../components/iconify';
-import { Upload } from '../../../../components/upload';
 
 // ----------------------------------------------------------------------
 
 interface Props extends DialogProps {
-  title?: string;
-  //
-  onCreate?: VoidFunction;
-  onUpdate?: VoidFunction;
-  //
-  folderName?: string;
-  onChangeFolderName?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  //
-  open: boolean;
-  onClose: VoidFunction;
+	title?: string;
+	//
+	onCreate?: VoidFunction;
+	onUpdate?: VoidFunction;
+	//
+	folderName?: string;
+	onChangeFolderName?: (__event: React.ChangeEvent<HTMLInputElement>) => void;
+	//
+	open: boolean;
+	onClose: VoidFunction;
 }
 
 export default function FileNewFolderDialog({
@@ -41,40 +38,40 @@ export default function FileNewFolderDialog({
 	onChangeFolderName,
 	...other
 }: Props) {
-	const [files, setFiles] = useState<(File | string)[]>([]);
+	// const [files, setFiles] = useState<(File | string)[]>([]);
 
-	useEffect(() => {
-		if (!open) {
-			setFiles([]);
-		}
-	}, [open]);
+	// useEffect(() => {
+	// 	if (!open) {
+	// 		setFiles([]);
+	// 	}
+	// }, [open]);
 
-	const handleDrop = useCallback(
-		(acceptedFiles: File[]) => {
-			const newFiles = acceptedFiles.map((file) =>
-				Object.assign(file, {
-					preview: URL.createObjectURL(file),
-				})
-			);
+	// const handleDrop = useCallback(
+	// 	(acceptedFiles: File[]) => {
+	// 		const newFiles = acceptedFiles.map((file) =>
+	// 			Object.assign(file, {
+	// 				preview: URL.createObjectURL(file),
+	// 			})
+	// 		);
 
-			setFiles([...files, ...newFiles]);
-		},
-		[files]
-	);
+	// 		setFiles([...files, ...newFiles]);
+	// 	},
+	// 	[files]
+	// );
 
-	const handleUpload = () => {
-		onClose();
-		console.log('ON UPLOAD');
-	};
+	// const handleUpload = () => {
+	// 	onClose();
+	// 	console.log('ON UPLOAD');
+	// };
 
-	const handleRemoveFile = (inputFile: File | string) => {
-		const filtered = files.filter((file) => file !== inputFile);
-		setFiles(filtered);
-	};
+	// const handleRemoveFile = (inputFile: File | string) => {
+	// 	const filtered = files.filter((file) => file !== inputFile);
+	// 	setFiles(filtered);
+	// };
 
-	const handleRemoveAllFiles = () => {
-		setFiles([]);
-	};
+	// const handleRemoveAllFiles = () => {
+	// 	setFiles([]);
+	// };
 
 	return (
 		<Dialog fullWidth maxWidth="sm" open={open} onClose={onClose} {...other}>
@@ -91,23 +88,23 @@ export default function FileNewFolderDialog({
 					/>
 				)}
 
-				<Upload multiple files={files} onDrop={handleDrop} onRemove={handleRemoveFile} />
+				{/* <Upload multiple files={files} onDrop={handleDrop} onRemove={handleRemoveFile} /> */}
 			</DialogContent>
 
 			<DialogActions>
-				<Button
+				{/* <Button
 					variant="contained"
 					startIcon={<Iconify icon="eva:cloud-upload-fill" />}
 					onClick={handleUpload}
 				>
-          Upload
+					Upload
 				</Button>
 
 				{!!files.length && (
 					<Button variant="outlined" color="inherit" onClick={handleRemoveAllFiles}>
-            Remove all
+						Remove all
 					</Button>
-				)}
+				)} */}
 
 				{(onCreate || onUpdate) && (
 					<Stack direction="row" justifyContent="flex-end" flexGrow={1}>

@@ -40,9 +40,9 @@ export default function Header({ isOffset }: Props) {
 			>
 				<Logo />
 
-				<Link variant="subtitle2" color="inherit">
+				{/* <Link variant="subtitle2" color="inherit">
           Need Help?
-				</Link>
+				</Link> */}
 			</Toolbar>
 
 			{isOffset && <Shadow />}
