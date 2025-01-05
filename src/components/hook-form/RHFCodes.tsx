@@ -66,7 +66,6 @@ export default function RHFCodes({ keyName = '', inputs = [], ...other }: Props)
 						<TextField
 							{...field}
 							error={!!error}
-							type='number'
 							autoFocus={index === 0}
 							placeholder="-"
 							onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
