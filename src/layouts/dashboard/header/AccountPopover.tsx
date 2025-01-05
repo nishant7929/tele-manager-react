@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 // @mui
 import { alpha } from '@mui/material/styles';
-import { Box, Divider, Typography, Stack, MenuItem } from '@mui/material';
+import { Box, Divider, Typography, MenuItem } from '@mui/material';
 // routes
 import { PATH_AUTH } from '../../../routes/paths';
 // auth
@@ -100,7 +100,7 @@ export default function AccountPopover() {
 
 				<Divider sx={{ borderStyle: 'dashed' }} />
 
-				<Stack sx={{ p: 1 }}>
+				{/* <Stack sx={{ p: 1 }}>
 					{OPTIONS.map((option) => (
 						<MenuItem key={option.label} onClick={() => handleClickItem(option.linkTo)}>
 							{option.label}
@@ -108,10 +108,10 @@ export default function AccountPopover() {
 					))}
 				</Stack>
 
-				<Divider sx={{ borderStyle: 'dashed' }} />
+				<Divider sx={{ borderStyle: 'dashed' }} /> */}
 
 				<MenuItem onClick={handleLogout} sx={{ m: 1 }}>
-          Logout
+					Logout
 				</MenuItem>
 			</MenuPopover>
 		</>

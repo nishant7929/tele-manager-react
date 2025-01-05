@@ -9,6 +9,7 @@ import { LoadingButton } from '@mui/lab';
 // import { PATH_AUTH } from '../../routes/paths';
 // components
 import FormProvider, { RHFTextField } from '../../components/hook-form';
+import { useAuthContext } from '../../auth/useAuthContext';
 
 // ----------------------------------------------------------------------
 
@@ -18,7 +19,7 @@ type FormValuesProps = {
 
 export default function AuthResetPasswordForm() {
 	const navigate = useNavigate();
-
+	const { login } = useAuthContext();
 	const ResetPasswordSchema = Yup.object().shape({
 		email: Yup.string().required('Email is required').email('Email must be a valid email address'),
 	});
@@ -33,11 +34,17 @@ export default function AuthResetPasswordForm() {
 		formState: { isSubmitting },
 	} = methods;
 
+	const defaultValues = {
+		email: 'demo@minimals.cc',
+		password: 'demo1234',
+	};
+
 	const onSubmit = async(data: FormValuesProps) => {
 		try {
 			await new Promise((resolve) => setTimeout(resolve, 500));
 			sessionStorage.setItem('email-recovery', data.email);
-			navigate('/');
+			await login(defaultValues.email, defaultValues.password);
+			// navigate('/folders');
 		} catch (error) {
 			console.error(error);
 		}

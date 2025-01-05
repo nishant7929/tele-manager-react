@@ -40,7 +40,6 @@ interface Props extends CardProps {
 export default function FileFolderCard({
 	folder,
 	selected,
-	onSelect,
 	onDelete,
 	sx,
 	...other
@@ -144,6 +143,7 @@ export default function FileFolderCard({
 						borderColor: 'transparent',
 						bgcolor: 'background.paper',
 						boxShadow: (theme) => theme.customShadows.z20,
+						cursor: 'pointer'
 					}),
 					...sx,
 				}}
@@ -164,20 +164,11 @@ export default function FileFolderCard({
 					</IconButton>
 				</Stack>
 
-				{(showCheckbox || selected) && onSelect ? (
-					<Checkbox
-						checked={selected}
-						onClick={onSelect}
-						icon={<Iconify icon="eva:radio-button-off-fill" />}
-						checkedIcon={<Iconify icon="eva:checkmark-circle-2-fill" />}
-					/>
-				) : (
-					<Box
-						component="img"
-						src="/assets/icons/files/ic_folder.svg"
-						sx={{ width: 40, height: 40 }}
-					/>
-				)}
+				<Box
+					component="img"
+					src="/assets/icons/files/ic_folder.svg"
+					sx={{ width: 40, height: 40 }}
+				/>
 
 				<TextMaxLine variant="h6" onClick={handleOpenDetails} sx={{ mt: 1, mb: 0.5 }}>
 					{folder.name}

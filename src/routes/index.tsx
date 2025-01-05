@@ -12,7 +12,6 @@ import {
 	Page404,
 	FileManagerPage,
 	LoginPage,
-	ResetPasswordPage,
 	VerifyCodePage,
 } from './elements';
 
@@ -25,33 +24,24 @@ export default function Router() {
 			children: [
 				{ element: <Navigate to={PATH_AFTER_LOGIN} replace />, index: true },
 				{
-					path: 'login',
 					element: (
 						<GuestGuard>
-							<LoginPage />
+							<CompactLayout />
 						</GuestGuard>
 					),
-				},
-				{
-					path: 'reset-password',
-					element: (
-						<GuestGuard>
-							<ResetPasswordPage />
-						</GuestGuard>
-					),
-				},
-				{
-					path: 'verify',
-					element: (
-						<GuestGuard>
-							<VerifyCodePage />
-						</GuestGuard>
-					),
+					children: [
+						{ path: '/login', element: <LoginPage /> },
+						{ path: '/verify', element: <VerifyCodePage /> },
+					],
 				},
 			],
 		},
 		{
-			path: '/dashboard',
+			path: '/',
+			element: <Navigate to="/folders" replace />,
+		},
+		{
+			path: '/',
 			element: (
 				<AuthGuard>
 					<DashboardLayout />
@@ -59,7 +49,7 @@ export default function Router() {
 			),
 			children: [
 				{ element: <Navigate to={PATH_AFTER_LOGIN} replace />, index: true },
-				{ path: 'folders', element: <FileManagerPage /> },
+				{ path: '/folders', element: <FileManagerPage /> },
 			],
 		},
 		{

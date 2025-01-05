@@ -13,11 +13,11 @@ import Logo from '../../../components/logo';
 import Iconify from '../../../components/iconify';
 import { useSettingsContext } from '../../../components/settings';
 //
-import Searchbar from './Searchbar';
 import AccountPopover from './AccountPopover';
-import LanguagePopover from './LanguagePopover';
-import ContactsPopover from './ContactsPopover';
-import NotificationsPopover from './NotificationsPopover';
+// import Searchbar from './Searchbar';
+// import LanguagePopover from './LanguagePopover';
+// import ContactsPopover from './ContactsPopover';
+// import NotificationsPopover from './NotificationsPopover';
 
 // ----------------------------------------------------------------------
 
@@ -48,7 +48,7 @@ export default function Header({ onOpenNav }: Props) {
 				</IconButton>
 			)}
 
-			<Searchbar />
+			{/* <Searchbar /> */}
 
 			<Stack
 				flexGrow={1}
@@ -57,11 +57,11 @@ export default function Header({ onOpenNav }: Props) {
 				justifyContent="flex-end"
 				spacing={{ xs: 0.5, sm: 1.5 }}
 			>
-				<LanguagePopover />
+				{/* <LanguagePopover /> */}
 
-				<NotificationsPopover />
+				{/* <NotificationsPopover /> */}
 
-				<ContactsPopover />
+				{/* <ContactsPopover /> */}
 
 				<AccountPopover />
 			</Stack>

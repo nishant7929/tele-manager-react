@@ -74,7 +74,7 @@ export default function FileGridView({
 		<>
 			<Box ref={containerRef}>
 				<FilePanel
-					title="Folders"
+					title="Your Folders"
 					subTitle={`${data.filter((item) => item.type === 'folder').length} folders`}
 					onOpen={handleOpenNewFolder}
 					collapse={collapseFolders}
@@ -86,10 +86,10 @@ export default function FileGridView({
 						gap={3}
 						display="grid"
 						gridTemplateColumns={{
-							xs: 'repeat(1, 1fr)',
-							sm: 'repeat(2, 1fr)',
-							md: 'repeat(3, 1fr)',
-							lg: 'repeat(4, 1fr)',
+							xs: 'repeat(2, 1fr)',
+							sm: 'repeat(3, 1fr)',
+							md: 'repeat(4, 1fr)',
+							lg: 'repeat(5, 1fr)',
 						}}
 					>
 						{dataFiltered
