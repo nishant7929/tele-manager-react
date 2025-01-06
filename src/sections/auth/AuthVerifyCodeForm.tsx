@@ -21,7 +21,6 @@ type FormValuesProps = {
 	code3: string;
 	code4: string;
 	code5: string;
-	code6: string;
 };
 
 export default function AuthVerifyCodeForm() {
@@ -36,7 +35,6 @@ export default function AuthVerifyCodeForm() {
 		code3: Yup.string().required('Code is required'),
 		code4: Yup.string().required('Code is required'),
 		code5: Yup.string().required('Code is required'),
-		code6: Yup.string().required('Code is required'),
 	});
 
 	const defaultValues = {
@@ -45,7 +43,6 @@ export default function AuthVerifyCodeForm() {
 		code3: '',
 		code4: '',
 		code5: '',
-		code6: '',
 	};
 
 	const methods = useForm({
@@ -79,14 +76,13 @@ export default function AuthVerifyCodeForm() {
 	return (
 		<FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
 			<Stack spacing={3}>
-				<RHFCodes keyName="code" inputs={['code1', 'code2', 'code3', 'code4', 'code5', 'code6']} />
+				<RHFCodes keyName="code" inputs={['code1', 'code2', 'code3', 'code4', 'code5']} />
 
 				{(!!errors.code1 ||
 					!!errors.code2 ||
 					!!errors.code3 ||
 					!!errors.code4 ||
-					!!errors.code5 ||
-					!!errors.code6) && (
+					!!errors.code5 ) && (
 					<FormHelperText error sx={{ px: 2 }}>
 						Code is required
 					</FormHelperText>

@@ -35,23 +35,23 @@ export type SettingsContextProps = SettingsValueProps & {
 
   // Mode
   onToggleMode: VoidFunction;
-  onChangeMode: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChangeMode: (__event: React.ChangeEvent<HTMLInputElement>) => void;
 
   // Direction
   onToggleDirection: VoidFunction;
-  onChangeDirection: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onChangeDirectionByLang: (lang: string) => void;
+  onChangeDirection: (__event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChangeDirectionByLang: (__lang: string) => void;
 
   // Layout
   onToggleLayout: VoidFunction;
-  onChangeLayout: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChangeLayout: (__event: React.ChangeEvent<HTMLInputElement>) => void;
 
   // Contrast
   onToggleContrast: VoidFunction;
-  onChangeContrast: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChangeContrast: (__event: React.ChangeEvent<HTMLInputElement>) => void;
 
   // Color
-  onChangeColorPresets: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChangeColorPresets: (__event: React.ChangeEvent<HTMLInputElement>) => void;
 
   // Stretch
   onToggleStretch: VoidFunction;

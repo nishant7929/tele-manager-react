@@ -10,10 +10,11 @@ import { PATH_AFTER_LOGIN } from '../config-global';
 //
 import {
 	Page404,
-	FileManagerPage,
 	LoginPage,
 	VerifyCodePage,
 } from './elements';
+import FileManagerPage from '../pages/dashboard/FileManagerPage';
+import EcommerceShopPage from '../pages/dashboard/EcommerceShopPage';
 
 // ----------------------------------------------------------------------
 
@@ -50,6 +51,7 @@ export default function Router() {
 			children: [
 				{ element: <Navigate to={PATH_AFTER_LOGIN} replace />, index: true },
 				{ path: '/folders', element: <FileManagerPage /> },
+				{ path: '/shop', element: <EcommerceShopPage /> },
 			],
 		},
 		{

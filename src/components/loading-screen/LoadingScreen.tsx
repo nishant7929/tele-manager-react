@@ -1,5 +1,5 @@
 import { m } from 'framer-motion';
-import { useLocation } from 'react-router-dom';
+// import { useLocation } from 'react-router-dom';
 // @mui
 import { alpha, styled } from '@mui/material/styles';
 import { Box, LinearProgress } from '@mui/material';
@@ -32,7 +32,7 @@ const StyledRoot = styled('div')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function LoadingScreen() {
-	const { pathname } = useLocation();
+	// const { pathname } = useLocation();
 
 	const isDesktop = useResponsive('up', 'lg');
 
@@ -40,7 +40,7 @@ export default function LoadingScreen() {
 
 	const { themeLayout } = useSettingsContext();
 
-	const isDashboard = isInitialized && pathname.includes('/dashboard') && isDesktop;
+	const isDashboard = isInitialized && isDesktop;
 
 	const size =
     (themeLayout === 'mini' && NAV.W_DASHBOARD_MINI) ||

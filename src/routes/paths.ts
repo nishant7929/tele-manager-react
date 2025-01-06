@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------
 
-function path(root: string, sublink: string) {
+export function path(root: string, sublink: string) {
 	return `${root}${sublink}`;
 }
 
@@ -15,4 +15,5 @@ export const PATH_AUTH = {
 export const PATH_DASHBOARD = {
 	root: ROOTS_DASHBOARD,
 	one: '/folders',
+	shop: '/shop',
 };

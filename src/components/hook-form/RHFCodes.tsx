@@ -30,7 +30,7 @@ export default function RHFCodes({ keyName = '', inputs = [], ...other }: Props)
 
 	const handleChangeWithNextField = (
 		event: React.ChangeEvent<HTMLInputElement>,
-		handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void
+		handleChange: (__event: React.ChangeEvent<HTMLInputElement>) => void
 	) => {
 		const { maxLength, value, name } = event.target;
 

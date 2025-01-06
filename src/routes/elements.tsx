@@ -17,4 +17,5 @@ export const LoginPage = Loadable(lazy(() => import('../pages/auth/LoginPage')))
 export const VerifyCodePage = Loadable(lazy(() => import('../pages/auth/VerifyCodePage')));
 
 export const FileManagerPage = Loadable(lazy(() => import('../pages/dashboard/FileManagerPage')));
+export const EcommerceShopPage = Loadable(lazy(() => import('../pages/dashboard/EcommerceShopPage')));
 export const Page404 = Loadable(lazy(() => import('../pages/Page404')));
