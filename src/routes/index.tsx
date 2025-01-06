@@ -14,7 +14,7 @@ import {
 	VerifyCodePage,
 } from './elements';
 import FileManagerPage from '../pages/dashboard/FileManagerPage';
-import EcommerceShopPage from '../pages/dashboard/EcommerceShopPage';
+import FileListPage from '../pages/dashboard/FileListPage';
 
 // ----------------------------------------------------------------------
 
@@ -51,7 +51,7 @@ export default function Router() {
 			children: [
 				{ element: <Navigate to={PATH_AFTER_LOGIN} replace />, index: true },
 				{ path: '/folders', element: <FileManagerPage /> },
-				{ path: '/shop', element: <EcommerceShopPage /> },
+				{ path: '/folder/:id', element: <FileListPage /> },
 			],
 		},
 		{

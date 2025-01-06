@@ -9,7 +9,7 @@ import Iconify from '../../components/iconify';
 // sections
 import AuthVerifyCodeForm from '../../sections/auth/AuthVerifyCodeForm';
 // assets
-import { EmailInboxIcon } from '../../assets/icons';
+// import { EmailInboxIcon } from '../../assets/icons';
 
 // ----------------------------------------------------------------------
 
@@ -17,18 +17,17 @@ export default function VerifyCodePage() {
 	return (
 		<>
 			<Helmet>
-				<title> Verify Code | Minimal UI</title>
+				<title> Verify Code | Zcloud</title>
 			</Helmet>
 
-			<EmailInboxIcon sx={{ mb: 5, height: 96 }} />
+			{/* <EmailInboxIcon sx={{ mb: 5, height: 96 }} /> */}
 
 			<Typography variant="h3" paragraph>
-				Please check your email!
+				Please check your telegram app!
 			</Typography>
 
 			<Typography sx={{ color: 'text.secondary', mb: 5 }}>
-				We have emailed a 6-digit confirmation code to acb@domain, please enter the code in below
-				box to verify your email.
+				You will receive a 5-digit verification code to your telegram account or in phone number.
 			</Typography>
 
 			<AuthVerifyCodeForm />

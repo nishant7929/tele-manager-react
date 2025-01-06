@@ -96,7 +96,7 @@ export default function AuthVerifyCodeForm() {
 					loading={isSubmitting}
 					sx={{ mt: 3 }}
 				>
-					Verify
+					Login
 				</LoadingButton>
 			</Stack>
 		</FormProvider>

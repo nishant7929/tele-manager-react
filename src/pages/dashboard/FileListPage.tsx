@@ -17,7 +17,7 @@ import {
 
 // ----------------------------------------------------------------------
 
-export default function EcommerceShopPage() {
+export default function FileListPage() {
 	const { themeStretch } = useSettingsContext();
 
 	const dispatch = useDispatch();
@@ -33,19 +33,15 @@ export default function EcommerceShopPage() {
 	return (
 		<>
 			<Helmet>
-				<title> Ecommerce: Shop | Minimal UI</title>
+				<title> Files | Zcloud</title>
 			</Helmet>
 
 			<Container maxWidth={themeStretch ? false : 'lg'}>
 				<CustomBreadcrumbs
-					heading="Shop"
+					heading="Files"
 					links={[
 						{ name: 'Dashboard', href: PATH_DASHBOARD.root },
-						{
-							name: 'E-Commerce',
-							href: PATH_DASHBOARD.root,
-						},
-						{ name: 'Shop' },
+						{ name: 'Files' },
 					]}
 				/>
 

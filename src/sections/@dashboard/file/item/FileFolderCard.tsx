@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 // @mui
 import {
 	Box,
@@ -44,6 +45,7 @@ export default function FileFolderCard({
 	sx,
 	...other
 }: Props) {
+	const navigate = useNavigate();
 	const { enqueueSnackbar } = useSnackbar();
 
 	const { copy } = useCopyToClipboard();
@@ -94,10 +96,6 @@ export default function FileFolderCard({
 		setOpenShare(false);
 	};
 
-	const handleOpenDetails = () => {
-		setOpenDetails(true);
-	};
-
 	const handleCloseDetails = () => {
 		setOpenDetails(false);
 	};
@@ -130,6 +128,7 @@ export default function FileFolderCard({
 	return (
 		<>
 			<Card
+				onClick={() => navigate('/folder/1')}
 				onMouseEnter={handleShowCheckbox}
 				onMouseLeave={handleHideCheckbox}
 				sx={{
@@ -149,7 +148,7 @@ export default function FileFolderCard({
 				}}
 				{...other}
 			>
-				<Stack direction="row" alignItems="center" sx={{ top: 8, right: 8, position: 'absolute' }}>
+				<Stack onClick={(e) => e.stopPropagation()} direction="row" alignItems="center" sx={{ top: 8, right: 8, position: 'absolute' }}>
 					<Checkbox
 						color="warning"
 						icon={<Iconify icon="eva:star-outline" />}
@@ -170,7 +169,7 @@ export default function FileFolderCard({
 					sx={{ width: 40, height: 40 }}
 				/>
 
-				<TextMaxLine variant="h6" onClick={handleOpenDetails} sx={{ mt: 1, mb: 0.5 }}>
+				<TextMaxLine variant="h6" sx={{ mt: 1, mb: 0.5 }}>
 					{folder.name}
 				</TextMaxLine>
 
