@@ -3,8 +3,16 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
+import { Buffer } from 'buffer';
+import process from 'process';
+
+if (process.env.REACT_APP_NODE_ENV === 'production') {
+	console.log = console.info = console.debug = () => {};
+}
 
 // ----------------------------------------------------------------------
+window.Buffer = Buffer;
+window.process = process;
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 

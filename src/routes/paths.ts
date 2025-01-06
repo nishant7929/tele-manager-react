@@ -16,4 +16,5 @@ export const PATH_DASHBOARD = {
 	root: ROOTS_DASHBOARD,
 	one: '/folders',
 	shop: '/shop',
+	telegram: '/telegram'
 };
