@@ -6,7 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import { Buffer } from 'buffer';
 import process from 'process';
 
-if (process.env.REACT_APP_NODE_ENV === 'production') {
+if (import.meta.env.VITE_NODE_ENV === 'production') {
 	console.log = console.info = console.debug = () => {};
 }
 
