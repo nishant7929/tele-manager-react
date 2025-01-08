@@ -9,7 +9,7 @@ export const API_HASH = process.env.REACT_APP_API_HASH || '';
 const savedSession = localStorage.getItem('telegram_session') || '';
 const SESSION = new StringSession(savedSession);
 
-interface SendCodeResult {
+export interface SendCodeResult {
 	success: boolean;
 	message: string;
 }
@@ -23,35 +23,37 @@ export const telegramClient = {
 		await client.connect();
 		return client;
 	},
+	logout: async(): Promise<void> => {
+		const client = await telegramClient.connect();
+		localStorage.removeItem('telegram_session');
+		await client.invoke(new Api.auth.LogOut());
+	}
 };
 
-export const sendCodeHandler = async(phoneNumber: string): Promise<void> => {
+export const sendCodeHandler = async(phoneNumber: string): Promise<SendCodeResult> => {
 	try {
 		const client = await telegramClient.connect();
 
-		await client.invoke(new Api.auth.SendCode({
-			apiId: Number(API_ID),
-			apiHash: API_HASH,
-			phoneNumber,
-			settings: new Api.CodeSettings({
-				allowFlashcall: true,
-				currentNumber: true,
-				allowAppHash: true,
-			})
-		}));
-
-		// const { isCodeViaApp, phoneCodeHash } = await client.sendCode(
-		// 	{
-		// 		apiId: Number(API_ID),
-		// 		apiHash: API_HASH,
-		// 	},
-		// 	phoneNumber
-		// );
-		// console.log({ isCodeViaApp, phoneCodeHash });
-		alert('OTP sent to your phone!');
-	} catch (error) {
-		console.error('Error sending code:', error);
-	}
+		await client.sendCode(
+			{
+				apiId: Number(API_ID),
+				apiHash: API_HASH,
+			},
+			phoneNumber
+		);
+		return { success: true, message: 'OTP sent successfully.' };
+	} catch (error: unknown) {
+		if (error instanceof Error) {
+		  if (error.message.includes('PHONE_NUMBER_INVALID')) {
+				return { success: false, message: 'Invalid phone number. Please check and try again.' };
+		  }
+		  if (error.message.includes('PHONE_CODE_HASH_EMPTY')) {
+				return { success: false, message: 'Unable to send OTP. Please try again later.' };
+		  }
+		  return { success: false, message: `Error: ${error.message}` };
+		}
+		return { success: false, message: 'An unknown error occurred while sending the OTP.' };
+	  }
 };
 
 export const verifyOtp = async(
@@ -60,7 +62,7 @@ export const verifyOtp = async(
 ): Promise<{
 	success: boolean;
 	message: string;
-	userInfo?: { phoneNumber: string; firstName: string; lastName?: string };
+	userInfo?: { phoneNumber: string; displayName: string; lastName?: string };
 }> => {
 	try {
 		const client = await telegramClient.connect();
@@ -81,11 +83,12 @@ export const verifyOtp = async(
 			message: 'Login successful.',
 			userInfo: {
 				phoneNumber: me.phone ?? phoneNumber,
-				firstName: me.firstName ?? '',
+				displayName: me.firstName ?? '',
 				lastName: me.lastName ?? undefined,
 			},
 		};
 	} catch (error: unknown) {
+		// PHONE_CODE_INVALID
 		if (error instanceof Error) {
 			return { success: false, message: error.message };
 		}

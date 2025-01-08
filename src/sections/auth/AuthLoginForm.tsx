@@ -4,8 +4,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 // @mui
 import { Autocomplete, LoadingButton } from '@mui/lab';
-// routes
-// import { PATH_AUTH } from '../../routes/paths';
 // components
 import FormProvider, { RHFTextField } from '../../components/hook-form';
 import { countries } from '../../assets/data';
@@ -50,12 +48,14 @@ export default function AuthLoginForm({ handleCodeSend }: Props) {
 
 	const onSubmit = async(data: FormValuesProps) => {
 		try {
-			// await new Promise((resolve) => setTimeout(resolve, 500));
-			await sendCodeHandler(`+91 ${data.phoneNumber}`);
-			handleCodeSend(`+91 ${data.phoneNumber}`);
-			enqueueSnackbar('Verification code sent');
+			const { message, success } = await sendCodeHandler(`+91 ${data.phoneNumber}`);
+			if (success) {
+				handleCodeSend(`+91 ${data.phoneNumber}`);
+			}
+			enqueueSnackbar(message, { variant: success ? 'success' : 'error' });
 		} catch (error) {
 			console.error(error);
+			enqueueSnackbar(error, { variant: 'error' });
 		}
 	};
 

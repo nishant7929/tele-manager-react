@@ -10,7 +10,7 @@ import VerifyCodePage from './VerifyCodePage';
 
 export default function LoginPage() {
 	const [phoneNumber, setPhoneNumber] = useState('');
-	console.log({ phoneNumber });
+
 	const renderLogin = () => (
 		<>
 			<Helmet>
@@ -28,7 +28,12 @@ export default function LoginPage() {
 	return (
 		<>
 			{
-				!Boolean(phoneNumber) ? renderLogin() : <VerifyCodePage phoneNumber={phoneNumber} />
+				!Boolean(phoneNumber)
+					? renderLogin()
+					: <VerifyCodePage
+						phoneNumber={phoneNumber}
+						setPhoneNumber={setPhoneNumber}
+					/>
 			}
 		</>
 	);

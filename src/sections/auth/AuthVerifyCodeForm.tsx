@@ -64,11 +64,15 @@ export default function AuthVerifyCodeForm({ phoneNumber }: Props) {
 	const onSubmit = async(data: FormValuesProps) => {
 		try {
 			const otp = Object.values(data).join('');
-			await verifyOtp(phoneNumber, otp);
-			enqueueSnackbar('Verify success!');
-			navigate(PATH_DASHBOARD.root);
+			const { message, success, userInfo } = await verifyOtp(phoneNumber, otp);
+			if (success) {
+				await login(userInfo || {});
+				navigate(PATH_DASHBOARD.root);
+			}
+			enqueueSnackbar(message, { variant: success ? 'success' : 'error' });
 		} catch (error) {
 			console.error(error);
+			enqueueSnackbar(error, { variant: 'error' });
 		}
 	};
 

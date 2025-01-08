@@ -3,7 +3,6 @@ import { createContext, useEffect, useReducer, useCallback, useMemo } from 'reac
 import axios from '../utils/axios';
 import localStorageAvailable from '../utils/localStorageAvailable';
 //
-import { isValidToken, setSession } from './utils';
 import { ActionMapType, AuthStateType, AuthUserType, JWTContextType } from './types';
 import { telegramClient } from '../utils/telegram';
 
@@ -108,8 +107,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
 						user: {
 							phoneNumber: me.phone,
 							displayName: me.firstName,
-							photoURL:
-								'https://minimal-nextjs-api.vercel.app/assets/images/avatars/avatar_default.jpg',
 						},
 					},
 				});
@@ -117,7 +114,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 				dispatch({
 					type: Types.INITIAL,
 					payload: {
-						isAuthenticated: true,
+						isAuthenticated: false,
 						user: null,
 					},
 				});
@@ -140,19 +137,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
 	}, [initialize]);
 
 	// LOGIN
-	const login = useCallback(async(email: string, password: string) => {
-		const response = await axios.post('/api/account/login', {
-			email,
-			password,
-		});
-		const { accessToken, user } = response.data;
-
-		setSession(accessToken);
+	const login = useCallback(async(userInfo: AuthUserType) => {
 
 		dispatch({
 			type: Types.LOGIN,
 			payload: {
-				user,
+				user: userInfo,
 			},
 		});
 	}, []);
@@ -182,7 +172,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
 	// LOGOUT
 	const logout = useCallback(() => {
-		setSession(null);
 		dispatch({
 			type: Types.LOGOUT,
 		});
