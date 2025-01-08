@@ -217,11 +217,11 @@ function Home(): React.JSX.Element {
 				<button
 					style={{ marginLeft: '25px' }}
 					onClick={async() => {
-						const isVerified = await verifyOtp(
+						await verifyOtp(
 							phoneNumber,
 							phoneCode
 						);
-						setLoggedIn(isVerified);
+						setLoggedIn(true);
 						fetchUploadedImages();
 					}}
 				>

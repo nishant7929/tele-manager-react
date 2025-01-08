@@ -5,6 +5,7 @@ import localStorageAvailable from '../utils/localStorageAvailable';
 //
 import { isValidToken, setSession } from './utils';
 import { ActionMapType, AuthStateType, AuthUserType, JWTContextType } from './types';
+import { telegramClient } from '../utils/telegram';
 
 // ----------------------------------------------------------------------
 
@@ -15,24 +16,24 @@ import { ActionMapType, AuthStateType, AuthUserType, JWTContextType } from './ty
 // ----------------------------------------------------------------------
 
 enum Types {
-  INITIAL = 'INITIAL',
-  LOGIN = 'LOGIN',
-  REGISTER = 'REGISTER',
-  LOGOUT = 'LOGOUT',
+	INITIAL = 'INITIAL',
+	LOGIN = 'LOGIN',
+	REGISTER = 'REGISTER',
+	LOGOUT = 'LOGOUT',
 }
 
 type Payload = {
-  [Types.INITIAL]: {
-    isAuthenticated: boolean;
-    user: AuthUserType;
-  };
-  [Types.LOGIN]: {
-    user: AuthUserType;
-  };
-  [Types.REGISTER]: {
-    user: AuthUserType;
-  };
-  [Types.LOGOUT]: undefined;
+	[Types.INITIAL]: {
+		isAuthenticated: boolean;
+		user: AuthUserType;
+	};
+	[Types.LOGIN]: {
+		user: AuthUserType;
+	};
+	[Types.REGISTER]: {
+		user: AuthUserType;
+	};
+	[Types.LOGOUT]: undefined;
 };
 
 type ActionsType = ActionMapType<Payload>[keyof ActionMapType<Payload>];
@@ -84,7 +85,7 @@ export const AuthContext = createContext<JWTContextType | null>(null);
 // ----------------------------------------------------------------------
 
 type AuthProviderProps = {
-  children: React.ReactNode;
+	children: React.ReactNode;
 };
 
 export function AuthProvider({ children }: AuthProviderProps) {
@@ -94,27 +95,29 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
 	const initialize = useCallback(async() => {
 		try {
-			const accessToken = storageAvailable ? localStorage.getItem('accessToken') : '';
+			const savedSession = storageAvailable ? localStorage.getItem('telegram_session') || '': '';
 
-			if (accessToken && isValidToken(accessToken)) {
-				setSession(accessToken);
+			if (savedSession) {
+				const client = await telegramClient.connect();
 
-				const response = await axios.get('/api/account/my-account');
-
-				const { user } = response.data;
-
+				const me = await client.getMe();
 				dispatch({
 					type: Types.INITIAL,
 					payload: {
 						isAuthenticated: true,
-						user,
+						user: {
+							phoneNumber: me.phone,
+							displayName: me.firstName,
+							photoURL:
+								'https://minimal-nextjs-api.vercel.app/assets/images/avatars/avatar_default.jpg',
+						},
 					},
 				});
 			} else {
 				dispatch({
 					type: Types.INITIAL,
 					payload: {
-						isAuthenticated: false,
+						isAuthenticated: true,
 						user: null,
 					},
 				});
@@ -129,6 +132,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 				},
 			});
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [storageAvailable]);
 
 	useEffect(() => {

@@ -8,19 +8,15 @@ import { PATH_AUTH } from '../../routes/paths';
 import Iconify from '../../components/iconify';
 // sections
 import AuthVerifyCodeForm from '../../sections/auth/AuthVerifyCodeForm';
-// assets
-// import { EmailInboxIcon } from '../../assets/icons';
 
 // ----------------------------------------------------------------------
 
-export default function VerifyCodePage() {
+export default function VerifyCodePage({ phoneNumber }: { phoneNumber: string }) {
 	return (
 		<>
 			<Helmet>
 				<title> Verify Code | Zcloud</title>
 			</Helmet>
-
-			{/* <EmailInboxIcon sx={{ mb: 5, height: 96 }} /> */}
 
 			<Typography variant="h3" paragraph>
 				Please check your telegram app!
@@ -30,7 +26,7 @@ export default function VerifyCodePage() {
 				You will receive a 5-digit verification code to your telegram account or in phone number.
 			</Typography>
 
-			<AuthVerifyCodeForm />
+			<AuthVerifyCodeForm phoneNumber={phoneNumber} />
 
 			<Typography variant="body2" sx={{ my: 3 }}>
 				Don’t have a code? &nbsp;

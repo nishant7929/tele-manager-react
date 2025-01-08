@@ -1,113 +1,101 @@
-import { useState } from 'react';
 import * as Yup from 'yup';
 // form
-import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useForm } from 'react-hook-form';
 // @mui
-import { Link, Stack, Alert, IconButton, InputAdornment } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
-// auth
-import { useAuthContext } from '../../auth/useAuthContext';
+import { Autocomplete, LoadingButton } from '@mui/lab';
+// routes
+// import { PATH_AUTH } from '../../routes/paths';
 // components
-import Iconify from '../../components/iconify';
 import FormProvider, { RHFTextField } from '../../components/hook-form';
+import { countries } from '../../assets/data';
+import { Box, Stack, TextField } from '@mui/material';
+import { sendCodeHandler } from '../../utils/telegram';
+import { useSnackbar } from 'notistack';
 
 // ----------------------------------------------------------------------
 
 type FormValuesProps = {
-  email: string;
-  password: string;
-  afterSubmit?: string;
+	phoneNumber: number;
 };
 
-export default function AuthLoginForm() {
-	const { login } = useAuthContext();
+function countryToFlag(isoCode: string) {
+	return typeof String.fromCodePoint !== 'undefined'
+		? isoCode
+			.toUpperCase()
+			.replace(/./g, (char) => String.fromCodePoint(char.charCodeAt(0) + 127397))
+		: isoCode;
+}
 
-	const [showPassword, setShowPassword] = useState(false);
+interface Props {
+	handleCodeSend: (__phoneNumner: string) => void;
+}
 
+export default function AuthLoginForm({ handleCodeSend }: Props) {
+	const { enqueueSnackbar } = useSnackbar();
 	const LoginSchema = Yup.object().shape({
-		email: Yup.string().required('Email is required').email('Email must be a valid email address'),
-		password: Yup.string().required('Password is required'),
-	});
-
-	const defaultValues = {
-		email: 'demo@minimals.cc',
-		password: 'demo1234',
-	};
+		phoneNumber: Yup.string()
+		  .required('Phone number is required')
+		  .length(10, 'Phone number must be exactly 10 digits'),
+	  });
 
 	const methods = useForm<FormValuesProps>({
 		resolver: yupResolver(LoginSchema),
-		defaultValues,
 	});
 
 	const {
-		reset,
-		setError,
 		handleSubmit,
-		formState: { errors, isSubmitting, isSubmitSuccessful },
+		formState: { isSubmitting },
 	} = methods;
 
 	const onSubmit = async(data: FormValuesProps) => {
 		try {
-			await login(data.email, data.password);
+			// await new Promise((resolve) => setTimeout(resolve, 500));
+			await sendCodeHandler(`+91 ${data.phoneNumber}`);
+			handleCodeSend(`+91 ${data.phoneNumber}`);
+			enqueueSnackbar('Verification code sent');
 		} catch (error) {
 			console.error(error);
-
-			reset();
-
-			setError('afterSubmit', {
-				...error,
-				message: error.message,
-			});
 		}
 	};
 
 	return (
 		<FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-			<Stack spacing={3}>
-				{!!errors.afterSubmit && <Alert severity="error">{errors.afterSubmit.message}</Alert>}
-
-				<RHFTextField name="email" label="Email address" />
-
-				<RHFTextField
-					name="password"
-					label="Password"
-					type={showPassword ? 'text' : 'password'}
-					InputProps={{
-						endAdornment: (
-							<InputAdornment position="end">
-								<IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
-									<Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
-								</IconButton>
-							</InputAdornment>
-						),
-					}}
+			<Stack direction={'row'} spacing={1}>
+				<Autocomplete
+					disableClearable
+					disabled
+					defaultValue={{ code: 'IN', label: 'India', phone: '91' }}
+					autoHighlight
+					options={countries}
+					getOptionLabel={(option) => option.phone}
+					renderOption={(props, option) => (
+						<Box component="li" {...props} sx={{ px: '8px !important' }}>
+							<Box component="span" sx={{ flexShrink: 0, mr: 2, fontSize: 22 }}>
+								{countryToFlag(option.code)}
+							</Box>
+							{option.label} ({option.code}) +{option.phone}
+						</Box>
+					)}
+					renderInput={(params) => (
+						<TextField
+							{...params}
+							label="Code"
+						/>
+					)}
 				/>
-			</Stack>
-
-			<Stack alignItems="flex-end" sx={{ my: 2 }}>
-				<Link variant="body2" color="inherit" underline="always">
-          Forgot password?
-				</Link>
+				<RHFTextField name="phoneNumber" type='number' label="Phone Number" />
 			</Stack>
 
 			<LoadingButton
 				fullWidth
-				color="inherit"
 				size="large"
 				type="submit"
 				variant="contained"
-				loading={isSubmitSuccessful || isSubmitting}
-				sx={{
-					bgcolor: 'text.primary',
-					color: (theme) => (theme.palette.mode === 'light' ? 'common.white' : 'grey.800'),
-					'&:hover': {
-						bgcolor: 'text.primary',
-						color: (theme) => (theme.palette.mode === 'light' ? 'common.white' : 'grey.800'),
-					},
-				}}
+				loading={isSubmitting}
+				sx={{ mt: 3 }}
 			>
-        Login
+				Send code
 			</LoadingButton>
 		</FormProvider>
 	);

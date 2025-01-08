@@ -12,6 +12,7 @@ import { PATH_DASHBOARD } from '../../routes/paths';
 import { useSnackbar } from '../../components/snackbar';
 import FormProvider, { RHFCodes } from '../../components/hook-form';
 import { useAuthContext } from '../../auth/useAuthContext';
+import { verifyOtp } from '../../utils/telegram';
 
 // ----------------------------------------------------------------------
 
@@ -23,7 +24,11 @@ type FormValuesProps = {
 	code5: string;
 };
 
-export default function AuthVerifyCodeForm() {
+interface Props {
+	phoneNumber: string;
+}
+
+export default function AuthVerifyCodeForm({ phoneNumber }: Props) {
 	const navigate = useNavigate();
 	const { login } = useAuthContext();
 
@@ -46,7 +51,7 @@ export default function AuthVerifyCodeForm() {
 	};
 
 	const methods = useForm({
-		mode: 'onChange',
+		mode: 'onSubmit',
 		resolver: yupResolver(VerifyCodeSchema),
 		defaultValues,
 	});
@@ -56,17 +61,11 @@ export default function AuthVerifyCodeForm() {
 		formState: { isSubmitting, errors },
 	} = methods;
 
-	const defaultLoginValues = {
-		email: 'demo@minimals.cc',
-		password: 'demo1234',
-	};
-
 	const onSubmit = async(data: FormValuesProps) => {
 		try {
-			await new Promise((resolve) => setTimeout(resolve, 500));
-			console.log('DATA', Object.values(data).join(''));
+			const otp = Object.values(data).join('');
+			await verifyOtp(phoneNumber, otp);
 			enqueueSnackbar('Verify success!');
-			await login(defaultLoginValues.email, defaultLoginValues.password);
 			navigate(PATH_DASHBOARD.root);
 		} catch (error) {
 			console.error(error);

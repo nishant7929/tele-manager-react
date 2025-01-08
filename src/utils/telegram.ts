@@ -9,17 +9,17 @@ export const API_HASH = process.env.REACT_APP_API_HASH || '';
 const savedSession = localStorage.getItem('telegram_session') || '';
 const SESSION = new StringSession(savedSession);
 
+interface SendCodeResult {
+	success: boolean;
+	message: string;
+}
+
 export const telegramClient = {
 	connect: async(): Promise<TelegramClient> => {
-		const client = new TelegramClient(
-			SESSION,
-			Number(API_ID),
-			API_HASH as string,
-			{
-				connectionRetries: 5,
-				useWSS: true,
-			}
-		);
+		const client = new TelegramClient(SESSION, Number(API_ID), API_HASH as string, {
+			connectionRetries: 5,
+			useWSS: true,
+		});
 		await client.connect();
 		return client;
 	},
@@ -28,13 +28,26 @@ export const telegramClient = {
 export const sendCodeHandler = async(phoneNumber: string): Promise<void> => {
 	try {
 		const client = await telegramClient.connect();
-		await client.sendCode(
-			{
-				apiId: Number(API_ID),
-				apiHash: API_HASH,
-			},
-			phoneNumber
-		);
+
+		await client.invoke(new Api.auth.SendCode({
+			apiId: Number(API_ID),
+			apiHash: API_HASH,
+			phoneNumber,
+			settings: new Api.CodeSettings({
+				allowFlashcall: true,
+				currentNumber: true,
+				allowAppHash: true,
+			})
+		}));
+
+		// const { isCodeViaApp, phoneCodeHash } = await client.sendCode(
+		// 	{
+		// 		apiId: Number(API_ID),
+		// 		apiHash: API_HASH,
+		// 	},
+		// 	phoneNumber
+		// );
+		// console.log({ isCodeViaApp, phoneCodeHash });
 		alert('OTP sent to your phone!');
 	} catch (error) {
 		console.error('Error sending code:', error);
@@ -44,20 +57,39 @@ export const sendCodeHandler = async(phoneNumber: string): Promise<void> => {
 export const verifyOtp = async(
 	phoneNumber: string,
 	phoneCode: string
-): Promise<boolean>  => {
+): Promise<{
+	success: boolean;
+	message: string;
+	userInfo?: { phoneNumber: string; firstName: string; lastName?: string };
+}> => {
 	try {
 		const client = await telegramClient.connect();
 		await client.start({
 			phoneNumber: async() => phoneNumber,
 			phoneCode: async() => phoneCode,
-			onError: (err) => console.error('Login error:', err),
+			onError: (err) => {
+				throw new Error(err.message);
+			},
 		});
+
 		const session = client.session.save() as any;
 		localStorage.setItem('telegram_session', session);
-		return true;
-	} catch (error) {
-		console.error('Error during login:', error);
-		return false;
+
+		const me = await client.getMe();
+		return {
+			success: true,
+			message: 'Login successful.',
+			userInfo: {
+				phoneNumber: me.phone ?? phoneNumber,
+				firstName: me.firstName ?? '',
+				lastName: me.lastName ?? undefined,
+			},
+		};
+	} catch (error: unknown) {
+		if (error instanceof Error) {
+			return { success: false, message: error.message };
+		}
+		return { success: false, message: 'An unknown error occurred during login.' };
 	}
 };
 
@@ -99,9 +131,7 @@ export const uploadFileHandler = async(
 								const percentage = Math.floor(uploadedBytes * 100);
 								setUploadingImages((prev) =>
 									prev.map((img) =>
-										img.id === fileData.id
-											? { ...img, progress: percentage }
-											: img
+										img.id === fileData.id ? { ...img, progress: percentage } : img
 									)
 								);
 							},
@@ -119,7 +149,7 @@ export const uploadFileHandler = async(
 									fileName: file.name,
 								}),
 							],
-							thumb: thumbFile
+							thumb: thumbFile,
 						});
 
 						setUploadingImages((prev) =>
@@ -134,15 +164,10 @@ export const uploadFileHandler = async(
 							)
 						);
 					} catch (uploadError) {
-						console.error(
-							`Error uploading file ${file.name}:`,
-							uploadError
-						);
+						console.error(`Error uploading file ${file.name}:`, uploadError);
 						setUploadingImages((prev) =>
 							prev.map((img) =>
-								img.id === fileData.id
-									? { ...img, progress: -1, status: 'failed' }
-									: img
+								img.id === fileData.id ? { ...img, progress: -1, status: 'failed' } : img
 							)
 						);
 					}
