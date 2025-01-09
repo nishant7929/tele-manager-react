@@ -12,6 +12,7 @@ import { CustomAvatar } from '../../../components/custom-avatar';
 import { useSnackbar } from '../../../components/snackbar';
 import MenuPopover from '../../../components/menu-popover';
 import { IconButtonAnimate } from '../../../components/animate';
+import { telegramClient } from '../../../utils/telegram';
 
 // ----------------------------------------------------------------------
 
@@ -51,6 +52,7 @@ export default function AccountPopover() {
 
 	const handleLogout = async() => {
 		try {
+			await telegramClient.logout();
 			logout();
 			navigate(PATH_AUTH.login, { replace: true });
 			handleClosePopover();
@@ -58,11 +60,6 @@ export default function AccountPopover() {
 			console.error(error);
 			enqueueSnackbar('Unable to logout!', { variant: 'error' });
 		}
-	};
-
-	const handleClickItem = (path: string) => {
-		handleClosePopover();
-		navigate(path);
 	};
 
 	return (
@@ -84,7 +81,7 @@ export default function AccountPopover() {
 					}),
 				}}
 			>
-				<CustomAvatar src={user?.photoURL} alt={user?.displayName} name={user?.displayName} />
+				<CustomAvatar src={user?.photoURL || '/assets/images/avatars/avatar_default.jpg'} alt={user?.displayName} name={user?.displayName} />
 			</IconButtonAnimate>
 
 			<MenuPopover open={openPopover} onClose={handleClosePopover} sx={{ width: 200, p: 0 }}>

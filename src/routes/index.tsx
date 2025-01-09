@@ -11,7 +11,6 @@ import { PATH_AFTER_LOGIN } from '../config-global';
 import {
 	Page404,
 	LoginPage,
-	VerifyCodePage,
 } from './elements';
 import FileManagerPage from '../pages/dashboard/FileManagerPage';
 import FileListPage from '../pages/dashboard/FileListPage';
@@ -34,7 +33,6 @@ export default function Router() {
 					),
 					children: [
 						{ path: '/login', element: <LoginPage /> },
-						{ path: '/verify', element: <VerifyCodePage /> },
 					],
 				},
 			],

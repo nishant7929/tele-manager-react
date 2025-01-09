@@ -2,12 +2,16 @@ import { Helmet } from 'react-helmet-async';
 // @mui
 import { Typography } from '@mui/material';
 // sections
-import AuthResetPasswordForm from '../../sections/auth/AuthResetPasswordForm';
+import AuthLoginForm from '../../sections/auth/AuthLoginForm';
+import { useState } from 'react';
+import VerifyCodePage from './VerifyCodePage';
 
 // ----------------------------------------------------------------------
 
 export default function LoginPage() {
-	return (
+	const [phoneNumber, setPhoneNumber] = useState('');
+
+	const renderLogin = () => (
 		<>
 			<Helmet>
 				<title> Sign in | Zcloud</title>
@@ -17,28 +21,20 @@ export default function LoginPage() {
 				Sign in to Zcloud
 			</Typography>
 
-			{/* <Typography sx={{ color: 'text.secondary', mb: 5 }}>
-				Please enter the email address associated with your account and We will email you a link to
-				reset your password.
-			</Typography> */}
+			<AuthLoginForm handleCodeSend={(phoneNumber: string) => setPhoneNumber(phoneNumber)} />
+		</>
+	);
 
-			<AuthResetPasswordForm />
-
-			{/* <Link
-				component={RouterLink}
-				to={PATH_AUTH.login}
-				color="inherit"
-				variant="subtitle2"
-				sx={{
-					mt: 3,
-					mx: 'auto',
-					alignItems: 'center',
-					display: 'inline-flex',
-				}}
-			>
-				<Iconify icon="eva:chevron-left-fill" width={16} />
-				Return to sign in
-			</Link> */}
+	return (
+		<>
+			{
+				!Boolean(phoneNumber)
+					? renderLogin()
+					: <VerifyCodePage
+						phoneNumber={phoneNumber}
+						setPhoneNumber={setPhoneNumber}
+					/>
+			}
 		</>
 	);
 }
