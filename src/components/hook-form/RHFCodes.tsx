@@ -28,6 +28,25 @@ export default function RHFCodes({ keyName = '', inputs = [], ...other }: Props)
 		event.preventDefault();
 	};
 
+	const handleBackspace = (event: React.KeyboardEvent<HTMLInputElement>, name: string) => {
+		const { value } = event.target as HTMLInputElement;
+
+		if (value.length === 0) {
+		  const fieldIndex = name.replace(keyName, '');
+		  const fieldIntIndex = Number(fieldIndex);
+
+		  if (fieldIntIndex > 1) {
+				const previousField: HTMLElement | null = document.querySelector(
+			  `input[name=${keyName}${fieldIntIndex - 1}]`
+				);
+
+				if (previousField !== null) {
+			  (previousField as HTMLElement).focus();
+				}
+		  }
+		}
+	  };
+
 	const handleChangeWithNextField = (
 		event: React.ChangeEvent<HTMLInputElement>,
 		handleChange: (__event: React.ChangeEvent<HTMLInputElement>) => void
@@ -79,6 +98,11 @@ export default function RHFCodes({ keyName = '', inputs = [], ...other }: Props)
 									'& input': { p: 0, textAlign: 'center' },
 								},
 							}}
+							onKeyDown={(event: React.KeyboardEvent<HTMLInputElement>) => {
+								if (event.key === 'Backspace') {
+								  handleBackspace(event, field.name);
+								}
+							  }}
 							inputProps={{
 								maxLength: 1,
 								type: 'number',

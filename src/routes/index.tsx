@@ -11,10 +11,11 @@ import { PATH_AFTER_LOGIN } from '../config-global';
 import {
 	Page404,
 	LoginPage,
-	VerifyCodePage,
 } from './elements';
 import FileManagerPage from '../pages/dashboard/FileManagerPage';
 import FileListPage from '../pages/dashboard/FileListPage';
+import Home from '../pages/dashboard/Home';
+import ImageView from '../pages/dashboard/ImageView';
 
 // ----------------------------------------------------------------------
 
@@ -32,7 +33,6 @@ export default function Router() {
 					),
 					children: [
 						{ path: '/login', element: <LoginPage /> },
-						{ path: '/verify', element: <VerifyCodePage /> },
 					],
 				},
 			],
@@ -52,6 +52,8 @@ export default function Router() {
 				{ element: <Navigate to={PATH_AFTER_LOGIN} replace />, index: true },
 				{ path: '/folders', element: <FileManagerPage /> },
 				{ path: '/folder/:id', element: <FileListPage /> },
+				{ path: '/telegram', element: <Home /> },
+				{ path: '/image/:id', element: <ImageView /> },
 			],
 		},
 		{
