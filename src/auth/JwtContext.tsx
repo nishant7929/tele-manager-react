@@ -120,6 +120,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 				});
 			}
 		} catch (error) {
+			localStorage.removeItem('telegram_session');
 			console.error(error);
 			dispatch({
 				type: Types.INITIAL,
