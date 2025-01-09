@@ -1,16 +1,15 @@
 // @mui
 import { Box, BoxProps } from '@mui/material';
-// @type
-import { IProduct } from '../../../../@types/product';
 // components
 import { SkeletonProductItem } from '../../../../components/skeleton';
 //
 import ShopProductCard from './ShopProductCard';
+import { IImageData } from '../../../../pages/dashboard/FileListPage';
 
 // ----------------------------------------------------------------------
 
 interface Props extends BoxProps {
-	products: IProduct[];
+	products: IImageData[];
 	loading: boolean;
 }
 
@@ -27,7 +26,7 @@ export default function ShopProductList({ products, loading, ...other }: Props) 
 			}}
 			{...other}
 		>
-			{(loading ? [...Array(12)] : [...products, ...products, ...products, ...products, ...products]).map((product, index) =>
+			{(loading ? [...Array(20)] : [...products]).map((product, index) =>
 				product ? (
 					<ShopProductCard key={index} product={product} />
 				) : (
