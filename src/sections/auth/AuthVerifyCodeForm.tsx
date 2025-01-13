@@ -13,6 +13,7 @@ import { useSnackbar } from '../../components/snackbar';
 import FormProvider, { RHFCodes } from '../../components/hook-form';
 import { useAuthContext } from '../../auth/useAuthContext';
 import { verifyOtp } from '../../utils/telegram';
+import { userModel } from '../../utils/firebase';
 
 // ----------------------------------------------------------------------
 
@@ -67,6 +68,12 @@ export default function AuthVerifyCodeForm({ phoneNumber }: Props) {
 			const { message, success, userInfo } = await verifyOtp(phoneNumber, otp);
 			if (success) {
 				await login(userInfo || {});
+				const initData = {
+					phoneNumber: userInfo?.phoneNumber,
+					fullName: userInfo?.displayName,
+					totalSize: '0',
+				};
+				await userModel.findByPhoneOrCreate(userInfo?.phoneNumber || '', initData);
 				navigate(PATH_DASHBOARD.root);
 			}
 			enqueueSnackbar(message, { variant: success ? 'success' : 'error' });

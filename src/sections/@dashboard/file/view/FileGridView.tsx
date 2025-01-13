@@ -2,7 +2,7 @@ import { useState, useRef } from 'react';
 // @mui
 import { Collapse, Box, Button } from '@mui/material';
 // @types
-import { IFile } from '../../../../@types/file';
+import { FolderType } from '../../../../@types/user';
 // components
 import Iconify from '../../../../components/iconify';
 import { TableProps } from '../../../../components/table';
@@ -12,24 +12,25 @@ import FileFolderCard from '../item/FileFolderCard';
 import FileShareDialog from '../portal/FileShareDialog';
 import FileActionSelected from '../portal/FileActionSelected';
 import FileNewFolderDialog from '../portal/FileNewFolderDialog';
+import { userModel } from '../../../../utils/firebase';
+import { useDispatch, useSelector } from '../../../../redux/store';
+import { updateUser } from '../../../../redux/slices/user';
+import { SkeletonProductItem } from '../../../../components/skeleton';
+import { uuidv4V2 } from '../../../../utils/uuidv4';
 
 // ----------------------------------------------------------------------
 
 type Props = {
+	loading: boolean;
 	table: TableProps;
-	data: IFile[];
-	dataFiltered: IFile[];
+	data: FolderType[];
 	onOpenConfirm: VoidFunction;
 	onDeleteItem: (__id: string) => void;
 };
 
-export default function FileGridView({
-	table,
-	data,
-	dataFiltered,
-	onDeleteItem,
-	onOpenConfirm,
-}: Props) {
+export default function FileGridView({ loading, table, data, onDeleteItem, onOpenConfirm }: Props) {
+	const { user } = useSelector((state) => state.user);
+	const dispatch = useDispatch();
 	const { selected, onSelectRow: onSelectItem, onSelectAllRows: onSelectAllItems } = table;
 
 	const containerRef = useRef(null);
@@ -70,12 +71,31 @@ export default function FileGridView({
 		setInviteEmail(event.target.value);
 	};
 
+	const handleCreateNewFolder = async() => {
+		handleCloseNewFolder();
+		setFolderName('');
+		const newFolder = {
+			name: folderName,
+			id: uuidv4V2(),
+			totalFiles: 0,
+			size: '0',
+			isFavorited: false,
+		};
+		if (user) {
+			const newUser = await userModel.findByIdAndUpdate(user.id, {
+				...user,
+				folders: user.folders ? [...user.folders, newFolder] : [newFolder],
+			});
+			dispatch(updateUser(newUser));
+		}
+	};
+
 	return (
 		<>
 			<Box ref={containerRef}>
 				<FilePanel
 					title="Your Folders"
-					subTitle={`${data.filter((item) => item.type === 'folder').length} folders`}
+					subTitle={`${data?.length || 0} folders`}
 					onOpen={handleOpenNewFolder}
 					collapse={collapseFolders}
 					onCollapse={() => setCollapseFolders(!collapseFolders)}
@@ -92,9 +112,11 @@ export default function FileGridView({
 							lg: 'repeat(5, 1fr)',
 						}}
 					>
-						{dataFiltered
-							.filter((i) => i.type === 'folder')
-							.map((folder) => (
+						{loading
+							? [...Array(4)].map((_, index) => (
+								<SkeletonProductItem sx={{ height: '140px' }} key={index} />
+							  ))
+							: data?.map((folder) => (
 								<FileFolderCard
 									key={folder.id}
 									folder={folder}
@@ -103,14 +125,14 @@ export default function FileGridView({
 									onDelete={() => onDeleteItem(folder.id)}
 									sx={{ maxWidth: 'auto' }}
 								/>
-							))}
+							  ))}
 					</Box>
 				</Collapse>
 
 				{!!selected?.length && (
 					<FileActionSelected
 						numSelected={selected.length}
-						rowCount={data.length}
+						rowCount={data?.length}
 						selected={selected}
 						onSelectAllItems={(checked) =>
 							onSelectAllItems(
@@ -174,11 +196,7 @@ export default function FileGridView({
 				open={openNewFolder}
 				onClose={handleCloseNewFolder}
 				title="New Folder"
-				onCreate={() => {
-					handleCloseNewFolder();
-					setFolderName('');
-					console.log('CREATE NEW FOLDER', folderName);
-				}}
+				onCreate={handleCreateNewFolder}
 				folderName={folderName}
 				onChangeFolderName={(event) => setFolderName(event.target.value)}
 			/>

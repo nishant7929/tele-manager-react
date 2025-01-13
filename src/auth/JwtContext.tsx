@@ -1,6 +1,5 @@
 import { createContext, useEffect, useReducer, useCallback, useMemo } from 'react';
 // utils
-import axios from '../utils/axios';
 import localStorageAvailable from '../utils/localStorageAvailable';
 //
 import { ActionMapType, AuthStateType, AuthUserType, JWTContextType } from './types';
@@ -106,7 +105,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 						isAuthenticated: true,
 						user: {
 							phoneNumber: me.phone,
-							displayName: me.firstName,
+							displayName: `${me.firstName || ''} ${me.lastName || ''}`,
 						},
 					},
 				});
@@ -148,29 +147,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
 		});
 	}, []);
 
-	// REGISTER
-	const register = useCallback(
-		async(email: string, password: string, firstName: string, lastName: string) => {
-			const response = await axios.post('/api/account/register', {
-				email,
-				password,
-				firstName,
-				lastName,
-			});
-			const { accessToken, user } = response.data;
-
-			localStorage.setItem('accessToken', accessToken);
-
-			dispatch({
-				type: Types.REGISTER,
-				payload: {
-					user,
-				},
-			});
-		},
-		[]
-	);
-
 	// LOGOUT
 	const logout = useCallback(() => {
 		dispatch({
@@ -188,10 +164,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
 			loginWithGoogle: () => {},
 			loginWithGithub: () => {},
 			loginWithTwitter: () => {},
-			register,
 			logout,
 		}),
-		[state.isAuthenticated, state.isInitialized, state.user, login, logout, register]
+		[state.isAuthenticated, state.isInitialized, state.user, login, logout]
 	);
 
 	return <AuthContext.Provider value={memoizedValue}>{children}</AuthContext.Provider>;

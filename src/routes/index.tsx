@@ -1,7 +1,9 @@
+import { useEffect } from 'react';
 import { Navigate, useRoutes } from 'react-router-dom';
 // auth
 import AuthGuard from '../auth/AuthGuard';
 import GuestGuard from '../auth/GuestGuard';
+import { useAuthContext } from '../auth/useAuthContext';
 // layouts
 import CompactLayout from '../layouts/compact';
 import DashboardLayout from '../layouts/dashboard';
@@ -16,10 +18,20 @@ import FileManagerPage from '../pages/dashboard/FileManagerPage';
 import FileListPage from '../pages/dashboard/FileListPage';
 import Home from '../pages/dashboard/Home';
 import ImageView from '../pages/dashboard/ImageView';
+import { getUserData } from '../redux/slices/user';
+import { useDispatch } from '../redux/store';
 
 // ----------------------------------------------------------------------
 
 export default function Router() {
+	const { user } = useAuthContext();
+	const dispatch = useDispatch();
+	useEffect(() => {
+		if (user) {
+			dispatch(getUserData(user.phoneNumber));
+		}
+	}, [user, dispatch]);
+
 	return useRoutes([
 		{
 			path: '/',
@@ -39,7 +51,7 @@ export default function Router() {
 		},
 		{
 			path: '/',
-			element: <Navigate to="/folders" replace />,
+			element: <Navigate to="/f" replace />,
 		},
 		{
 			path: '/',
@@ -50,8 +62,8 @@ export default function Router() {
 			),
 			children: [
 				{ element: <Navigate to={PATH_AFTER_LOGIN} replace />, index: true },
-				{ path: '/folders', element: <FileManagerPage /> },
-				{ path: '/folder/:id', element: <FileListPage /> },
+				{ path: '/f', element: <FileManagerPage /> },
+				{ path: '/f/:id', element: <FileListPage /> },
 				{ path: '/telegram', element: <Home /> },
 				{ path: '/image/:id', element: <ImageView /> },
 			],

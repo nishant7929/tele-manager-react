@@ -83,7 +83,7 @@ export const verifyOtp = async(
 			message: 'Login successful.',
 			userInfo: {
 				phoneNumber: me.phone ?? phoneNumber,
-				displayName: me.firstName ?? '',
+				displayName: `${me.firstName || ''} ${me.lastName || ''}`,
 				lastName: me.lastName ?? undefined,
 			},
 		};

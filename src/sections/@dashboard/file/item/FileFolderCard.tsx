@@ -12,12 +12,11 @@ import {
 	CardProps,
 	IconButton,
 } from '@mui/material';
-// hooks
-import useCopyToClipboard from '../../../../hooks/useCopyToClipboard';
 // utils
 import { fData } from '../../../../utils/formatNumber';
+import { PATH_DASHBOARD } from '../../../../routes/paths';
 // @types
-import { IFolderManager } from '../../../../@types/file';
+import { FolderType } from '../../../../@types/user';
 // components
 import Iconify from '../../../../components/iconify';
 import MenuPopover from '../../../../components/menu-popover';
@@ -25,14 +24,15 @@ import TextMaxLine from '../../../../components/text-max-line';
 import { useSnackbar } from '../../../../components/snackbar';
 import ConfirmDialog from '../../../../components/confirm-dialog';
 //
-import FileShareDialog from '../portal/FileShareDialog';
-import FileDetailsDrawer from '../portal/FileDetailsDrawer';
 import FileNewFolderDialog from '../portal/FileNewFolderDialog';
+import { useDispatch, useSelector } from '../../../../redux/store';
+import { userModel } from '../../../../utils/firebase';
+import { updateUser } from '../../../../redux/slices/user';
 
 // ----------------------------------------------------------------------
 
 interface Props extends CardProps {
-	folder: IFolderManager;
+	folder: FolderType;
 	selected?: boolean;
 	onSelect?: VoidFunction;
 	onDelete: VoidFunction;
@@ -45,20 +45,15 @@ export default function FileFolderCard({
 	sx,
 	...other
 }: Props) {
+	const { user } = useSelector((state) => state.user);
+	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const { enqueueSnackbar } = useSnackbar();
 
-	const { copy } = useCopyToClipboard();
-
-	const [inviteEmail, setInviteEmail] = useState('');
-
 	const [showCheckbox, setShowCheckbox] = useState(false);
-
-	const [openShare, setOpenShare] = useState(false);
 
 	const [openConfirm, setOpenConfirm] = useState(false);
 
-	const [openDetails, setOpenDetails] = useState(false);
 
 	const [folderName, setFolderName] = useState(folder.name);
 
@@ -88,18 +83,6 @@ export default function FileFolderCard({
 		setShowCheckbox(false);
 	};
 
-	const handleOpenShare = () => {
-		setOpenShare(true);
-	};
-
-	const handleCloseShare = () => {
-		setOpenShare(false);
-	};
-
-	const handleCloseDetails = () => {
-		setOpenDetails(false);
-	};
-
 	const handleOpenEditFolder = () => {
 		setOpenEditFolder(true);
 	};
@@ -116,19 +99,33 @@ export default function FileFolderCard({
 		setOpenPopover(null);
 	};
 
-	const handleChangeInvite = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setInviteEmail(event.target.value);
-	};
-
 	const handleCopy = () => {
 		enqueueSnackbar('Copied!');
-		copy(folder.url);
+		// copy(folder.url);
+	};
+
+	const handleUpdateFolder = async() => {
+		handleCloseEditFolder();
+		setFolderName(folderName);
+		if (user) {
+			const currentFolders = user.folders.map(item => {
+				if (item.id === folder.id) {
+					return {  ...item, name: folderName };
+				}
+				return item;
+			});
+			const newUser = await userModel.findByIdAndUpdate(user.id, {
+				...user,
+				folders: currentFolders,
+			});
+			dispatch(updateUser(newUser));
+		}
 	};
 
 	return (
 		<>
 			<Card
-				onClick={() => navigate('/folder/1')}
+				onClick={() => navigate(`${PATH_DASHBOARD.one}/${folder.id}`)}
 				onMouseEnter={handleShowCheckbox}
 				onMouseLeave={handleHideCheckbox}
 				sx={{
@@ -206,16 +203,6 @@ export default function FileFolderCard({
 				<MenuItem
 					onClick={() => {
 						handleClosePopover();
-						handleOpenShare();
-					}}
-				>
-					<Iconify icon="eva:share-fill" />
-					Share
-				</MenuItem>
-
-				<MenuItem
-					onClick={() => {
-						handleClosePopover();
 						handleOpenEditFolder();
 					}}
 				>
@@ -237,40 +224,11 @@ export default function FileFolderCard({
 				</MenuItem>
 			</MenuPopover>
 
-			<FileDetailsDrawer
-				item={folder}
-				favorited={favorited}
-				onFavorite={handleFavorite}
-				onCopyLink={handleCopy}
-				open={openDetails}
-				onClose={handleCloseDetails}
-				onDelete={() => {
-					handleCloseDetails();
-					onDelete();
-				}}
-			/>
-
-			<FileShareDialog
-				open={openShare}
-				shared={folder.shared}
-				inviteEmail={inviteEmail}
-				onChangeInvite={handleChangeInvite}
-				onCopyLink={handleCopy}
-				onClose={() => {
-					handleCloseShare();
-					setInviteEmail('');
-				}}
-			/>
-
 			<FileNewFolderDialog
 				open={openEditFolder}
 				onClose={handleCloseEditFolder}
 				title="Edit Folder"
-				onUpdate={() => {
-					handleCloseEditFolder();
-					setFolderName(folderName);
-					console.log('UPDATE FOLDER', folderName);
-				}}
+				onUpdate={handleUpdateFolder}
 				folderName={folderName}
 				onChangeFolderName={(event) => setFolderName(event.target.value)}
 			/>
