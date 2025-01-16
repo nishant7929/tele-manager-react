@@ -2,6 +2,7 @@ import imageCompression from 'browser-image-compression';
 import React, { BaseSyntheticEvent } from 'react';
 import { Api, TelegramClient } from 'telegram';
 import { StringSession } from 'telegram/sessions';
+import { FOLDER_POSTFIX, FOLDER_PREFIX } from './constant';
 
 export const API_ID = process.env.REACT_APP_API_ID || 0;
 export const API_HASH = process.env.REACT_APP_API_HASH || '';
@@ -171,6 +172,102 @@ export const uploadFileHandler = async(
 						setUploadingImages((prev) =>
 							prev.map((img) =>
 								img.id === fileData.id ? { ...img, progress: -1, status: 'failed' } : img
+							)
+						);
+					}
+				};
+
+				reader.readAsArrayBuffer(file);
+			})
+		);
+	} catch (error) {
+		console.error('Error uploading files:', error);
+		alert('Error uploading files.');
+	}
+};
+
+export interface UploadFileType {
+    file: File;
+    progress: number;
+    id: number;
+    preview: string;
+}
+
+export const uploadFileHandlerV2 = async(
+	fodlerId: string,
+	files: File[],
+	setUploadingImages: React.Dispatch<React.SetStateAction<UploadFileType[]>>
+): Promise<void> => {
+	try {
+		if (!files || files.length === 0) {
+			return;
+		}
+
+		const client = await telegramClient.connect();
+
+		const createUploadFile = (file: File): UploadFileType => ({
+			file,
+			progress: 0,
+			id: Math.random(),
+			preview: URL.createObjectURL(file),
+		});
+
+		const uploadingFiles: UploadFileType[] = files.map(createUploadFile);
+
+		setUploadingImages((prev) => [...prev, ...uploadingFiles]);
+
+		await Promise.all(
+			uploadingFiles.map(async(fileData, index) => {
+				const file = files[index] as File;
+
+				const reader = new FileReader();
+				reader.onload = async() => {
+					try {
+						const uploadedFile = await client.uploadFile({
+							file,
+							workers: 15,
+							onProgress: (uploadedBytes: number) => {
+								const percentage = Math.floor(uploadedBytes * 100);
+								if (percentage < 100) {
+									setUploadingImages((prev) =>
+										prev.map((img) =>
+											img.id === fileData.id ? { ...img, progress: percentage } : img
+										)
+									);
+								}
+							},
+						});
+
+						const compressedThumbnail = await compressImage(file, 0.05);
+						const thumbFile = new File([compressedThumbnail], 'thumb.jpg', { type: 'image/jpeg' });
+
+						await client.sendFile('me', {
+							file: uploadedFile,
+							caption: `${FOLDER_PREFIX}${fodlerId}${FOLDER_POSTFIX}`,
+							forceDocument: true,
+							attributes: [
+								new Api.DocumentAttributeFilename({
+									fileName: file.name,
+								}),
+							],
+							thumb: thumbFile,
+						});
+
+						setUploadingImages((prev) =>
+							prev.map((img) =>
+								img.id === fileData.id
+									? {
+										...img,
+										progress: 100,
+									  }
+									: img
+							)
+						);
+					} catch (uploadError) {
+						console.error(`Error uploading file ${file.name}:`, uploadError);
+						setUploadingImages((prev) =>
+							prev.map((img) =>
+								img.id === fileData.id ? { ...img, progress: -1 } : img
 							)
 						);
 					}

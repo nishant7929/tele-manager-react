@@ -15,6 +15,9 @@ import {
 } from '../../sections/@dashboard/e-commerce/shop';
 import { telegramClient } from '../../utils/telegram';
 import { Api } from 'telegram';
+import Iconify from '../../components/iconify';
+import FileUploadDialog from '../../sections/@dashboard/file/portal/FileUploadDialog';
+import { useParams } from 'react-router-dom';
 
 // ----------------------------------------------------------------------
 
@@ -27,6 +30,7 @@ export interface IImageData {
 }
 
 export default function FileListPage() {
+	const { id } = useParams<{ id: string }>();
 	const { themeStretch } = useSettingsContext();
 
 	const dispatch = useDispatch();
@@ -38,6 +42,16 @@ export default function FileListPage() {
 	const [imagesData, setImagesData] = useState<IImageData[]>([]);
 	const [offsetId, setOffsetId] = useState<number>(0);
 	const [loading, setLoading] = useState(true);
+	const [openUploadFile, setOpenUploadFile] = useState(false);
+
+	const handleOpenUploadFile = () => {
+		setOpenUploadFile(true);
+	};
+
+	const handleCloseUploadFile = () => {
+		setOpenUploadFile(false);
+	};
+
 
 	const fetchUploadedImages = async(): Promise<void> => {
 		// setLoading(true);
@@ -45,6 +59,7 @@ export default function FileListPage() {
 			const client = await telegramClient.connect();
 			const savedMessagesPeer = await client.getInputEntity('me');
 			const messages = await client.getMessages(savedMessagesPeer, {
+				search: id,
 				limit: 50,
 				offsetId,
 			});
@@ -152,6 +167,15 @@ export default function FileListPage() {
 						{ name: 'Dashboard', href: PATH_DASHBOARD.root },
 						{ name: 'Files' },
 					]}
+					action={
+						<Button
+							variant="contained"
+							startIcon={<Iconify icon="eva:cloud-upload-fill" />}
+							onClick={handleOpenUploadFile}
+						>
+												Upload
+						</Button>
+					}
 				/>
 
 				<Stack sx={{ mb: 3 }}>
@@ -166,6 +190,9 @@ export default function FileListPage() {
 				</Stack>
 
 				<ShopProductList products={imagesData} loading={loading} />
+
+				<FileUploadDialog open={openUploadFile} onClose={handleCloseUploadFile} />
+
 				<Button sx={{ marginLeft: '50%' }} onClick={fetchUploadedImages}>Load more</Button>
 			</Container>
 		</>

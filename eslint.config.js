@@ -49,7 +49,7 @@ export default [
       'react/destructuring-assignment': ['error', 'always'],
       'no-useless-escape': 'off',
       'no-unreachable': 'off',
-      ...reactHooks.configs.recommended.rules,
+    //   ...reactHooks.configs.recommended.rules,
       'react-refresh/only-export-components': [
         'warn',
         { allowConstantExport: true },

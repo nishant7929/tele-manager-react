@@ -9,10 +9,11 @@ import { useTable } from '../../components/table';
 // sections
 import {
 	FileGridView,
-	FileNewFolderDialog,
 } from '../../sections/@dashboard/file';
 import { useSelector } from '../../redux/store';
 import { FolderType } from '../../@types/user';
+import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
+import { PATH_DASHBOARD } from '../../routes/paths';
 
 // ----------------------------------------------------------------------
 
@@ -26,8 +27,6 @@ export default function FileManagerPage() {
 	const [tableData, setTableData] = useState<FolderType[]>([]);
 
 	const [openConfirm, setOpenConfirm] = useState(false);
-
-	const [openUploadFile, setOpenUploadFile] = useState(false);
 
 	const handleDeleteItem = (id: string) => {
 		const deleteRow = tableData.filter((row) => row.id !== id);
@@ -47,14 +46,6 @@ export default function FileManagerPage() {
 		setOpenConfirm(false);
 	};
 
-	// const handleOpenUploadFile = () => {
-	// 	setOpenUploadFile(true);
-	// };
-
-	const handleCloseUploadFile = () => {
-		setOpenUploadFile(false);
-	};
-
 	useEffect(() => {
 		if (user) {
 			setTableData(user.folders);
@@ -67,25 +58,16 @@ export default function FileManagerPage() {
 			</Helmet>
 
 			<Container maxWidth={themeStretch ? false : 'lg'}>
-				{/* <CustomBreadcrumbs
+				<CustomBreadcrumbs
 					heading="File Manager"
 					links={[
 						{
 							name: 'Dashboard',
-							href: PATH_DASHBOARD.root,
+							href: PATH_DASHBOARD.one,
 						},
 						{ name: 'File Manager' },
 					]}
-					action={
-						<Button
-							variant="contained"
-							startIcon={<Iconify icon="eva:cloud-upload-fill" />}
-							onClick={handleOpenUploadFile}
-						>
-							Upload
-						</Button>
-					}
-				/> */}
+				/>
 
 				<FileGridView
 					loading={isLoading}
@@ -95,8 +77,6 @@ export default function FileManagerPage() {
 					onOpenConfirm={handleOpenConfirm}
 				/>
 			</Container>
-
-			<FileNewFolderDialog open={openUploadFile} onClose={handleCloseUploadFile} />
 
 			<ConfirmDialog
 				open={openConfirm}

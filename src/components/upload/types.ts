@@ -2,6 +2,7 @@ import { DropzoneOptions } from 'react-dropzone';
 // @mui
 import { SxProps } from '@mui/material';
 import { Theme } from '@mui/material/styles';
+import { UploadFileType } from '../../utils/telegram';
 
 // ----------------------------------------------------------------------
 
@@ -22,8 +23,8 @@ export interface UploadProps extends DropzoneOptions {
   file?: CustomFile | string | null;
   onDelete?: VoidFunction;
   //
-  files?: (File | string)[];
+  files?: UploadFileType[];
   onUpload?: VoidFunction;
-  onRemove?: (file: CustomFile | string) => void;
+  onRemove?: (__file: CustomFile | string) => void;
   onRemoveAll?: VoidFunction;
 }
