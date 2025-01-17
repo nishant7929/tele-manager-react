@@ -1,20 +1,19 @@
 import { Helmet } from 'react-helmet-async';
 import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { Api } from 'telegram';
 // @mui
-import { Container, Typography, Stack, Button } from '@mui/material';
-// redux
-import { useDispatch, useSelector } from '../../redux/store';
+import { Container, Button } from '@mui/material';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
 // components
 import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
 import { useSettingsContext } from '../../components/settings';
 // sections
-import {
-	ShopProductList,
-} from '../../sections/@dashboard/e-commerce/shop';
-import { telegramClient } from '../../utils/telegram';
-import { Api } from 'telegram';
+import { FileList } from '../../sections/@dashboard/e-commerce/shop';
+import { getTelegramClient } from '../../utils/telegram';
+import Iconify from '../../components/iconify';
+import FileUploadDialog from '../../sections/@dashboard/file/portal/FileUploadDialog';
 
 // ----------------------------------------------------------------------
 
@@ -27,27 +26,30 @@ export interface IImageData {
 }
 
 export default function FileListPage() {
+	const { id } = useParams<{ id: string }>();
 	const { themeStretch } = useSettingsContext();
-
-	const dispatch = useDispatch();
-
-	const { products } = useSelector((state) => state.product);
-
-	const isDefault = true;
 
 	const [imagesData, setImagesData] = useState<IImageData[]>([]);
 	const [offsetId, setOffsetId] = useState<number>(0);
 	const [loading, setLoading] = useState(true);
+	const [openUploadFile, setOpenUploadFile] = useState(false);
+
+	const handleOpenUploadFile = () => {
+		setOpenUploadFile(true);
+	};
+
+	const handleCloseUploadFile = () => {
+		setOpenUploadFile(false);
+	};
 
 	const fetchUploadedImages = async(): Promise<void> => {
-		// setLoading(true);
 		try {
-			const client = await telegramClient.connect();
+			const client = await getTelegramClient();
 			const savedMessagesPeer = await client.getInputEntity('me');
 			const messages = await client.getMessages(savedMessagesPeer, {
-				limit: 50,
-				offsetId,
+				search: id,
 			});
+
 			const initialData: IImageData[] = messages
 				.filter((msg: any) => msg?.media?.document?.thumbs || msg?.media?.photo)
 				.map((msg) => {
@@ -61,11 +63,9 @@ export default function FileListPage() {
 
 					if (sizeInBytes > 0) {
 						size =
-								sizeInBytes >= 1024 * 1024
-									? `${(sizeInBytes / (1024 * 1024)).toFixed(
-										2
-									  )} MB`
-									: `${(sizeInBytes / 1024).toFixed(2)} KB`;
+							sizeInBytes >= 1024 * 1024
+								? `${(sizeInBytes / (1024 * 1024)).toFixed(2)} MB`
+								: `${(sizeInBytes / 1024).toFixed(2)} KB`;
 					}
 
 					return {
@@ -78,15 +78,16 @@ export default function FileListPage() {
 				});
 			setImagesData([...imagesData, ...initialData]);
 			setLoading(false);
-			setOffsetId(messages[messages.length - 1].id);
-			const downloadPromises = messages.map(async(msg) => {
+			setOffsetId(messages[messages.length - 1]?.id);
+
+			// Process downloads sequentially
+			for (const msg of messages) {
 				if (msg.media) {
 					try {
 						let file = null;
-
 						if (
 							msg.media instanceof Api.MessageMediaPhoto &&
-								msg.media.photo instanceof Api.Photo
+							msg.media.photo instanceof Api.Photo
 						) {
 							const smallestSize = msg.media.photo.sizes[0];
 							file = await client.downloadMedia(msg.media, {
@@ -94,9 +95,9 @@ export default function FileListPage() {
 							});
 						} else if (
 							msg.media instanceof Api.MessageMediaDocument &&
-								msg.media.document instanceof Api.Document &&
-								msg.media.document.mimeType &&
-								msg.media.document.mimeType.startsWith('image/')
+							msg.media.document instanceof Api.Document &&
+							msg.media.document.mimeType &&
+							msg.media.document.mimeType.startsWith('image/')
 						) {
 							const thumbs = msg.media.document.thumbs;
 							if (thumbs && thumbs.length > 0) {
@@ -108,28 +109,18 @@ export default function FileListPage() {
 						}
 
 						if (file) {
-							const fileUrl = URL.createObjectURL(
-								new Blob([file], { type: 'image/jpeg' })
-							);
+							const fileUrl = URL.createObjectURL(new Blob([file], { type: 'image/jpeg' }));
 							setImagesData((prevData) =>
 								prevData.map((data) =>
-									data.id === msg.id
-										? { ...data, thumbnail: fileUrl }
-										: data
+									data.id === msg.id ? { ...data, thumbnail: fileUrl } : data
 								)
 							);
 						}
 					} catch (downloadError) {
-						console.error(
-							`Error downloading media for message ID ${msg.id}:`,
-							downloadError
-						);
+						console.error(`Error downloading media for message ID ${msg.id}:`, downloadError);
 					}
 				}
-			});
-
-			// Start all downloads concurrently
-			await Promise.all(downloadPromises);
+			}
 		} catch (error) {
 			console.error('Error fetching uploaded images:', error);
 		}
@@ -137,7 +128,7 @@ export default function FileListPage() {
 
 	useEffect(() => {
 		fetchUploadedImages();
-	}, [dispatch]);
+	}, []);
 
 	return (
 		<>
@@ -148,25 +139,22 @@ export default function FileListPage() {
 			<Container maxWidth={themeStretch ? false : 'lg'}>
 				<CustomBreadcrumbs
 					heading="Files"
-					links={[
-						{ name: 'Dashboard', href: PATH_DASHBOARD.root },
-						{ name: 'Files' },
-					]}
+					links={[{ name: 'Dashboard', href: PATH_DASHBOARD.root }, { name: 'Files' }]}
+					action={
+						<Button
+							variant="contained"
+							startIcon={<Iconify icon="eva:cloud-upload-fill" />}
+							onClick={handleOpenUploadFile}
+						>
+							Upload
+						</Button>
+					}
 				/>
 
-				<Stack sx={{ mb: 3 }}>
-					{!isDefault && (
-						<>
-							<Typography variant="body2" gutterBottom>
-								<strong>{products.length}</strong>
-									&nbsp;Products found
-							</Typography>
-						</>
-					)}
-				</Stack>
+				<FileList files={imagesData} loading={loading} />
 
-				<ShopProductList products={imagesData} loading={loading} />
-				<Button sx={{ marginLeft: '50%' }} onClick={fetchUploadedImages}>Load more</Button>
+				<FileUploadDialog open={openUploadFile} onClose={handleCloseUploadFile} />
+
 			</Container>
 		</>
 	);

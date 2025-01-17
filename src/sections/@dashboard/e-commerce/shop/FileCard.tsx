@@ -7,11 +7,11 @@ import { IImageData } from '../../../../pages/dashboard/FileListPage';
 // ----------------------------------------------------------------------
 
 type Props = {
-	product: IImageData;
+	file: IImageData;
 };
 
-export default function ShopProductCard({ product }: Props) {
-	const { thumbnail, name } = product;
+export default function FileCard({ file }: Props) {
+	const { thumbnail, name } = file;
 
 	return (
 		<Card>

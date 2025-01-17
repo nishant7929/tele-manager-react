@@ -1,6 +1,6 @@
 import { useDropzone } from 'react-dropzone';
 // @mui
-import { Box, Stack, Button, IconButton, Typography, StackProps } from '@mui/material';
+import { Box, Stack, IconButton, Typography, StackProps } from '@mui/material';
 import { styled, alpha } from '@mui/material/styles';
 // assets
 import { UploadIllustration } from '../../assets/illustrations';
@@ -42,9 +42,7 @@ export default function Upload({
 	//
 	files,
 	thumbnail,
-	onUpload,
 	onRemove,
-	onRemoveAll,
 	sx,
 	...other
 }: UploadProps) {
@@ -62,7 +60,7 @@ export default function Upload({
 
 	return (
 		<Box sx={{ width: 1, position: 'relative', ...sx }}>
-			<StyledDropZone
+			{!hasFiles && <StyledDropZone
 				{...getRootProps()}
 				sx={{
 					...(isDragActive && {
@@ -93,7 +91,7 @@ export default function Upload({
 				/>
 
 				{hasFile && <SingleFilePreview file={file} />}
-			</StyledDropZone>
+			</StyledDropZone>}
 
 			{helperText && helperText}
 
@@ -124,20 +122,6 @@ export default function Upload({
 					<Box sx={{ my: 3 }}>
 						<MultiFilePreview files={files} thumbnail={thumbnail} onRemove={onRemove} />
 					</Box>
-
-					<Stack direction="row" justifyContent="flex-end" spacing={1.5}>
-						{onRemoveAll && (
-							<Button color="inherit" variant="outlined" size="small" onClick={onRemoveAll}>
-                Remove all
-							</Button>
-						)}
-
-						{onUpload && (
-							<Button size="small" variant="contained" onClick={onUpload}>
-                Upload files
-							</Button>
-						)}
-					</Stack>
 				</>
 			)}
 		</Box>
@@ -170,11 +154,11 @@ function Placeholder({ sx, ...other }: StackProps) {
 
 			<div>
 				<Typography gutterBottom variant="h5">
-          Drop or Select file
+					Drop or Select file
 				</Typography>
 
 				<Typography variant="body2" sx={{ color: 'text.secondary' }}>
-          Drop files here or click
+					Drop files here or click
 					<Typography
 						variant="body2"
 						component="span"
@@ -184,9 +168,9 @@ function Placeholder({ sx, ...other }: StackProps) {
 							textDecoration: 'underline',
 						}}
 					>
-            browse
+						browse
 					</Typography>
-          thorough your machine
+					thorough your machine
 				</Typography>
 			</div>
 		</Stack>

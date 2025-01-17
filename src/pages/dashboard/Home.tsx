@@ -1,7 +1,7 @@
 import React, { type BaseSyntheticEvent, useEffect, useState } from 'react';
 import { Api } from 'telegram';
 import { Link } from 'react-router-dom';
-import { sendCodeHandler, telegramClient, uploadFileHandler, verifyOtp } from '../../utils/telegram';
+import { getTelegramClient, sendCodeHandler, uploadFileHandler, verifyOtp } from '../../utils/telegram';
 
 interface IInitialState {
 	phoneNumber: string;
@@ -35,7 +35,7 @@ function Home(): React.JSX.Element {
 		if (savedSession) {
 			(async() => {
 				try {
-					await telegramClient.connect();
+					await getTelegramClient();
 					setLoggedIn(true);
 					setLoading(false);
 				} catch (error) {
@@ -56,7 +56,7 @@ function Home(): React.JSX.Element {
 
 	const handleLogout = async(): Promise<void> => {
 		try {
-			const client = await telegramClient.connect();
+			const client = await getTelegramClient();
 
 			await client.invoke(new Api.auth.LogOut());
 			localStorage.removeItem('telegram_session');
@@ -76,7 +76,7 @@ function Home(): React.JSX.Element {
 
 	const fetchUploadedImages = async(): Promise<void> => {
 		try {
-			const client = await telegramClient.connect();
+			const client = await getTelegramClient();
 			const savedMessagesPeer = await client.getInputEntity('me');
 			const messages = await client.getMessages(savedMessagesPeer, {
 				limit: 50,

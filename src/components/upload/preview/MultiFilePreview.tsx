@@ -1,7 +1,7 @@
 import { m, AnimatePresence } from 'framer-motion';
 // @mui
 import { alpha } from '@mui/material/styles';
-import { IconButton, Stack, Typography } from '@mui/material';
+import { IconButton, LinearProgress, Stack, Typography } from '@mui/material';
 // utils
 import { fData } from '../../../utils/formatNumber';
 //
@@ -21,14 +21,14 @@ export default function MultiFilePreview({ thumbnail, files, onRemove, sx }: Upl
 	return (
 		<AnimatePresence initial={false}>
 			{files.map((file) => {
-				const { key, name = '', size = 0 } = fileData(file);
+				const { key, path = '', size = 0 } = fileData(file.file);
 
 				const isNotFormatFile = typeof file === 'string';
 
 				if (thumbnail) {
 					return (
 						<Stack
-							key={key}
+							key={file.preview}
 							component={m.div}
 							{...varFade().inUp}
 							alignItems="center"
@@ -48,7 +48,7 @@ export default function MultiFilePreview({ thumbnail, files, onRemove, sx }: Upl
 							<FileThumbnail
 								tooltip
 								imageView
-								file={file}
+								file={file.file}
 								sx={{ position: 'absolute' }}
 								imgSx={{ position: 'absolute' }}
 							/>
@@ -56,7 +56,7 @@ export default function MultiFilePreview({ thumbnail, files, onRemove, sx }: Upl
 							{onRemove && (
 								<IconButton
 									size="small"
-									onClick={() => onRemove(file)}
+									onClick={() => onRemove(file.file)}
 									sx={{
 										top: 4,
 										right: 4,
@@ -78,7 +78,7 @@ export default function MultiFilePreview({ thumbnail, files, onRemove, sx }: Upl
 
 				return (
 					<Stack
-						key={key}
+						key={file.preview}
 						component={m.div}
 						{...varFade().inUp}
 						spacing={2}
@@ -93,20 +93,24 @@ export default function MultiFilePreview({ thumbnail, files, onRemove, sx }: Upl
 							...sx,
 						}}
 					>
-						<FileThumbnail file={file} />
+						<FileThumbnail file={file.file} />
 
 						<Stack flexGrow={1} sx={{ minWidth: 0 }}>
 							<Typography variant="subtitle2" noWrap>
-								{isNotFormatFile ? file : name}
+								{isNotFormatFile ? file : path}
 							</Typography>
 
 							<Typography variant="caption" sx={{ color: 'text.secondary' }}>
 								{isNotFormatFile ? '' : fData(size)}
 							</Typography>
+
+							{file.progress === 100
+								? <Typography variant="subtitle2" noWrap>Uploaded</Typography>
+								: <LinearProgress variant='determinate' value={file.progress || 0} />}
 						</Stack>
 
 						{onRemove && (
-							<IconButton edge="end" size="small" onClick={() => onRemove(file)}>
+							<IconButton edge="end" size="small" onClick={() => onRemove(file.file)}>
 								<Iconify icon="eva:close-fill" />
 							</IconButton>
 						)}

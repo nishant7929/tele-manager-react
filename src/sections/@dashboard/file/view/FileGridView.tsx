@@ -1,50 +1,40 @@
 import { useState, useRef } from 'react';
 // @mui
-import { Collapse, Box, Button } from '@mui/material';
+import { Box, Button } from '@mui/material';
 // @types
-import { IFile } from '../../../../@types/file';
+import { FolderType } from '../../../../@types/user';
 // components
 import Iconify from '../../../../components/iconify';
 import { TableProps } from '../../../../components/table';
 //
-import FilePanel from '../FilePanel';
 import FileFolderCard from '../item/FileFolderCard';
 import FileShareDialog from '../portal/FileShareDialog';
 import FileActionSelected from '../portal/FileActionSelected';
 import FileNewFolderDialog from '../portal/FileNewFolderDialog';
+import { SkeletonProductItem } from '../../../../components/skeleton';
 
 // ----------------------------------------------------------------------
 
 type Props = {
+	loading: boolean;
 	table: TableProps;
-	data: IFile[];
-	dataFiltered: IFile[];
+	data: FolderType[];
 	onOpenConfirm: VoidFunction;
 	onDeleteItem: (__id: string) => void;
 };
 
-export default function FileGridView({
-	table,
-	data,
-	dataFiltered,
-	onDeleteItem,
-	onOpenConfirm,
-}: Props) {
+export default function FileGridView({ loading, table, data, onDeleteItem, onOpenConfirm }: Props) {
+
 	const { selected, onSelectRow: onSelectItem, onSelectAllRows: onSelectAllItems } = table;
 
 	const containerRef = useRef(null);
 
-	const [folderName, setFolderName] = useState('');
 
 	const [inviteEmail, setInviteEmail] = useState('');
 
 	const [openShare, setOpenShare] = useState(false);
 
-	const [openNewFolder, setOpenNewFolder] = useState(false);
-
 	const [openUploadFile, setOpenUploadFile] = useState(false);
-
-	const [collapseFolders, setCollapseFolders] = useState(false);
 
 	const handleOpenShare = () => {
 		setOpenShare(true);
@@ -52,14 +42,6 @@ export default function FileGridView({
 
 	const handleCloseShare = () => {
 		setOpenShare(false);
-	};
-
-	const handleOpenNewFolder = () => {
-		setOpenNewFolder(true);
-	};
-
-	const handleCloseNewFolder = () => {
-		setOpenNewFolder(false);
 	};
 
 	const handleCloseUploadFile = () => {
@@ -73,44 +55,37 @@ export default function FileGridView({
 	return (
 		<>
 			<Box ref={containerRef}>
-				<FilePanel
-					title="Your Folders"
-					subTitle={`${data.filter((item) => item.type === 'folder').length} folders`}
-					onOpen={handleOpenNewFolder}
-					collapse={collapseFolders}
-					onCollapse={() => setCollapseFolders(!collapseFolders)}
-				/>
 
-				<Collapse in={!collapseFolders} unmountOnExit>
-					<Box
-						gap={3}
-						display="grid"
-						gridTemplateColumns={{
-							xs: 'repeat(2, 1fr)',
-							sm: 'repeat(3, 1fr)',
-							md: 'repeat(4, 1fr)',
-							lg: 'repeat(5, 1fr)',
-						}}
-					>
-						{dataFiltered
-							.filter((i) => i.type === 'folder')
-							.map((folder) => (
-								<FileFolderCard
-									key={folder.id}
-									folder={folder}
-									selected={selected.includes(folder.id)}
-									onSelect={() => onSelectItem(folder.id)}
-									onDelete={() => onDeleteItem(folder.id)}
-									sx={{ maxWidth: 'auto' }}
-								/>
-							))}
-					</Box>
-				</Collapse>
+				<Box
+					gap={3}
+					display="grid"
+					gridTemplateColumns={{
+						xs: 'repeat(2, 1fr)',
+						sm: 'repeat(3, 1fr)',
+						md: 'repeat(4, 1fr)',
+						lg: 'repeat(5, 1fr)',
+					}}
+				>
+					{loading
+						? [...Array(4)].map((_, index) => (
+							<SkeletonProductItem sx={{ height: '140px' }} key={index} />
+							  ))
+						: data?.map((folder) => (
+							<FileFolderCard
+								key={folder.id}
+								folder={folder}
+								selected={selected.includes(folder.id)}
+								onSelect={() => onSelectItem(folder.id)}
+								onDelete={() => onDeleteItem(folder.id)}
+								sx={{ maxWidth: 'auto' }}
+							/>
+							  ))}
+				</Box>
 
 				{!!selected?.length && (
 					<FileActionSelected
 						numSelected={selected.length}
-						rowCount={data.length}
+						rowCount={data?.length}
 						selected={selected}
 						onSelectAllItems={(checked) =>
 							onSelectAllItems(
@@ -170,18 +145,6 @@ export default function FileGridView({
 
 			<FileNewFolderDialog open={openUploadFile} onClose={handleCloseUploadFile} />
 
-			<FileNewFolderDialog
-				open={openNewFolder}
-				onClose={handleCloseNewFolder}
-				title="New Folder"
-				onCreate={() => {
-					handleCloseNewFolder();
-					setFolderName('');
-					console.log('CREATE NEW FOLDER', folderName);
-				}}
-				folderName={folderName}
-				onChangeFolderName={(event) => setFolderName(event.target.value)}
-			/>
 		</>
 	);
 }

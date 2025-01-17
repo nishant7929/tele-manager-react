@@ -1,10 +1,9 @@
 import { createContext, useEffect, useReducer, useCallback, useMemo } from 'react';
 // utils
-import axios from '../utils/axios';
 import localStorageAvailable from '../utils/localStorageAvailable';
 //
 import { ActionMapType, AuthStateType, AuthUserType, JWTContextType } from './types';
-import { telegramClient } from '../utils/telegram';
+import { getTelegramClient } from '../utils/telegram';
 
 // ----------------------------------------------------------------------
 
@@ -97,7 +96,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 			const savedSession = storageAvailable ? localStorage.getItem('telegram_session') || '': '';
 
 			if (savedSession) {
-				const client = await telegramClient.connect();
+				const client = await getTelegramClient();
 
 				const me = await client.getMe();
 				dispatch({
@@ -106,7 +105,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 						isAuthenticated: true,
 						user: {
 							phoneNumber: me.phone,
-							displayName: me.firstName,
+							displayName: `${me.firstName || ''} ${me.lastName || ''}`,
 						},
 					},
 				});
@@ -120,7 +119,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
 				});
 			}
 		} catch (error) {
-			localStorage.removeItem('telegram_session');
+			const errorMessage = error instanceof Error ? error.message : String(error);
+			if (errorMessage.includes('AUTH_KEY_DUPLICATED')) {
+				localStorage.removeItem('telegram_session');
+			}
 			console.error(error);
 			dispatch({
 				type: Types.INITIAL,
@@ -148,29 +150,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
 		});
 	}, []);
 
-	// REGISTER
-	const register = useCallback(
-		async(email: string, password: string, firstName: string, lastName: string) => {
-			const response = await axios.post('/api/account/register', {
-				email,
-				password,
-				firstName,
-				lastName,
-			});
-			const { accessToken, user } = response.data;
-
-			localStorage.setItem('accessToken', accessToken);
-
-			dispatch({
-				type: Types.REGISTER,
-				payload: {
-					user,
-				},
-			});
-		},
-		[]
-	);
-
 	// LOGOUT
 	const logout = useCallback(() => {
 		dispatch({
@@ -188,10 +167,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
 			loginWithGoogle: () => {},
 			loginWithGithub: () => {},
 			loginWithTwitter: () => {},
-			register,
 			logout,
 		}),
-		[state.isAuthenticated, state.isInitialized, state.user, login, logout, register]
+		[state.isAuthenticated, state.isInitialized, state.user, login, logout]
 	);
 
 	return <AuthContext.Provider value={memoizedValue}>{children}</AuthContext.Provider>;

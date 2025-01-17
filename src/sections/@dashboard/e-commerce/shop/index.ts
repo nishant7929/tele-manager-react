@@ -1,2 +1,2 @@
-export { default as ShopProductCard } from './ShopProductCard';
-export { default as ShopProductList } from './ShopProductList';
+export { default as FileCard } from './FileCard';
+export { default as FileList } from './FileList';

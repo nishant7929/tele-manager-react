@@ -8,3 +8,19 @@ export default function uuidv4() {
     return v.toString(16);
   });
 }
+
+export const uuidv4V2 = () => {
+    const lowercaseChars = 'abcdefghijklmnopqrstuvwxyz';
+    const uppercaseChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const numbers = '0123456789';
+    let randomID = '';
+
+    for (let i = 0; i < 20; i++) {
+        const useUppercase = Math.random() < 0.25;
+        const characterSet = useUppercase ? uppercaseChars : lowercaseChars + numbers;
+
+        const randomIndex = Math.floor(Math.random() * characterSet.length);
+        randomID += characterSet.charAt(randomIndex);
+    }
+    return randomID;
+};

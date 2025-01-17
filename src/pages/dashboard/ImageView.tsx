@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Api } from 'telegram';
 import { useParams, Link } from 'react-router-dom';
-import { telegramClient } from '../../utils/telegram';
+import { getTelegramClient } from '../../utils/telegram';
 
 const ImageView: React.FC = () => {
 	const { id } = useParams<{ id: string }>();
@@ -14,7 +14,7 @@ const ImageView: React.FC = () => {
 	useEffect(() => {
 		const fetchImageData = async() => {
 			try {
-				const client = await telegramClient.connect();
+				const client = await getTelegramClient();
 				const savedMessagesPeer = await client.getInputEntity('me');
 				const messages: any = await client.getMessages(
 					savedMessagesPeer,

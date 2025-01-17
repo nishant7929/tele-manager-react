@@ -14,7 +14,7 @@ export const PATH_AUTH = {
 
 export const PATH_DASHBOARD = {
 	root: ROOTS_DASHBOARD,
-	one: '/folders',
+	one: '/f',
 	shop: '/shop',
 	telegram: '/telegram'
 };
