@@ -6,20 +6,22 @@ import { Button, Container } from '@mui/material';
 import ConfirmDialog from '../../components/confirm-dialog';
 import { useSettingsContext } from '../../components/settings';
 import { useTable } from '../../components/table';
-// sections
-import {
-	FileGridView,
-} from '../../sections/@dashboard/file';
-import { useSelector } from '../../redux/store';
-import { FolderType } from '../../@types/user';
+import Iconify from '../../components/iconify';
 import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
+// sections
+import { FileGridView, FileNewFolderDialog } from '../../sections/@dashboard/file';
+import { useDispatch, useSelector } from '../../redux/store';
+import { FolderType } from '../../@types/user';
 import { PATH_DASHBOARD } from '../../routes/paths';
+import { uuidv4V2 } from '../../utils/uuidv4';
+import { userModel } from '../../utils/firebase';
+import { updateUser } from '../../redux/slices/user';
 
 // ----------------------------------------------------------------------
 
 export default function FileManagerPage() {
 	const { user, isLoading } = useSelector((state) => state.user);
-
+	const dispatch = useDispatch();
 	const table = useTable({ defaultRowsPerPage: 10 });
 
 	const { themeStretch } = useSettingsContext();
@@ -27,6 +29,11 @@ export default function FileManagerPage() {
 	const [tableData, setTableData] = useState<FolderType[]>([]);
 
 	const [openConfirm, setOpenConfirm] = useState(false);
+
+	const [openNewFolder, setOpenNewFolder] = useState(false);
+
+	const [folderName, setFolderName] = useState('');
+
 
 	const handleDeleteItem = (id: string) => {
 		const deleteRow = tableData.filter((row) => row.id !== id);
@@ -44,6 +51,34 @@ export default function FileManagerPage() {
 
 	const handleCloseConfirm = () => {
 		setOpenConfirm(false);
+	};
+
+	const handleOpenNewFolder = () => {
+		setOpenNewFolder(true);
+	};
+
+	const handleCloseNewFolder = () => {
+		setOpenNewFolder(false);
+	};
+
+
+	const handleCreateNewFolder = async() => {
+		handleCloseNewFolder();
+		setFolderName('');
+		const newFolder = {
+			name: folderName,
+			id: uuidv4V2(),
+			totalFiles: 0,
+			size: '0',
+			isFavorited: false,
+		};
+		if (user) {
+			const newUser = await userModel.findByIdAndUpdate(user.id, {
+				...user,
+				folders: user.folders ? [...user.folders, newFolder] : [newFolder],
+			});
+			dispatch(updateUser(newUser));
+		}
 	};
 
 	useEffect(() => {
@@ -67,6 +102,15 @@ export default function FileManagerPage() {
 						},
 						{ name: 'File Manager' },
 					]}
+					action={
+						<Button
+							variant="contained"
+							startIcon={<Iconify icon="eva:plus-fill" />}
+							onClick={handleOpenNewFolder}
+						>
+							New folder
+						</Button>
+					}
 				/>
 
 				<FileGridView
@@ -99,6 +143,15 @@ export default function FileManagerPage() {
 						Delete
 					</Button>
 				}
+			/>
+
+			<FileNewFolderDialog
+				open={openNewFolder}
+				onClose={handleCloseNewFolder}
+				title="New Folder"
+				onCreate={handleCreateNewFolder}
+				folderName={folderName}
+				onChangeFolderName={(event) => setFolderName(event.target.value)}
 			/>
 		</>
 	);

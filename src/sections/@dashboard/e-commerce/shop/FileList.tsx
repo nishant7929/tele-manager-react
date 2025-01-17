@@ -3,17 +3,17 @@ import { Box, BoxProps } from '@mui/material';
 // components
 import { SkeletonProductItem } from '../../../../components/skeleton';
 //
-import ShopProductCard from './ShopProductCard';
+import FileCard from './FileCard';
 import { IImageData } from '../../../../pages/dashboard/FileListPage';
 
 // ----------------------------------------------------------------------
 
 interface Props extends BoxProps {
-	products: IImageData[];
+	files: IImageData[];
 	loading: boolean;
 }
 
-export default function ShopProductList({ products, loading, ...other }: Props) {
+export default function FileList({ files, loading, ...other }: Props) {
 	return (
 		<Box
 			gap={1}
@@ -26,9 +26,9 @@ export default function ShopProductList({ products, loading, ...other }: Props) 
 			}}
 			{...other}
 		>
-			{(loading ? [...Array(20)] : [...products]).map((product, index) =>
-				product ? (
-					<ShopProductCard key={index} product={product} />
+			{(loading ? [...Array(20)] : [...files]).map((file, index) =>
+				file ? (
+					<FileCard key={index} file={file} />
 				) : (
 					<SkeletonProductItem key={index} />
 				)

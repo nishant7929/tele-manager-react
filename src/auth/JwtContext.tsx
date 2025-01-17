@@ -119,7 +119,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
 				});
 			}
 		} catch (error) {
-			localStorage.removeItem('telegram_session');
+			const errorMessage = error instanceof Error ? error.message : String(error);
+			if (errorMessage.includes('AUTH_KEY_DUPLICATED')) {
+				localStorage.removeItem('telegram_session');
+			}
 			console.error(error);
 			dispatch({
 				type: Types.INITIAL,
