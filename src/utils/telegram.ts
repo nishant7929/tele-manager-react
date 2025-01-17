@@ -15,17 +15,22 @@ export interface SendCodeResult {
 	message: string;
 }
 
-export const telegramClient = {
-	connect: async(): Promise<TelegramClient> => {
-		const client = new TelegramClient(SESSION, Number(API_ID), API_HASH as string, {
+let globalTelegramClient: TelegramClient | null = null;
+
+export const getTelegramClient = async(): Promise<TelegramClient> => {
+	if (!globalTelegramClient) {
+		globalTelegramClient = new TelegramClient(SESSION, Number(API_ID), API_HASH as string, {
 			connectionRetries: 5,
 			useWSS: true,
 		});
-		await client.connect();
-		return client;
-	},
+		await globalTelegramClient.connect();
+	}
+	return globalTelegramClient;
+};
+
+export const telegramClient = {
 	logout: async(): Promise<void> => {
-		const client = await telegramClient.connect();
+		const client = await getTelegramClient();
 		localStorage.removeItem('telegram_session');
 		await client.invoke(new Api.auth.LogOut());
 	}
@@ -33,7 +38,7 @@ export const telegramClient = {
 
 export const sendCodeHandler = async(phoneNumber: string): Promise<SendCodeResult> => {
 	try {
-		const client = await telegramClient.connect();
+		const client = await getTelegramClient();
 
 		await client.sendCode(
 			{
@@ -66,7 +71,7 @@ export const verifyOtp = async(
 	userInfo?: { phoneNumber: string; displayName: string; lastName?: string };
 }> => {
 	try {
-		const client = await telegramClient.connect();
+		const client = await getTelegramClient();
 		await client.start({
 			phoneNumber: async() => phoneNumber,
 			phoneCode: async() => phoneCode,
@@ -108,7 +113,7 @@ export const uploadFileHandler = async(
 			return;
 		}
 
-		const client = await telegramClient.connect();
+		const client = await getTelegramClient();
 
 		const uploadingFiles = Array.from(files).map((file) => ({
 			id: Math.random(),
@@ -203,7 +208,7 @@ export const uploadFileHandlerV2 = async(
 			return;
 		}
 
-		const client = await telegramClient.connect();
+		const client = await getTelegramClient();
 
 		const createUploadFile = (file: File): UploadFileType => ({
 			file,

@@ -4,8 +4,6 @@ import { useParams } from 'react-router-dom';
 import { Api } from 'telegram';
 // @mui
 import { Container, Button } from '@mui/material';
-// redux
-import { useDispatch } from '../../redux/store';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
 // components
@@ -13,7 +11,7 @@ import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
 import { useSettingsContext } from '../../components/settings';
 // sections
 import { FileList } from '../../sections/@dashboard/e-commerce/shop';
-import { telegramClient } from '../../utils/telegram';
+import { getTelegramClient } from '../../utils/telegram';
 import Iconify from '../../components/iconify';
 import FileUploadDialog from '../../sections/@dashboard/file/portal/FileUploadDialog';
 
@@ -31,8 +29,6 @@ export default function FileListPage() {
 	const { id } = useParams<{ id: string }>();
 	const { themeStretch } = useSettingsContext();
 
-	const dispatch = useDispatch();
-
 	const [imagesData, setImagesData] = useState<IImageData[]>([]);
 	const [offsetId, setOffsetId] = useState<number>(0);
 	const [loading, setLoading] = useState(true);
@@ -47,15 +43,13 @@ export default function FileListPage() {
 	};
 
 	const fetchUploadedImages = async(): Promise<void> => {
-		// setLoading(true);
 		try {
-			const client = await telegramClient.connect();
+			const client = await getTelegramClient();
 			const savedMessagesPeer = await client.getInputEntity('me');
 			const messages = await client.getMessages(savedMessagesPeer, {
 				search: id,
-				limit: 50,
-				offsetId,
 			});
+
 			const initialData: IImageData[] = messages
 				.filter((msg: any) => msg?.media?.document?.thumbs || msg?.media?.photo)
 				.map((msg) => {
@@ -84,12 +78,13 @@ export default function FileListPage() {
 				});
 			setImagesData([...imagesData, ...initialData]);
 			setLoading(false);
-			setOffsetId(messages[messages.length - 1].id);
-			const downloadPromises = messages.map(async(msg) => {
+			setOffsetId(messages[messages.length - 1]?.id);
+
+			// Process downloads sequentially
+			for (const msg of messages) {
 				if (msg.media) {
 					try {
 						let file = null;
-
 						if (
 							msg.media instanceof Api.MessageMediaPhoto &&
 							msg.media.photo instanceof Api.Photo
@@ -125,10 +120,7 @@ export default function FileListPage() {
 						console.error(`Error downloading media for message ID ${msg.id}:`, downloadError);
 					}
 				}
-			});
-
-			// Start all downloads concurrently
-			await Promise.all(downloadPromises);
+			}
 		} catch (error) {
 			console.error('Error fetching uploaded images:', error);
 		}
@@ -136,7 +128,7 @@ export default function FileListPage() {
 
 	useEffect(() => {
 		fetchUploadedImages();
-	}, [dispatch]);
+	}, []);
 
 	return (
 		<>

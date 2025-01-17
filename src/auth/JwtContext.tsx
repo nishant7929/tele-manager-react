@@ -3,7 +3,7 @@ import { createContext, useEffect, useReducer, useCallback, useMemo } from 'reac
 import localStorageAvailable from '../utils/localStorageAvailable';
 //
 import { ActionMapType, AuthStateType, AuthUserType, JWTContextType } from './types';
-import { telegramClient } from '../utils/telegram';
+import { getTelegramClient } from '../utils/telegram';
 
 // ----------------------------------------------------------------------
 
@@ -96,7 +96,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 			const savedSession = storageAvailable ? localStorage.getItem('telegram_session') || '': '';
 
 			if (savedSession) {
-				const client = await telegramClient.connect();
+				const client = await getTelegramClient();
 
 				const me = await client.getMe();
 				dispatch({
