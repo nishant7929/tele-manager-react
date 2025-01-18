@@ -4,8 +4,8 @@ import { Api, TelegramClient } from 'telegram';
 import { StringSession } from 'telegram/sessions';
 import { FOLDER_POSTFIX, FOLDER_PREFIX } from './constant';
 
-export const API_ID = process.env.REACT_APP_API_ID || 0;
-export const API_HASH = process.env.REACT_APP_API_HASH || '';
+export const API_ID = import.meta.env.VITE_API_ID || 0;
+export const API_HASH = import.meta.env.VITE_API_HASH || '';
 
 const savedSession = localStorage.getItem('telegram_session') || '';
 const SESSION = new StringSession(savedSession);

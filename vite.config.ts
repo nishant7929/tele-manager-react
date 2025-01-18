@@ -1,10 +1,8 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import dotenv from 'dotenv';
 import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 
-dotenv.config();
 const isProduction = process.env.NODE_ENV === 'production';
 export default defineConfig({
 	plugins: [
@@ -33,9 +31,9 @@ export default defineConfig({
 			],
 		},
 	},
-	define: {
-		'process.env': {
-			...process.env,
-		},
-	},
+	// define: {
+	// 	'process.env': {
+	// 		...process.env,
+	// 	},
+	// },
 });
