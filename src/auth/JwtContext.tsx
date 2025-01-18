@@ -104,6 +104,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 					payload: {
 						isAuthenticated: true,
 						user: {
+							tgId: me.id.toString(),
 							phoneNumber: me.phone,
 							displayName: `${me.firstName || ''} ${me.lastName || ''}`,
 						},

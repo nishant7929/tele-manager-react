@@ -69,11 +69,12 @@ export default function AuthVerifyCodeForm({ phoneNumber }: Props) {
 			if (success) {
 				await login(userInfo || {});
 				const initData = {
+					tgId: userInfo?.tgId,
 					phoneNumber: userInfo?.phoneNumber,
 					fullName: userInfo?.displayName,
 					totalSize: '0',
 				};
-				await userModel.findByPhoneOrCreate(userInfo?.phoneNumber || '', initData);
+				await userModel.findByTgIdOrCreate(userInfo?.tgId || '', initData);
 				navigate(PATH_DASHBOARD.root);
 			}
 			enqueueSnackbar(message, { variant: success ? 'success' : 'error' });

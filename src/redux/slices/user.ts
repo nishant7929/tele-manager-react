@@ -51,11 +51,11 @@ export const {
 
 // ----------------------------------------------------------------------
 
-export function getUserData(phoneNumber: string) {
+export function getUserData(tgId: string) {
 	return async(dispatch: Dispatch) => {
 		dispatch(slice.actions.startLoading());
 		try {
-			const user = await userModel.findByPhoneNumber(phoneNumber);
+			const user = await userModel.findByTgId(tgId);
 			dispatch(slice.actions.getUserSuccess(user));
 		} catch (error) {
 			dispatch(slice.actions.hasError(error));

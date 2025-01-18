@@ -60,10 +60,10 @@ export class BaseModel {
 		}
 	}
 
-	async findByPhoneNumber(phoneNumber: string): Promise<any> {
+	async findByTgId(tgId: string): Promise<any> {
 		try {
 			const colRef = collection(this.db, this.collection);
-			const q = query(colRef, where('phoneNumber', '==', phoneNumber));
+			const q = query(colRef, where('tgId', '==', tgId));
 			const querySnapshot = await getDocs(q);
 
 			if (!querySnapshot.empty) {
@@ -77,15 +77,27 @@ export class BaseModel {
 		}
 	}
 
-	async findByPhoneOrCreate(phoneNumber: string, data: Partial<UserTypeFirebase>) {
+	async findByTgIdOrCreate(tgId: string, data: Partial<UserTypeFirebase>) {
 		try {
-			const existingUser = await this.findByPhoneNumber(phoneNumber);
+			const existingUser = await this.findByTgId(tgId);
 
 			if (existingUser) {
+				let needsUpdate = false;
+				const updatedUser = { ...existingUser };
+
+				for (const key in data) {
+					if (data.hasOwnProperty(key) && !existingUser.hasOwnProperty(key)) {
+						updatedUser[key as keyof UserTypeFirebase] = data[key as keyof UserTypeFirebase];
+						needsUpdate = true;
+					}
+				}
+				if (needsUpdate) {
+					await this.findByIdAndUpdate(existingUser.id, updatedUser);
+				}
 				return existingUser;
 			} else {
 				const newUser = await this.create({
-					phoneNumber,
+					tgId,
 					...data,
 					folders: data.folders || [],
 				});

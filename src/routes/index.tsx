@@ -28,7 +28,7 @@ export default function Router() {
 	const dispatch = useDispatch();
 	useEffect(() => {
 		if (user) {
-			dispatch(getUserData(user.phoneNumber));
+			dispatch(getUserData(user.tgId));
 		}
 	}, [user, dispatch]);
 

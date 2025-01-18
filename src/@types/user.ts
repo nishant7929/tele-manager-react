@@ -4,6 +4,7 @@ export interface UserTypeFirebase {
 	folders: FolderType[];
 	totalSize: string;
 	id: string;
+	tgId: string;
 }
 
 export interface FolderType {

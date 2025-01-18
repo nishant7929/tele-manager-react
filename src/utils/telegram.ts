@@ -68,7 +68,7 @@ export const verifyOtp = async(
 ): Promise<{
 	success: boolean;
 	message: string;
-	userInfo?: { phoneNumber: string; displayName: string; lastName?: string };
+	userInfo?: { tgId: string, phoneNumber: string; displayName: string; lastName?: string };
 }> => {
 	try {
 		const client = await getTelegramClient();
@@ -88,6 +88,7 @@ export const verifyOtp = async(
 			success: true,
 			message: 'Login successful.',
 			userInfo: {
+				tgId: me.id.toString(),
 				phoneNumber: me.phone ?? phoneNumber,
 				displayName: `${me.firstName || ''} ${me.lastName || ''}`,
 				lastName: me.lastName ?? undefined,
