@@ -1,10 +1,10 @@
 // @mui
 import { Box, BoxProps } from '@mui/material';
 // components
-import { SkeletonProductItem } from '../../../../components/skeleton';
+import { SkeletonProductItem } from '../../../components/skeleton';
 //
 import FileCard from './FileCard';
-import { IImageData } from '../../../../pages/dashboard/FileListPage';
+import { IImageData } from '../../../pages/dashboard/FileListPage';
 
 // ----------------------------------------------------------------------
 

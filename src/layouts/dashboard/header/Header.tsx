@@ -14,10 +14,6 @@ import Iconify from '../../../components/iconify';
 import { useSettingsContext } from '../../../components/settings';
 //
 import AccountPopover from './AccountPopover';
-// import Searchbar from './Searchbar';
-// import LanguagePopover from './LanguagePopover';
-// import ContactsPopover from './ContactsPopover';
-// import NotificationsPopover from './NotificationsPopover';
 
 // ----------------------------------------------------------------------
 
@@ -57,12 +53,6 @@ export default function Header({ onOpenNav }: Props) {
 				justifyContent="flex-end"
 				spacing={{ xs: 0.5, sm: 1.5 }}
 			>
-				{/* <LanguagePopover /> */}
-
-				{/* <NotificationsPopover /> */}
-
-				{/* <ContactsPopover /> */}
-
 				<AccountPopover />
 			</Stack>
 		</>

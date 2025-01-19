@@ -1,8 +1,8 @@
 // @mui
 import { Box, Card } from '@mui/material';
 // components
-import Image from '../../../../components/image';
-import { IImageData } from '../../../../pages/dashboard/FileListPage';
+import { IImageData } from '../../../pages/dashboard/FileListPage';
+import Image from '../../../components/image';
 
 // ----------------------------------------------------------------------
 

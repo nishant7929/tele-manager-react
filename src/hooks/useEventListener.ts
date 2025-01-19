@@ -6,38 +6,38 @@ const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffec
 
 // Window Event based useEventListener interface
 function useEventListener<K extends keyof WindowEventMap>(
-  eventName: K,
-  handler: (event: WindowEventMap[K]) => void,
-  element?: undefined,
-  options?: boolean | AddEventListenerOptions
+	__eventName: K,
+	__handler: (__event: WindowEventMap[K]) => void,
+	__element?: undefined,
+	__options?: boolean | AddEventListenerOptions
 ): void;
 
 // Element Event based useEventListener interface
 function useEventListener<
-  K extends keyof HTMLElementEventMap,
-  T extends HTMLElement = HTMLDivElement
+	K extends keyof HTMLElementEventMap,
+	T extends HTMLElement = HTMLDivElement
 >(
-  eventName: K,
-  handler: (event: HTMLElementEventMap[K]) => void,
-  element: RefObject<T>,
-  options?: boolean | AddEventListenerOptions
+	__eventName: K,
+	__handler: (__event: HTMLElementEventMap[K]) => void,
+	__element: RefObject<T>,
+	__options?: boolean | AddEventListenerOptions
 ): void;
 
 // Document Event based useEventListener interface
 function useEventListener<K extends keyof DocumentEventMap>(
-  eventName: K,
-  handler: (event: DocumentEventMap[K]) => void,
-  element: RefObject<Document>,
-  options?: boolean | AddEventListenerOptions
+	__eventName: K,
+	__handler: (__event: DocumentEventMap[K]) => void,
+	__element: RefObject<Document>,
+	__options?: boolean | AddEventListenerOptions
 ): void;
 
 function useEventListener<
-  KW extends keyof WindowEventMap,
-  KH extends keyof HTMLElementEventMap,
-  T extends HTMLElement | void = void
+	KW extends keyof WindowEventMap,
+	KH extends keyof HTMLElementEventMap,
+	T extends HTMLElement | void = void
 >(
 	eventName: KW | KH,
-	handler: (event: WindowEventMap[KW] | HTMLElementEventMap[KH] | Event) => void,
+	handler: (__event: WindowEventMap[KW] | HTMLElementEventMap[KH] | Event) => void,
 	element?: RefObject<T>,
 	options?: boolean | AddEventListenerOptions
 ) {

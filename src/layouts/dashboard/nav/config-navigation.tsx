@@ -24,7 +24,6 @@ const navConfig = [
 		subheader: '',
 		items: [
 			{ title: 'Folders', path: PATH_DASHBOARD.one, icon: ICONS.folder },
-			{ title: 'Telegram', path: PATH_DASHBOARD.telegram, icon: ICONS.user },
 		],
 	},
 ];

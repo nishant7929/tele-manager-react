@@ -11,7 +11,7 @@ import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
 import { useSettingsContext } from '../../components/settings';
 import Iconify from '../../components/iconify';
 // sections
-import { FileList } from '../../sections/@dashboard/e-commerce/shop';
+import { FileList } from '../../sections/@dashboard/file-manager';
 import FileUploadDialog from '../../sections/@dashboard/file/portal/FileUploadDialog';
 import { useUserContext } from '../../auth/useUserContext';
 import { getTelegramClient } from '../../utils/telegram';

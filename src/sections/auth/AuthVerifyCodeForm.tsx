@@ -14,6 +14,7 @@ import FormProvider, { RHFCodes } from '../../components/hook-form';
 import { useUserContext } from '../../auth/useUserContext';
 import { verifyOtp } from '../../utils/telegram';
 import { userModel } from '../../utils/firebase';
+import { UserTypeFirebase } from '../../@types/user';
 
 // ----------------------------------------------------------------------
 
@@ -68,11 +69,11 @@ export default function AuthVerifyCodeForm({ phoneNumber }: Props) {
 			const { message, success, userInfo } = await verifyOtp(phoneNumber, otp);
 			if (success) {
 				await login(userInfo || {});
-				const initData = {
+				const initData: Partial<UserTypeFirebase> = {
 					tgId: userInfo?.tgId,
 					phoneNumber: userInfo?.phoneNumber,
 					fullName: userInfo?.displayName,
-					totalSize: '0',
+					createdAt: new Date().toISOString(),
 				};
 				await userModel.findByTgIdOrCreate(userInfo?.tgId || '', initData);
 				navigate(PATH_DASHBOARD.root);

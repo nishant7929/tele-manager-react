@@ -65,12 +65,10 @@ export default function FileManagerPage() {
 	const handleCreateNewFolder = async() => {
 		handleCloseNewFolder();
 		setFolderName('');
-		const newFolder = {
+		const newFolder: FolderType = {
 			name: folderName,
 			id: uuidv4V2(),
-			totalFiles: 0,
-			size: '0',
-			isFavorited: false,
+			createdAt: new Date().toISOString()
 		};
 		if (user) {
 			const newUser = await userModel.findByIdAndUpdate(user.id, {

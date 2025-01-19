@@ -1,17 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 // @mui
-import {
-	Box,
-	Card,
-	Stack,
-	Button,
-	Divider,
-	MenuItem,
-	Checkbox,
-	CardProps,
-	IconButton,
-} from '@mui/material';
+import { Box, Card, Stack, Button, Divider, MenuItem, CardProps, IconButton } from '@mui/material';
 import { PATH_DASHBOARD } from '../../../../routes/paths';
 // @types
 import { FolderType } from '../../../../@types/user';
@@ -56,8 +46,6 @@ export default function FileFolderCard({ folder, selected, onDelete, sx, ...othe
 
 	const [openPopover, setOpenPopover] = useState<HTMLElement | null>(null);
 
-	const [favorited, setFavorited] = useState(folder.isFavorited);
-
 	const items = useMemo(() => {
 		return tgMessages.filter((message) => {
 			return message.message.includes(folder.id);
@@ -70,10 +58,6 @@ export default function FileFolderCard({ folder, selected, onDelete, sx, ...othe
 			return acc + mediaSize;
 		}, 0);
 	}, [items]);
-
-	const handleFavorite = () => {
-		setFavorited(!favorited);
-	};
 
 	const handleOpenConfirm = () => {
 		setOpenConfirm(true);
@@ -118,7 +102,11 @@ export default function FileFolderCard({ folder, selected, onDelete, sx, ...othe
 		if (user) {
 			const currentFolders = user.folders.map((item) => {
 				if (item.id === folder.id) {
-					return { ...item, name: folderName };
+					return {
+						...item,
+						name: folderName,
+						updatedAt: new Date().toISOString(),
+					};
 				}
 				return item;
 			});
@@ -159,15 +147,6 @@ export default function FileFolderCard({ folder, selected, onDelete, sx, ...othe
 					alignItems="center"
 					sx={{ top: 8, right: 8, position: 'absolute' }}
 				>
-					<Checkbox
-						color="warning"
-						icon={<Iconify icon="eva:star-outline" />}
-						checkedIcon={<Iconify icon="eva:star-fill" />}
-						checked={favorited}
-						onChange={handleFavorite}
-						sx={{ p: 0.75 }}
-					/>
-
 					<IconButton color={openPopover ? 'inherit' : 'default'} onClick={handleOpenPopover}>
 						<Iconify icon="eva:more-vertical-fill" />
 					</IconButton>
