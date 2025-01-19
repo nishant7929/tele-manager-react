@@ -3,7 +3,7 @@ import { Navigate } from 'react-router-dom';
 // components
 import LoadingScreen from '../components/loading-screen';
 //
-import { useAuthContext } from './useAuthContext';
+import { useUserContext } from './useUserContext';
 
 // ----------------------------------------------------------------------
 
@@ -12,7 +12,7 @@ type GuestGuardProps = {
 };
 
 export default function GuestGuard({ children }: GuestGuardProps) {
-	const { isAuthenticated, isInitialized } = useAuthContext();
+	const { isAuthenticated, isInitialized } = useUserContext();
 
 	if (isAuthenticated) {
 		return <Navigate to="/" />;

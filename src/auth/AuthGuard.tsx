@@ -3,7 +3,7 @@ import { Navigate, useLocation } from 'react-router-dom';
 // components
 import LoadingScreen from '../components/loading-screen';
 //
-import { useAuthContext } from './useAuthContext';
+import { useUserContext } from './useUserContext';
 import { PATH_AUTH } from '../routes/paths';
 
 // ----------------------------------------------------------------------
@@ -13,7 +13,7 @@ type AuthGuardProps = {
 };
 
 export default function AuthGuard({ children }: AuthGuardProps) {
-	const { isAuthenticated, isInitialized } = useAuthContext();
+	const { isAuthenticated, isInitialized } = useUserContext();
 
 	const { pathname } = useLocation();
 

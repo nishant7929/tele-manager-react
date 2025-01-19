@@ -6,7 +6,7 @@ import { Box, Divider, Typography, MenuItem } from '@mui/material';
 // routes
 import { PATH_AUTH } from '../../../routes/paths';
 // auth
-import { useAuthContext } from '../../../auth/useAuthContext';
+import { useUserContext } from '../../../auth/useUserContext';
 // components
 import { CustomAvatar } from '../../../components/custom-avatar';
 import { useSnackbar } from '../../../components/snackbar';
@@ -36,7 +36,7 @@ const OPTIONS = [
 export default function AccountPopover() {
 	const navigate = useNavigate();
 
-	const { user, logout } = useAuthContext();
+	const { user, logout } = useUserContext();
 
 	const { enqueueSnackbar } = useSnackbar();
 

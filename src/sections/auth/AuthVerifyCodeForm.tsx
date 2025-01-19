@@ -11,7 +11,7 @@ import { PATH_DASHBOARD } from '../../routes/paths';
 // components
 import { useSnackbar } from '../../components/snackbar';
 import FormProvider, { RHFCodes } from '../../components/hook-form';
-import { useAuthContext } from '../../auth/useAuthContext';
+import { useUserContext } from '../../auth/useUserContext';
 import { verifyOtp } from '../../utils/telegram';
 import { userModel } from '../../utils/firebase';
 
@@ -31,7 +31,7 @@ interface Props {
 
 export default function AuthVerifyCodeForm({ phoneNumber }: Props) {
 	const navigate = useNavigate();
-	const { login } = useAuthContext();
+	const { login } = useUserContext();
 
 	const { enqueueSnackbar } = useSnackbar();
 

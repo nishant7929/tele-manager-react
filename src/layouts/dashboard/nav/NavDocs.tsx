@@ -1,14 +1,14 @@
 // @mui
 import { Stack, Button, Typography, Box } from '@mui/material';
 // auth
-import { useAuthContext } from '../../../auth/useAuthContext';
+import { useUserContext } from '../../../auth/useUserContext';
 // locales
 import { useLocales } from '../../../locales';
 
 // ----------------------------------------------------------------------
 
 export default function NavDocs() {
-	const { user } = useAuthContext();
+	const { user } = useUserContext();
 
 	const { translate } = useLocales();
 

@@ -30,7 +30,7 @@ export default function MultiFilePreview({ thumbnail, files, onRemove, sx }: Upl
 						<Stack
 							key={file.preview}
 							component={m.div}
-							{...varFade().inUp}
+							{...varFade().in}
 							alignItems="center"
 							display="inline-flex"
 							justifyContent="center"
@@ -80,7 +80,7 @@ export default function MultiFilePreview({ thumbnail, files, onRemove, sx }: Upl
 					<Stack
 						key={file.preview}
 						component={m.div}
-						{...varFade().inUp}
+						{...varFade().in}
 						spacing={2}
 						direction="row"
 						alignItems="center"

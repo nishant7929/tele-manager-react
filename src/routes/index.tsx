@@ -3,7 +3,7 @@ import { Navigate, useRoutes } from 'react-router-dom';
 // auth
 import AuthGuard from '../auth/AuthGuard';
 import GuestGuard from '../auth/GuestGuard';
-import { useAuthContext } from '../auth/useAuthContext';
+import { useUserContext } from '../auth/useUserContext';
 // layouts
 import CompactLayout from '../layouts/compact';
 import DashboardLayout from '../layouts/dashboard';
@@ -24,7 +24,7 @@ import { useDispatch } from '../redux/store';
 // ----------------------------------------------------------------------
 
 export default function Router() {
-	const { user } = useAuthContext();
+	const { user } = useUserContext();
 	const dispatch = useDispatch();
 	useEffect(() => {
 		if (user) {

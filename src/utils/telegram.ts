@@ -202,7 +202,8 @@ export interface UploadFileType {
 export const uploadFileHandlerV2 = async(
 	fodlerId: string,
 	files: File[],
-	setUploadingImages: React.Dispatch<React.SetStateAction<UploadFileType[]>>
+	setUploadingImages: React.Dispatch<React.SetStateAction<UploadFileType[]>>,
+	addMessage: (__message: Api.Message) => void
 ): Promise<void> => {
 	try {
 		if (!files || files.length === 0) {
@@ -247,7 +248,7 @@ export const uploadFileHandlerV2 = async(
 						const compressedThumbnail = await compressImage(file, 0.05);
 						const thumbFile = new File([compressedThumbnail], 'thumb.jpg', { type: 'image/jpeg' });
 
-						await client.sendFile('me', {
+						const message = await client.sendFile('me', {
 							file: uploadedFile,
 							caption: `${FOLDER_PREFIX}${fodlerId}${FOLDER_POSTFIX}`,
 							forceDocument: true,
@@ -258,15 +259,10 @@ export const uploadFileHandlerV2 = async(
 							],
 							thumb: thumbFile,
 						});
-
+						addMessage(message);
 						setUploadingImages((prev) =>
-							prev.map((img) =>
-								img.id === fileData.id
-									? {
-										...img,
-										progress: 100,
-									  }
-									: img
+							prev.filter((img) =>
+								img.id !== fileData.id
 							)
 						);
 					} catch (uploadError) {

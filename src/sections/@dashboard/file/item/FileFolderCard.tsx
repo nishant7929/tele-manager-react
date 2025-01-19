@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 // @mui
 import {
@@ -12,8 +12,6 @@ import {
 	CardProps,
 	IconButton,
 } from '@mui/material';
-// utils
-import { fData } from '../../../../utils/formatNumber';
 import { PATH_DASHBOARD } from '../../../../routes/paths';
 // @types
 import { FolderType } from '../../../../@types/user';
@@ -28,6 +26,8 @@ import FileNewFolderDialog from '../portal/FileNewFolderDialog';
 import { useDispatch, useSelector } from '../../../../redux/store';
 import { userModel } from '../../../../utils/firebase';
 import { updateUser } from '../../../../redux/slices/user';
+import { useUserContext } from '../../../../auth/useUserContext';
+import { formatBytes } from '../../../../utils/formatNumber';
 
 // ----------------------------------------------------------------------
 
@@ -38,13 +38,9 @@ interface Props extends CardProps {
 	onDelete: VoidFunction;
 }
 
-export default function FileFolderCard({
-	folder,
-	selected,
-	onDelete,
-	sx,
-	...other
-}: Props) {
+export default function FileFolderCard({ folder, selected, onDelete, sx, ...other }: Props) {
+	const { tgMessages } = useUserContext();
+
 	const { user } = useSelector((state) => state.user);
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -54,7 +50,6 @@ export default function FileFolderCard({
 
 	const [openConfirm, setOpenConfirm] = useState(false);
 
-
 	const [folderName, setFolderName] = useState(folder.name);
 
 	const [openEditFolder, setOpenEditFolder] = useState(false);
@@ -62,6 +57,19 @@ export default function FileFolderCard({
 	const [openPopover, setOpenPopover] = useState<HTMLElement | null>(null);
 
 	const [favorited, setFavorited] = useState(folder.isFavorited);
+
+	const items = useMemo(() => {
+		return tgMessages.filter((message) => {
+			return message.message.includes(folder.id);
+		});
+	}, [tgMessages, folder, location.pathname]);
+
+	const totalSize = useMemo(() => {
+		return items?.reduce((acc: number, message: any) => {
+			const mediaSize = message.media?.document?.size ? parseInt(message.media.document.size) : 0;
+			return acc + mediaSize;
+		}, 0);
+	}, [items]);
 
 	const handleFavorite = () => {
 		setFavorited(!favorited);
@@ -108,9 +116,9 @@ export default function FileFolderCard({
 		handleCloseEditFolder();
 		setFolderName(folderName);
 		if (user) {
-			const currentFolders = user.folders.map(item => {
+			const currentFolders = user.folders.map((item) => {
 				if (item.id === folder.id) {
-					return {  ...item, name: folderName };
+					return { ...item, name: folderName };
 				}
 				return item;
 			});
@@ -139,13 +147,18 @@ export default function FileFolderCard({
 						borderColor: 'transparent',
 						bgcolor: 'background.paper',
 						boxShadow: (theme) => theme.customShadows.z20,
-						cursor: 'pointer'
+						cursor: 'pointer',
 					}),
 					...sx,
 				}}
 				{...other}
 			>
-				<Stack onClick={(e) => e.stopPropagation()} direction="row" alignItems="center" sx={{ top: 8, right: 8, position: 'absolute' }}>
+				<Stack
+					onClick={(e) => e.stopPropagation()}
+					direction="row"
+					alignItems="center"
+					sx={{ top: 8, right: 8, position: 'absolute' }}
+				>
 					<Checkbox
 						color="warning"
 						icon={<Iconify icon="eva:star-outline" />}
@@ -176,11 +189,11 @@ export default function FileFolderCard({
 					spacing={0.75}
 					sx={{ typography: 'caption', color: 'text.disabled' }}
 				>
-					<Box> {fData(folder.size)} </Box>
+					<Box> {items?.length} files </Box>
 
 					<Box sx={{ width: 2, height: 2, borderRadius: '50%', bgcolor: 'currentColor' }} />
 
-					<Box> {folder.totalFiles} files </Box>
+					<Box> {formatBytes(totalSize)} </Box>
 				</Stack>
 			</Card>
 

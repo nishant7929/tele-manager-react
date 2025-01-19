@@ -9,6 +9,7 @@ import {
 import { Upload } from '../../../../components/upload';
 import { uploadFileHandlerV2, UploadFileType } from '../../../../utils/telegram';
 import { useParams } from 'react-router-dom';
+import { useUserContext } from '../../../../auth/useUserContext';
 
 // ----------------------------------------------------------------------
 
@@ -26,11 +27,12 @@ export default function FileUploadDialog({
 	...other
 }: Props) {
 	const { id } = useParams<{ id: string }>();
+	const { addMessage } = useUserContext();
 	const [files, setFiles] = useState<(UploadFileType)[]>([]);
 
 	const handleDrop = useCallback(
 		(acceptedFiles: File[]) => {
-			uploadFileHandlerV2(id || '', acceptedFiles, setFiles);
+			uploadFileHandlerV2(id || '', acceptedFiles, setFiles, addMessage);
 		},
 		[files]
 	);

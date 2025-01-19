@@ -28,14 +28,14 @@ import { ThemeSettings, SettingsProvider } from './components/settings';
 // Check our docs
 // https://docs.minimals.cc/authentication/ts-version
 
-import { AuthProvider } from './auth/JwtContext';
+import { UserProvider } from './auth/UserContext';
 import { persistor, store } from './redux/store';
 
 // ----------------------------------------------------------------------
 
 export default function App() {
 	return (
-		<AuthProvider>
+		<UserProvider>
 			<HelmetProvider>
 				<ReduxProvider store={store}>
 					<PersistGate loading={null} persistor={persistor}>
@@ -58,6 +58,6 @@ export default function App() {
 					</PersistGate>
 				</ReduxProvider>
 			</HelmetProvider>
-		</AuthProvider>
+		</UserProvider>
 	);
 }
