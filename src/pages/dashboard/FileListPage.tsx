@@ -1,5 +1,5 @@
 import { Helmet } from 'react-helmet-async';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Api } from 'telegram';
 // @mui
@@ -9,11 +9,13 @@ import { PATH_DASHBOARD } from '../../routes/paths';
 // components
 import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
 import { useSettingsContext } from '../../components/settings';
+import Iconify from '../../components/iconify';
 // sections
 import { FileList } from '../../sections/@dashboard/e-commerce/shop';
-import { getTelegramClient } from '../../utils/telegram';
-import Iconify from '../../components/iconify';
 import FileUploadDialog from '../../sections/@dashboard/file/portal/FileUploadDialog';
+import { useUserContext } from '../../auth/useUserContext';
+import { getTelegramClient } from '../../utils/telegram';
+import { formatBytes } from '../../utils/formatNumber';
 
 // ----------------------------------------------------------------------
 
@@ -27,12 +29,20 @@ export interface IImageData {
 
 export default function FileListPage() {
 	const { id } = useParams<{ id: string }>();
+	const { tgMessages } = useUserContext();
 	const { themeStretch } = useSettingsContext();
 
 	const [imagesData, setImagesData] = useState<IImageData[]>([]);
-	const [offsetId, setOffsetId] = useState<number>(0);
 	const [loading, setLoading] = useState(true);
 	const [openUploadFile, setOpenUploadFile] = useState(false);
+
+	const processedMessages = useMemo(() => {
+		return tgMessages
+			.filter((message) => message.message.includes(id || ''))
+			.sort((a, b) => b.date - a.date);
+	}, [tgMessages, id]);
+
+	const cachedThumbnails = useRef(new Map<number, string>());
 
 	const handleOpenUploadFile = () => {
 		setOpenUploadFile(true);
@@ -42,49 +52,46 @@ export default function FileListPage() {
 		setOpenUploadFile(false);
 	};
 
+	const processMessage = (msg: any): IImageData => {
+		const sizeInBytes = msg.document?.size
+			? typeof msg.document.size === 'number'
+				? msg.document.size
+				: Number(msg.document.size)
+			: 0;
+
+		let size = 'Unknown';
+
+		if (sizeInBytes > 0) {
+			size = formatBytes(sizeInBytes);
+		}
+
+		return {
+			id: msg.id,
+			thumbnail: cachedThumbnails.current.get(msg.id) || null,
+			name: msg.message || 'Unknown Name',
+			date: new Date(msg.date * 1000).toLocaleString(),
+			size,
+		};
+	};
+
 	const fetchUploadedImages = async(): Promise<void> => {
 		try {
 			const client = await getTelegramClient();
-			const savedMessagesPeer = await client.getInputEntity('me');
-			const messages = await client.getMessages(savedMessagesPeer, {
-				search: id,
-			});
 
-			const initialData: IImageData[] = messages
+			// Generate initial image data
+			const initialData: IImageData[] = processedMessages
 				.filter((msg: any) => msg?.media?.document?.thumbs || msg?.media?.photo)
-				.map((msg) => {
-					const sizeInBytes = msg.document?.size
-						? typeof msg.document.size === 'number'
-							? msg.document.size
-							: Number(msg.document.size)
-						: 0;
+				.map(processMessage);
 
-					let size = 'Unknown';
-
-					if (sizeInBytes > 0) {
-						size =
-							sizeInBytes >= 1024 * 1024
-								? `${(sizeInBytes / (1024 * 1024)).toFixed(2)} MB`
-								: `${(sizeInBytes / 1024).toFixed(2)} KB`;
-					}
-
-					return {
-						id: msg.id,
-						thumbnail: null,
-						name: msg.message || 'Unknown Name',
-						date: new Date(msg.date * 1000).toLocaleString(),
-						size,
-					};
-				});
-			setImagesData([...imagesData, ...initialData]);
+			setImagesData(initialData);
 			setLoading(false);
-			setOffsetId(messages[messages.length - 1]?.id);
 
-			// Process downloads sequentially
-			for (const msg of messages) {
-				if (msg.media) {
+			// Download missing thumbnails
+			for (const msg of processedMessages) {
+				if (msg.media && !cachedThumbnails.current.has(msg.id)) {
 					try {
 						let file = null;
+
 						if (
 							msg.media instanceof Api.MessageMediaPhoto &&
 							msg.media.photo instanceof Api.Photo
@@ -110,6 +117,7 @@ export default function FileListPage() {
 
 						if (file) {
 							const fileUrl = URL.createObjectURL(new Blob([file], { type: 'image/jpeg' }));
+							cachedThumbnails.current.set(msg.id, fileUrl);
 							setImagesData((prevData) =>
 								prevData.map((data) =>
 									data.id === msg.id ? { ...data, thumbnail: fileUrl } : data
@@ -128,7 +136,7 @@ export default function FileListPage() {
 
 	useEffect(() => {
 		fetchUploadedImages();
-	}, []);
+	}, [processedMessages]);
 
 	return (
 		<>

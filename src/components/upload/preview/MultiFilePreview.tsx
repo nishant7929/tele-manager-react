@@ -106,7 +106,7 @@ export default function MultiFilePreview({ thumbnail, files, onRemove, sx }: Upl
 
 							{file.progress === 100
 								? <Typography variant="subtitle2" noWrap>Uploaded</Typography>
-								: <LinearProgress variant='determinate' value={file.progress || 0} />}
+								: <LinearProgress color={file.progress === 0 ? 'warning' : 'primary'} variant='determinate' value={file.progress || 0} />}
 						</Stack>
 
 						{onRemove && (
