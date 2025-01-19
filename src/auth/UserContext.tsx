@@ -5,6 +5,7 @@ import localStorageAvailable from '../utils/localStorageAvailable';
 import { getTelegramClient } from '../utils/telegram';
 //
 import { ActionMapType, ActionTypes, AuthStateType, AuthUserType, UserContextType } from './types';
+import { FOLDER_PREFIX } from '../utils/constant';
 
 type Payload = {
 	[ActionTypes.INITIAL]: {
@@ -113,7 +114,9 @@ export function UserProvider({ children }: AuthProviderProps) {
 			if (savedSession) {
 				const client = await getTelegramClient();
 				const savedMessagesPeer = await client.getInputEntity('me');
-				const messages = await client.getMessages(savedMessagesPeer);
+				const messages = await client.getMessages(savedMessagesPeer, {
+					search: FOLDER_PREFIX
+				});
 				const me = await client.getMe();
 
 				client.addEventHandler((update) => {

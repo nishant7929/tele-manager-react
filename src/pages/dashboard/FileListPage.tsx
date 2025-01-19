@@ -74,11 +74,53 @@ export default function FileListPage() {
 		};
 	};
 
+	const downloadImage = async(msg: any, client: any): Promise<void> => {
+		try {
+			if (!msg) return;
+			let file = null;
+
+			if (
+				msg.media instanceof Api.MessageMediaPhoto &&
+				msg.media.photo instanceof Api.Photo
+			) {
+				const smallestSize = msg.media.photo.sizes[0];
+				file = await client.downloadMedia(msg.media, {
+					thumb: smallestSize,
+				});
+			} else if (
+				msg.media instanceof Api.MessageMediaDocument &&
+				msg.media.document instanceof Api.Document &&
+				msg.media.document.mimeType &&
+				msg.media.document.mimeType.startsWith('image/')
+			) {
+				const thumbs = msg.media.document.thumbs;
+				if (thumbs && thumbs.length > 0) {
+					const smallestThumb = thumbs[1] || thumbs[0];
+					file = await client.downloadMedia(msg.media, {
+						thumb: smallestThumb,
+					});
+				}
+			}
+
+			if (file) {
+				const fileUrl = URL.createObjectURL(new Blob([file], { type: 'image/jpeg' }));
+				cachedThumbnails.current.set(msg?.id, fileUrl);
+				setImagesData((prevData) =>
+					prevData.map((data) =>
+						data.id === msg.id ? { ...data, thumbnail: fileUrl } : data
+					)
+				);
+			}
+
+		} catch (downloadError) {
+			console.error('Error while downloading', downloadError);
+		}
+	};
+
 	const fetchUploadedImages = async(): Promise<void> => {
 		try {
 			const client = await getTelegramClient();
 
-			// Generate initial image data
 			const initialData: IImageData[] = processedMessages
 				.filter((msg: any) => msg?.media?.document?.thumbs || msg?.media?.photo)
 				.map(processMessage);
@@ -86,53 +128,24 @@ export default function FileListPage() {
 			setImagesData(initialData);
 			setLoading(false);
 
-			// Download missing thumbnails
-			for (const msg of processedMessages) {
+			const firstDownload = processedMessages.find((msg) => msg.media && !cachedThumbnails.current.has(msg.id));
+			// Wait for first image download complete
+			await downloadImage(firstDownload, client);
+
+			const downloadPromises = processedMessages.map(async(msg) => {
 				if (msg.media && !cachedThumbnails.current.has(msg.id)) {
-					try {
-						let file = null;
-
-						if (
-							msg.media instanceof Api.MessageMediaPhoto &&
-							msg.media.photo instanceof Api.Photo
-						) {
-							const smallestSize = msg.media.photo.sizes[0];
-							file = await client.downloadMedia(msg.media, {
-								thumb: smallestSize,
-							});
-						} else if (
-							msg.media instanceof Api.MessageMediaDocument &&
-							msg.media.document instanceof Api.Document &&
-							msg.media.document.mimeType &&
-							msg.media.document.mimeType.startsWith('image/')
-						) {
-							const thumbs = msg.media.document.thumbs;
-							if (thumbs && thumbs.length > 0) {
-								const smallestThumb = thumbs[1] || thumbs[0];
-								file = await client.downloadMedia(msg.media, {
-									thumb: smallestThumb,
-								});
-							}
-						}
-
-						if (file) {
-							const fileUrl = URL.createObjectURL(new Blob([file], { type: 'image/jpeg' }));
-							cachedThumbnails.current.set(msg.id, fileUrl);
-							setImagesData((prevData) =>
-								prevData.map((data) =>
-									data.id === msg.id ? { ...data, thumbnail: fileUrl } : data
-								)
-							);
-						}
-					} catch (downloadError) {
-						console.error(`Error downloading media for message ID ${msg.id}:`, downloadError);
-					}
+					await downloadImage(msg, client);
 				}
-			}
+			});
+
+			await Promise.all(downloadPromises);
+
+
 		} catch (error) {
 			console.error('Error fetching uploaded images:', error);
 		}
 	};
+
 
 	useEffect(() => {
 		fetchUploadedImages();
