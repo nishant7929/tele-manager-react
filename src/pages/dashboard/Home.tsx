@@ -128,8 +128,7 @@ function Home(): React.JSX.Element {
 						} else if (
 							msg.media instanceof Api.MessageMediaDocument &&
 							msg.media.document instanceof Api.Document &&
-							msg.media.document.mimeType &&
-							msg.media.document.mimeType.startsWith('image/')
+							msg.media.document.mimeType
 						) {
 							const thumbs = msg.media.document.thumbs;
 							if (thumbs && thumbs.length > 0) {

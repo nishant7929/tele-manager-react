@@ -25,6 +25,7 @@ export interface IImageData {
 	name: string;
 	date: string;
 	size: string | number | undefined;
+	type?: string;
 }
 
 export default function FileListPage() {
@@ -52,7 +53,7 @@ export default function FileListPage() {
 		setOpenUploadFile(false);
 	};
 
-	const processMessage = (msg: any): IImageData => {
+	const processMessage = (msg: Api.Message): IImageData => {
 		const sizeInBytes = msg.document?.size
 			? typeof msg.document.size === 'number'
 				? msg.document.size
@@ -71,6 +72,7 @@ export default function FileListPage() {
 			name: msg.message || 'Unknown Name',
 			date: new Date(msg.date * 1000).toLocaleString(),
 			size,
+			type: msg.document?.mimeType
 		};
 	};
 
@@ -90,8 +92,7 @@ export default function FileListPage() {
 			} else if (
 				msg.media instanceof Api.MessageMediaDocument &&
 				msg.media.document instanceof Api.Document &&
-				msg.media.document.mimeType &&
-				msg.media.document.mimeType.startsWith('image/')
+				msg.media.document.mimeType
 			) {
 				const thumbs = msg.media.document.thumbs;
 				if (thumbs && thumbs.length > 0) {

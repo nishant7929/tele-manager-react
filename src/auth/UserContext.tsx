@@ -15,6 +15,7 @@ type Payload = {
 	};
 	[ActionTypes.LOGIN]: {
 		user: AuthUserType;
+		messages: Api.Message[];
 	};
 	[ActionTypes.LOGOUT]: undefined;
 	[ActionTypes.ADD_MESSAGE]: {
@@ -54,6 +55,7 @@ const reducer = (state: AuthStateType, action: ActionsType): AuthStateType => {
 				...state,
 				isAuthenticated: true,
 				user: action.payload.user,
+				tgMessages: action.payload.messages,
 			};
 
 		case ActionTypes.LOGOUT:
@@ -115,7 +117,7 @@ export function UserProvider({ children }: AuthProviderProps) {
 				const client = await getTelegramClient();
 				const savedMessagesPeer = await client.getInputEntity('me');
 				const messages = await client.getMessages(savedMessagesPeer, {
-					search: FOLDER_PREFIX
+					search: FOLDER_PREFIX,
 				});
 				const me = await client.getMe();
 
@@ -197,10 +199,16 @@ export function UserProvider({ children }: AuthProviderProps) {
 
 	// LOGIN
 	const login = useCallback(async(userInfo: AuthUserType) => {
+		const client = await getTelegramClient();
+		const savedMessagesPeer = await client.getInputEntity('me');
+		const messages = await client.getMessages(savedMessagesPeer, {
+			search: FOLDER_PREFIX,
+		});
 		dispatch({
 			type: ActionTypes.LOGIN,
 			payload: {
 				user: userInfo,
+				messages: messages,
 			},
 		});
 	}, []);

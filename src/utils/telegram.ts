@@ -1,7 +1,8 @@
 import imageCompression from 'browser-image-compression';
 import React, { BaseSyntheticEvent } from 'react';
-import { Api, TelegramClient } from 'telegram';
+import { Api, Logger, TelegramClient } from 'telegram';
 import { StringSession } from 'telegram/sessions';
+import { LogLevel } from 'telegram/extensions/Logger';
 import { FOLDER_POSTFIX, FOLDER_PREFIX } from './constant';
 
 export const API_ID = import.meta.env.VITE_API_ID || 0;
@@ -22,6 +23,7 @@ export const getTelegramClient = async(): Promise<TelegramClient> => {
 		globalTelegramClient = new TelegramClient(SESSION, Number(API_ID), API_HASH as string, {
 			connectionRetries: 5,
 			useWSS: true,
+			baseLogger: new Logger(LogLevel.NONE)
 		});
 		await globalTelegramClient.connect();
 	}
@@ -33,7 +35,7 @@ export const telegramClient = {
 		const client = await getTelegramClient();
 		localStorage.removeItem('telegram_session');
 		await client.invoke(new Api.auth.LogOut());
-	}
+	},
 };
 
 export const sendCodeHandler = async(phoneNumber: string): Promise<SendCodeResult> => {
@@ -50,16 +52,16 @@ export const sendCodeHandler = async(phoneNumber: string): Promise<SendCodeResul
 		return { success: true, message: 'OTP sent successfully.' };
 	} catch (error: unknown) {
 		if (error instanceof Error) {
-		  if (error.message.includes('PHONE_NUMBER_INVALID')) {
+			if (error.message.includes('PHONE_NUMBER_INVALID')) {
 				return { success: false, message: 'Invalid phone number. Please check and try again.' };
-		  }
-		  if (error.message.includes('PHONE_CODE_HASH_EMPTY')) {
+			}
+			if (error.message.includes('PHONE_CODE_HASH_EMPTY')) {
 				return { success: false, message: 'Unable to send OTP. Please try again later.' };
-		  }
-		  return { success: false, message: `Error: ${error.message}` };
+			}
+			return { success: false, message: `Error: ${error.message}` };
 		}
 		return { success: false, message: 'An unknown error occurred while sending the OTP.' };
-	  }
+	}
 };
 
 export const verifyOtp = async(
@@ -68,7 +70,7 @@ export const verifyOtp = async(
 ): Promise<{
 	success: boolean;
 	message: string;
-	userInfo?: { tgId: string, phoneNumber: string; displayName: string; lastName?: string };
+	userInfo?: { tgId: string; phoneNumber: string; displayName: string; lastName?: string };
 }> => {
 	try {
 		const client = await getTelegramClient();
@@ -193,16 +195,16 @@ export const uploadFileHandler = async(
 };
 
 export interface UploadFileType {
-    file: File;
-    progress: number;
-    id: number;
-    preview: string;
+	file: File;
+	progress: number;
+	id: number;
+	preview: string | null;
 }
 
 export const uploadFileHandlerV2 = async(
-	fodlerId: string,
+	folderId: string,
 	files: File[],
-	setUploadingImages: React.Dispatch<React.SetStateAction<UploadFileType[]>>,
+	setUploadingFiles: React.Dispatch<React.SetStateAction<UploadFileType[]>>,
 	addMessage: (__message: Api.Message) => void
 ): Promise<void> => {
 	try {
@@ -216,12 +218,12 @@ export const uploadFileHandlerV2 = async(
 			file,
 			progress: 0,
 			id: Math.random(),
-			preview: URL.createObjectURL(file),
+			preview: file.type.startsWith('image/') ? URL.createObjectURL(file) : null,
 		});
 
 		const uploadingFiles: UploadFileType[] = files.map(createUploadFile);
 
-		setUploadingImages((prev) => [...prev, ...uploadingFiles]);
+		setUploadingFiles((prev) => [...prev, ...uploadingFiles]);
 
 		await Promise.all(
 			uploadingFiles.map(async(fileData, index) => {
@@ -236,7 +238,7 @@ export const uploadFileHandlerV2 = async(
 							onProgress: (uploadedBytes: number) => {
 								const percentage = Math.floor(uploadedBytes * 100);
 								if (percentage < 100) {
-									setUploadingImages((prev) =>
+									setUploadingFiles((prev) =>
 										prev.map((img) =>
 											img.id === fileData.id ? { ...img, progress: percentage } : img
 										)
@@ -245,12 +247,18 @@ export const uploadFileHandlerV2 = async(
 							},
 						});
 
-						const compressedThumbnail = await compressImage(file, 0.05);
-						const thumbFile = new File([compressedThumbnail], 'thumb.jpg', { type: 'image/jpeg' });
+						let thumbFile: File | undefined = undefined;
+						if (file.type.startsWith('image/')) {
+							const compressedThumbnail = await compressImage(file, 0.05);
+							thumbFile = new File([compressedThumbnail], 'thumb.jpg', { type: 'image/jpeg' });
+						} else if (file.type.startsWith('video/')) {
+							const videoThumbnail = await generateVideoThumbnail(file);
+							thumbFile = new File([videoThumbnail], 'thumb.jpg', { type: 'image/jpeg' });
+						}
 
 						const message = await client.sendFile('me', {
 							file: uploadedFile,
-							caption: `${FOLDER_PREFIX}${fodlerId}${FOLDER_POSTFIX}`,
+							caption: `${FOLDER_PREFIX}${folderId}${FOLDER_POSTFIX}`,
 							forceDocument: true,
 							attributes: [
 								new Api.DocumentAttributeFilename({
@@ -260,17 +268,11 @@ export const uploadFileHandlerV2 = async(
 							thumb: thumbFile,
 						});
 						addMessage(message);
-						setUploadingImages((prev) =>
-							prev.filter((img) =>
-								img.id !== fileData.id
-							)
-						);
+						setUploadingFiles((prev) => prev.filter((img) => img.id !== fileData.id));
 					} catch (uploadError) {
 						console.error(`Error uploading file ${file.name}:`, uploadError);
-						setUploadingImages((prev) =>
-							prev.map((img) =>
-								img.id === fileData.id ? { ...img, progress: -1 } : img
-							)
+						setUploadingFiles((prev) =>
+							prev.map((img) => (img.id === fileData.id ? { ...img, progress: -1 } : img))
 						);
 					}
 				};
@@ -280,8 +282,48 @@ export const uploadFileHandlerV2 = async(
 		);
 	} catch (error) {
 		console.error('Error uploading files:', error);
-		alert('Error uploading files.');
 	}
+};
+
+const generateVideoThumbnail = async(videoFile: File): Promise<Blob> => {
+	return new Promise((resolve, reject) => {
+		const videoElement = document.createElement('video');
+		const canvas = document.createElement('canvas');
+		const context = canvas.getContext('2d');
+
+		videoElement.src = URL.createObjectURL(videoFile);
+		videoElement.addEventListener('loadedmetadata', () => {
+			// Set canvas dimensions to match video dimensions
+			canvas.width = videoElement.videoWidth;
+			canvas.height = videoElement.videoHeight;
+
+			// Seek to a specific time (e.g., 1 second) to capture a frame
+			videoElement.currentTime = 1;
+		});
+
+		videoElement.addEventListener('seeked', () => {
+			if (context) {
+				// Draw the video frame onto the canvas
+				context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+				// Convert the canvas image to a Blob (JPEG format)
+				canvas.toBlob(
+					(blob) => {
+						if (blob) {
+							resolve(blob);
+						} else {
+							reject(new Error('Failed to generate video thumbnail.'));
+						}
+					},
+					'image/jpeg',
+					0.9
+				); // Adjust quality as needed
+			}
+		});
+
+		videoElement.addEventListener('error', (err) => {
+			reject(err);
+		});
+	});
 };
 
 export const compressImage = async(file: File, maxSizeMB: number): Promise<Blob> => {

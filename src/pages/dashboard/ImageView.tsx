@@ -106,7 +106,7 @@ const ImageView: React.FC = () => {
 				flexDirection: 'column',
 			}}
 		>
-			<Link to="/">Back to gallery</Link>
+			<Link to="/telegram">Back to gallery</Link>
 			<div style={{ flex: 1, position: 'relative' }}>
 
 
