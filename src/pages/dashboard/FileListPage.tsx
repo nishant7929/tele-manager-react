@@ -174,20 +174,22 @@ export default function FileListPage() {
 				<InfiniteScroll
 					dataLength={filesData.length}
 					next={() => setPagination((prev) => prev + ITEM_PER_VIEW)}
-					hasMore={processedMessages.length <= pagination ? false : true}
+					hasMore={processedMessages.length > filesData.length}
 					loader={
-						<div
-							style={{
-								display: 'flex',
-								justifyContent: 'center',
-								alignItems: 'center',
-								padding: '16px',
-							}}
-						>
-							<CircularProgress />
-						</div>
+						processedMessages.length > filesData.length ? (
+							<div
+								style={{
+									display: 'flex',
+									justifyContent: 'center',
+									alignItems: 'center',
+									padding: '16px',
+								}}
+							>
+								<CircularProgress size={'25px'} />
+							</div>
+						) : null
 					}
-					scrollThreshold={'100px'}
+					scrollThreshold='100px'
 					style={{
 						overflowAnchor: 'none',
 					}}
