@@ -2,8 +2,9 @@ import { Helmet } from 'react-helmet-async';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Api } from 'telegram';
+import InfiniteScroll from 'react-infinite-scroll-component';
 // @mui
-import { Container, Button } from '@mui/material';
+import { Container, Button, CircularProgress } from '@mui/material';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
 // components
@@ -28,14 +29,17 @@ export interface IImageData {
 	type?: string;
 }
 
+const ITEM_PER_VIEW = 20;
+
 export default function FileListPage() {
 	const { id } = useParams<{ id: string }>();
 	const { tgMessages } = useUserContext();
 	const { themeStretch } = useSettingsContext();
 
-	const [imagesData, setImagesData] = useState<IImageData[]>([]);
+	const [filesData, setFilesData] = useState<IImageData[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [openUploadFile, setOpenUploadFile] = useState(false);
+	const [pagination, setPagination] = useState(ITEM_PER_VIEW);
 
 	const processedMessages = useMemo(() => {
 		return tgMessages
@@ -72,7 +76,7 @@ export default function FileListPage() {
 			name: msg.message || 'Unknown Name',
 			date: new Date(msg.date * 1000).toLocaleString(),
 			size,
-			type: msg.document?.mimeType
+			type: msg.document?.mimeType,
 		};
 	};
 
@@ -81,10 +85,7 @@ export default function FileListPage() {
 			if (!msg) return;
 			let file = null;
 
-			if (
-				msg.media instanceof Api.MessageMediaPhoto &&
-				msg.media.photo instanceof Api.Photo
-			) {
+			if (msg.media instanceof Api.MessageMediaPhoto && msg.media.photo instanceof Api.Photo) {
 				const smallestSize = msg.media.photo.sizes[0];
 				file = await client.downloadMedia(msg.media, {
 					thumb: smallestSize,
@@ -106,13 +107,10 @@ export default function FileListPage() {
 			if (file) {
 				const fileUrl = URL.createObjectURL(new Blob([file], { type: 'image/jpeg' }));
 				cachedThumbnails.current.set(msg?.id, fileUrl);
-				setImagesData((prevData) =>
-					prevData.map((data) =>
-						data.id === msg.id ? { ...data, thumbnail: fileUrl } : data
-					)
+				setFilesData((prevData) =>
+					prevData.map((data) => (data.id === msg.id ? { ...data, thumbnail: fileUrl } : data))
 				);
 			}
-
 		} catch (downloadError) {
 			console.error('Error while downloading', downloadError);
 		}
@@ -123,13 +121,16 @@ export default function FileListPage() {
 			const client = await getTelegramClient();
 
 			const initialData: IImageData[] = processedMessages
+				.slice(0, pagination)
 				.filter((msg: any) => msg?.media?.document?.thumbs || msg?.media?.photo)
 				.map(processMessage);
 
-			setImagesData(initialData);
+			setFilesData(initialData);
 			setLoading(false);
 
-			const firstDownload = processedMessages.find((msg) => msg.media && !cachedThumbnails.current.has(msg.id));
+			const firstDownload = processedMessages.find(
+				(msg) => msg.media && !cachedThumbnails.current.has(msg.id)
+			);
 			// Wait for first image download complete
 			await downloadImage(firstDownload, client);
 
@@ -140,17 +141,14 @@ export default function FileListPage() {
 			});
 
 			await Promise.all(downloadPromises);
-
-
 		} catch (error) {
 			console.error('Error fetching uploaded images:', error);
 		}
 	};
 
-
 	useEffect(() => {
 		fetchUploadedImages();
-	}, [processedMessages]);
+	}, [processedMessages, pagination]);
 
 	return (
 		<>
@@ -173,10 +171,31 @@ export default function FileListPage() {
 					}
 				/>
 
-				<FileList files={imagesData} loading={loading} />
+				<InfiniteScroll
+					dataLength={filesData.length}
+					next={() => setPagination((prev) => prev + ITEM_PER_VIEW)}
+					hasMore={processedMessages.length <= pagination ? false : true}
+					loader={
+						<div
+							style={{
+								display: 'flex',
+								justifyContent: 'center',
+								alignItems: 'center',
+								padding: '16px',
+							}}
+						>
+							<CircularProgress />
+						</div>
+					}
+					scrollThreshold={'100px'}
+					style={{
+						overflowAnchor: 'none',
+					}}
+				>
+					<FileList files={filesData} loading={loading} />
+				</InfiniteScroll>
 
 				<FileUploadDialog open={openUploadFile} onClose={handleCloseUploadFile} />
-
 			</Container>
 		</>
 	);
