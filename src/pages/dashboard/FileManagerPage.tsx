@@ -87,7 +87,7 @@ export default function FileManagerPage() {
 	return (
 		<>
 			<Helmet>
-				<title> File Manager | TeleCloud</title>
+				<title> File Manager | Tele Cloud</title>
 			</Helmet>
 
 			<Container maxWidth={themeStretch ? false : 'lg'}>
@@ -96,7 +96,7 @@ export default function FileManagerPage() {
 					links={[
 						{
 							name: 'Dashboard',
-							href: PATH_DASHBOARD.one,
+							href: PATH_DASHBOARD.folders,
 						},
 						{ name: 'File Manager' },
 					]}

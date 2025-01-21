@@ -23,7 +23,7 @@ const navConfig = [
 	{
 		subheader: '',
 		items: [
-			{ title: 'Folders', path: PATH_DASHBOARD.one, icon: ICONS.folder },
+			{ title: 'Folders', path: PATH_DASHBOARD.folders, icon: ICONS.folder },
 		],
 	},
 ];

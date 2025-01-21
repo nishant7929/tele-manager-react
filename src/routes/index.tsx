@@ -51,7 +51,7 @@ export default function Router() {
 		},
 		{
 			path: '/',
-			element: <Navigate to="/f" replace />,
+			element: <Navigate to="/folders" replace />,
 		},
 		{
 			path: '/',
@@ -62,8 +62,8 @@ export default function Router() {
 			),
 			children: [
 				{ element: <Navigate to={PATH_AFTER_LOGIN} replace />, index: true },
-				{ path: '/f', element: <FileManagerPage /> },
-				{ path: '/f/:id', element: <FileListPage /> },
+				{ path: '/folders', element: <FileManagerPage /> },
+				{ path: '/folder/:id', element: <FileListPage /> },
 				{ path: '/telegram', element: <Home /> },
 				{ path: '/image/:id', element: <ImageView /> },
 			],

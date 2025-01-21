@@ -7,6 +7,7 @@ import { Button, Typography } from '@mui/material';
 import { MotionContainer, varBounce } from '../components/animate';
 // assets
 import { PageNotFoundIllustration } from '../assets/illustrations';
+import { PATH_DASHBOARD } from '../routes/paths';
 
 // ----------------------------------------------------------------------
 
@@ -14,7 +15,7 @@ export default function Page404() {
 	return (
 		<>
 			<Helmet>
-				<title> 404 Page Not Found | TeleCloud</title>
+				<title> 404 Page Not Found | Tele Cloud</title>
 			</Helmet>
 
 			<MotionContainer>
@@ -40,7 +41,7 @@ export default function Page404() {
 					/>
 				</m.div>
 
-				<Button component={RouterLink} to="/" size="large" variant="contained">
+				<Button component={RouterLink} to={PATH_DASHBOARD.folders} size="large" variant="contained">
 					Go to Home
 				</Button>
 			</MotionContainer>

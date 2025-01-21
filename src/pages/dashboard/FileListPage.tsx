@@ -155,7 +155,7 @@ export default function FileListPage() {
 	return (
 		<>
 			<Helmet>
-				<title> Files | TeleCloud</title>
+				<title> Files | Tele Cloud</title>
 			</Helmet>
 
 			<Container maxWidth={themeStretch ? false : 'lg'}>

@@ -121,7 +121,7 @@ export default function FileFolderCard({ folder, selected, onDelete, sx, ...othe
 	return (
 		<>
 			<Card
-				onClick={() => navigate(`${PATH_DASHBOARD.one}/${folder.id}`)}
+				onClick={() => navigate(`${PATH_DASHBOARD.folder}/${folder.id}`)}
 				onMouseEnter={handleShowCheckbox}
 				onMouseLeave={handleHideCheckbox}
 				sx={{
