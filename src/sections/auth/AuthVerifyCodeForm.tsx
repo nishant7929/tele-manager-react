@@ -15,6 +15,7 @@ import { useUserContext } from '../../auth/useUserContext';
 import { verifyOtp } from '../../utils/telegram';
 import { userModel } from '../../utils/firebase';
 import { UserTypeFirebase } from '../../@types/user';
+import { FirebaseError } from 'firebase/app';
 
 // ----------------------------------------------------------------------
 
@@ -79,9 +80,26 @@ export default function AuthVerifyCodeForm({ phoneNumber }: Props) {
 				navigate(PATH_DASHBOARD.root);
 			}
 			enqueueSnackbar(message, { variant: success ? 'success' : 'error' });
-		} catch (error) {
-			console.error(error);
-			enqueueSnackbar(error, { variant: 'error' });
+		}  catch (error: any) {
+			console.error('Error during form submission:', error);
+
+			if (error instanceof FirebaseError) {
+				switch (error.code) {
+					case 'permission-denied':
+						enqueueSnackbar('You do not have the necessary permissions to perform this action.', { variant: 'error' });
+						break;
+					case 'unauthenticated':
+						enqueueSnackbar('Your session has expired. Please log in again.', { variant: 'warning' });
+						break;
+					default:
+						enqueueSnackbar(`Firebase error: ${error.message}`, { variant: 'error' });
+						break;
+				}
+			} else if (error instanceof Error) {
+				enqueueSnackbar(error.message, { variant: 'error' });
+			} else {
+				enqueueSnackbar('An unexpected error occurred. Please try again.', { variant: 'error' });
+			}
 		}
 	};
 

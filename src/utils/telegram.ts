@@ -23,7 +23,7 @@ export const getTelegramClient = async(): Promise<TelegramClient> => {
 		globalTelegramClient = new TelegramClient(SESSION, Number(API_ID), API_HASH as string, {
 			connectionRetries: 5,
 			useWSS: true,
-			baseLogger: new Logger(LogLevel.NONE)
+			baseLogger: new Logger(LogLevel.NONE),
 		});
 		await globalTelegramClient.connect();
 	}
@@ -74,6 +74,7 @@ export const verifyOtp = async(
 }> => {
 	try {
 		const client = await getTelegramClient();
+
 		await client.start({
 			phoneNumber: async() => phoneNumber,
 			phoneCode: async() => phoneCode,
@@ -92,16 +93,33 @@ export const verifyOtp = async(
 			userInfo: {
 				tgId: me.id.toString(),
 				phoneNumber: me.phone ?? phoneNumber,
-				displayName: `${me.firstName || ''} ${me.lastName || ''}`,
+				displayName: `${me.firstName || ''} ${me.lastName || ''}`.trim(),
 				lastName: me.lastName ?? undefined,
 			},
 		};
 	} catch (error: unknown) {
-		// PHONE_CODE_INVALID
+		console.error('Error in verifyOtp:', error);
+
 		if (error instanceof Error) {
+			if (error.message.includes('PHONE_CODE_INVALID')) {
+				return { success: false, message: 'The OTP entered is invalid. Please try again.' };
+			}
+
+			if (error.message.includes('PHONE_CODE_EXPIRED')) {
+				return { success: false, message: 'The OTP has expired. Please request a new one.' };
+			}
+
+			if (error.message.includes('SESSION_PASSWORD_NEEDED')) {
+				return {
+					success: false,
+					message: 'Two-step verification is enabled. Please provide your password.',
+				};
+			}
+
 			return { success: false, message: error.message };
 		}
-		return { success: false, message: 'An unknown error occurred during login.' };
+
+		return { success: false, message: 'An unknown error occurred during login. Please try again.' };
 	}
 };
 

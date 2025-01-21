@@ -12,7 +12,7 @@ import {
 	updateDoc,
 	where,
 } from 'firebase/firestore';
-import { getAuth } from 'firebase/auth';
+import { getAuth, signInAnonymously } from 'firebase/auth';
 import { UserTypeFirebase } from '../@types/user';
 import { FIREBASE_API } from '../config-global';
 
@@ -62,6 +62,7 @@ export class BaseModel {
 
 	async findByTgId(tgId: string): Promise<any> {
 		try {
+			await signInAnonymously(auth);
 			const colRef = collection(this.db, this.collection);
 			const q = query(colRef, where('tgId', '==', tgId));
 			const querySnapshot = await getDocs(q);
@@ -79,6 +80,7 @@ export class BaseModel {
 
 	async findByTgIdOrCreate(tgId: string, data: Partial<UserTypeFirebase>) {
 		try {
+			await signInAnonymously(auth);
 			const existingUser = await this.findByTgId(tgId);
 
 			if (existingUser) {
@@ -110,6 +112,7 @@ export class BaseModel {
 
 	async findByIdAndUpdate(id: string, data: Partial<UserTypeFirebase>) {
 		try {
+			await signInAnonymously(auth);
 			const docRef = doc(this.db, this.collection, id);
 			await updateDoc(docRef, data);
 			return { id: id, ...data };

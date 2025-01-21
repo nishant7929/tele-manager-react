@@ -14,11 +14,11 @@ export default function LoginPage() {
 	const renderLogin = () => (
 		<>
 			<Helmet>
-				<title> Sign in | Zcloud</title>
+				<title> Sign in | TeleCloud</title>
 			</Helmet>
 
 			<Typography variant="h3" paragraph>
-				Sign in to Zcloud
+				Sign in to TeleCloud
 			</Typography>
 
 			<AuthLoginForm handleCodeSend={(phoneNumber: string) => setPhoneNumber(phoneNumber)} />

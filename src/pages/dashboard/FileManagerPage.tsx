@@ -87,7 +87,7 @@ export default function FileManagerPage() {
 	return (
 		<>
 			<Helmet>
-				<title> File Manager | Zcloud</title>
+				<title> File Manager | TeleCloud</title>
 			</Helmet>
 
 			<Container maxWidth={themeStretch ? false : 'lg'}>
