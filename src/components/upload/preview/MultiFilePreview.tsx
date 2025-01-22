@@ -78,7 +78,7 @@ export default function MultiFilePreview({ thumbnail, files, onRemove, sx }: Upl
 
 				return (
 					<Stack
-						key={file.preview}
+						key={file.id}
 						component={m.div}
 						{...varFade().in}
 						spacing={2}
