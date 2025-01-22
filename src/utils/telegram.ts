@@ -243,13 +243,18 @@ export const uploadFileHandlerV2 = async(
 
 		setUploadingFiles((prev) => [...prev, ...uploadingFiles]);
 
-		await Promise.all(
-			uploadingFiles.map(async(fileData, index) => {
+		const uploadFilesWithLimit = async() => {
+			const maxConcurrentUploads = 7;
+			const queue: Array<() => Promise<void>> = [];
+			let activeUploads = 0;
+
+			const processUpload = async(fileData: UploadFileType, index: number) => {
 				const file = files[index] as File;
 
 				const reader = new FileReader();
 				reader.onload = async() => {
 					try {
+						activeUploads++;
 						const uploadedFile = await client.uploadFile({
 							file,
 							workers: 15,
@@ -292,12 +297,37 @@ export const uploadFileHandlerV2 = async(
 						setUploadingFiles((prev) =>
 							prev.map((img) => (img.id === fileData.id ? { ...img, progress: -1 } : img))
 						);
+					} finally {
+						activeUploads--;
+						processNext();
 					}
 				};
 
 				reader.readAsArrayBuffer(file);
-			})
-		);
+			};
+
+			const processNext = () => {
+				if (queue.length > 0 && activeUploads < maxConcurrentUploads) {
+					const nextUpload = queue.shift();
+					if (nextUpload) {
+						nextUpload();
+					}
+				}
+			};
+
+			uploadingFiles.forEach((fileData, index) => {
+				const uploadTask = async() => {
+					await processUpload(fileData, index);
+				};
+				queue.push(uploadTask);
+			});
+
+			for (let i = 0; i < Math.min(maxConcurrentUploads, queue.length); i++) {
+				processNext();
+			}
+		};
+
+		await uploadFilesWithLimit();
 	} catch (error) {
 		console.error('Error uploading files:', error);
 	}

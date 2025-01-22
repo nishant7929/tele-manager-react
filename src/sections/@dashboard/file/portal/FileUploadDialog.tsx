@@ -34,7 +34,7 @@ export default function FileUploadDialog({
 		(acceptedFiles: File[]) => {
 			uploadFileHandlerV2(id || '', acceptedFiles, setFiles, addMessage);
 		},
-		[files]
+		[files, id]
 	);
 
 	const handleRemoveFile = (inputFile: File | string) => {

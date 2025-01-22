@@ -87,18 +87,18 @@ export default function FileManagerPage() {
 	return (
 		<>
 			<Helmet>
-				<title> File Manager | Tele Cloud</title>
+				<title> Folders | Tele Cloud</title>
 			</Helmet>
 
 			<Container maxWidth={themeStretch ? false : 'lg'}>
 				<CustomBreadcrumbs
-					heading="File Manager"
+					heading="Folders"
 					links={[
 						{
 							name: 'Dashboard',
 							href: PATH_DASHBOARD.folders,
 						},
-						{ name: 'File Manager' },
+						{ name: 'Folders' },
 					]}
 					action={
 						<Button
