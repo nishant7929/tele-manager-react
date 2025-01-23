@@ -12,11 +12,12 @@ import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
 import { useSettingsContext } from '../../components/settings';
 import Iconify from '../../components/iconify';
 import { useTable } from '../../components/table';
+import ConfirmDialog from '../../components/confirm-dialog';
 // sections
 import { FileList } from '../../sections/@dashboard/file-manager';
 import FileUploadDialog from '../../sections/@dashboard/file/portal/FileUploadDialog';
 import { useUserContext } from '../../auth/useUserContext';
-import { getTelegramClient } from '../../utils/telegram';
+import { deleteSavedMessages, getTelegramClient } from '../../utils/telegram';
 import { formatBytes } from '../../utils/formatNumber';
 import { useDispatch, useSelector } from '../../redux/store';
 import { FolderType } from '../../@types/user';
@@ -41,7 +42,7 @@ const ITEM_PER_VIEW = 20;
 export default function FileListPage() {
 	const { id } = useParams<{ id: string }>();
 	const dispatch = useDispatch();
-	const { tgMessages } = useUserContext();
+	const { tgMessages, deleteMessages } = useUserContext();
 	const { user } = useSelector((state) => state.user);
 	const { themeStretch } = useSettingsContext();
 	const table = useTable({ defaultRowsPerPage: 10 });
@@ -52,6 +53,7 @@ export default function FileListPage() {
 	const [pagination, setPagination] = useState(ITEM_PER_VIEW);
 	const [openNewFolder, setOpenNewFolder] = useState(false);
 	const [folderName, setFolderName] = useState('');
+	const [openConfirm, setOpenConfirm] = useState(false);
 
 	const processedMessages = useMemo(() => {
 		setFilesData([]);
@@ -77,6 +79,21 @@ export default function FileListPage() {
 
 	const handleCloseNewFolder = () => {
 		setOpenNewFolder(false);
+	};
+
+	const handleOpenConfirm = () => {
+		setOpenConfirm(true);
+	};
+
+	const handleCloseConfirm = () => {
+		setOpenConfirm(false);
+	};
+
+	const handleDeleteItems = (selected: string[]) => {
+		const { setSelected } = table;
+		deleteSavedMessages(selected.map(Number));
+		deleteMessages(selected.map(Number));
+		setSelected([]);
 	};
 
 	const processMessage = (msg: Api.Message): IImageData => {
@@ -230,7 +247,7 @@ export default function FileListPage() {
 			<Container maxWidth={themeStretch ? false : 'lg'}>
 				<CustomBreadcrumbs
 					heading="Files"
-					links={[{ name: 'Dashboard', href: PATH_DASHBOARD.root }, { name: 'Files' }]}
+					links={[{ name: 'Home', href: PATH_DASHBOARD.root }, { name: 'Files' }]}
 					action={
 						<>
 							<Button
@@ -252,7 +269,7 @@ export default function FileListPage() {
 					}
 				/>
 
-				{findSubFoldersById(user?.folders, id)?.length && (
+				{!!findSubFoldersById(user?.folders, id)?.length && (
 					<Box sx={{ marginBottom: 1 }}>
 						<FileGridView
 							loading={false}
@@ -288,7 +305,7 @@ export default function FileListPage() {
 						overflowAnchor: 'none',
 					}}
 				>
-					<FileList files={filesData} loading={loading} />
+					<FileList table={table} files={filesData} loading={loading} onOpenConfirm={handleOpenConfirm} />
 				</InfiniteScroll>
 
 				<FileUploadDialog open={openUploadFile} onClose={handleCloseUploadFile} />
@@ -300,6 +317,29 @@ export default function FileListPage() {
 					onCreate={handleCreateSubFolder}
 					folderName={folderName}
 					onChangeFolderName={(event) => setFolderName(event.target.value)}
+				/>
+
+				<ConfirmDialog
+					open={openConfirm}
+					onClose={handleCloseConfirm}
+					title="Delete"
+					content={
+						<>
+							Are you sure want to delete <strong> {table.selected.length} </strong> items?
+						</>
+					}
+					action={
+						<Button
+							variant="contained"
+							color="error"
+							onClick={() => {
+								handleDeleteItems(table.selected);
+								handleCloseConfirm();
+							}}
+						>
+							Delete
+						</Button>
+					}
 				/>
 			</Container>
 		</>

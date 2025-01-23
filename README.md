@@ -2,8 +2,8 @@
 
 
 ## Incoming feachers
-- Nested folder
-- Delete files and folder
+- Nested folder - [Released]
+- Delete files and folder - [Released]
 - File preview
 - video player
 - Folder and file sharing

@@ -1,15 +1,13 @@
 import { useState, useRef } from 'react';
 // @mui
-import { Box, Button } from '@mui/material';
+import { Box } from '@mui/material';
 // @types
 import { FolderType } from '../../../../@types/user';
 // components
-import Iconify from '../../../../components/iconify';
 import { TableProps } from '../../../../components/table';
 //
 import FileFolderCard from '../item/FileFolderCard';
 import FileShareDialog from '../portal/FileShareDialog';
-import FileActionSelected from '../portal/FileActionSelected';
 import FileNewFolderDialog from '../portal/FileNewFolderDialog';
 import { SkeletonProductItem } from '../../../../components/skeleton';
 
@@ -20,12 +18,12 @@ type Props = {
 	table: TableProps;
 	data: FolderType[];
 	onOpenConfirm?: VoidFunction;
-	onDeleteItem: (__id: string) => void;
+	onDeleteItem?: (__id: string) => void;
 };
 
-export default function FileGridView({ loading, table, data, onDeleteItem, onOpenConfirm }: Props) {
+export default function FileGridView({ loading, table, data }: Props) {
 
-	const { selected, onSelectRow: onSelectItem, onSelectAllRows: onSelectAllItems } = table;
+	const { selected, onSelectRow: onSelectItem } = table;
 
 	const containerRef = useRef(null);
 
@@ -35,10 +33,6 @@ export default function FileGridView({ loading, table, data, onDeleteItem, onOpe
 	const [openShare, setOpenShare] = useState(false);
 
 	const [openUploadFile, setOpenUploadFile] = useState(false);
-
-	const handleOpenShare = () => {
-		setOpenShare(true);
-	};
 
 	const handleCloseShare = () => {
 		setOpenShare(false);
@@ -76,61 +70,10 @@ export default function FileGridView({ loading, table, data, onDeleteItem, onOpe
 								folder={folder}
 								selected={selected.includes(folder.id)}
 								onSelect={() => onSelectItem(folder.id)}
-								onDelete={() => onDeleteItem(folder.id)}
 								sx={{ maxWidth: 'auto' }}
 							/>
 							  ))}
 				</Box>
-
-				{!!selected?.length && (
-					<FileActionSelected
-						numSelected={selected.length}
-						rowCount={data?.length}
-						selected={selected}
-						onSelectAllItems={(checked) =>
-							onSelectAllItems(
-								checked,
-								data.map((row) => row.id)
-							)
-						}
-						action={
-							<>
-								<Button
-									size="small"
-									color="error"
-									variant="contained"
-									startIcon={<Iconify icon="eva:trash-2-outline" />}
-									onClick={onOpenConfirm}
-									sx={{ mr: 1 }}
-								>
-									Delete
-								</Button>
-
-								<Button
-									color="inherit"
-									size="small"
-									variant="contained"
-									startIcon={<Iconify icon="eva:share-fill" />}
-									onClick={handleOpenShare}
-									sx={{
-										color: (theme) =>
-											theme.palette.mode === 'light' ? 'grey.800' : 'common.white',
-										bgcolor: (theme) =>
-											theme.palette.mode === 'light' ? 'common.white' : 'grey.800',
-										'&:hover': {
-											color: (theme) =>
-												theme.palette.mode === 'light' ? 'grey.800' : 'common.white',
-											bgcolor: (theme) =>
-												theme.palette.mode === 'light' ? 'common.white' : 'grey.800',
-										},
-									}}
-								>
-									Share
-								</Button>
-							</>
-						}
-					/>
-				)}
 			</Box>
 
 			<FileShareDialog

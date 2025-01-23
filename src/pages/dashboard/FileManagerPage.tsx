@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from '../../redux/store';
 import { FolderType } from '../../@types/user';
 import { PATH_DASHBOARD } from '../../routes/paths';
 import { uuidv4V2 } from '../../utils/uuidv4';
-import { userModel } from '../../utils/firebase';
+import {  userModel } from '../../utils/firebase';
 import { updateUser } from '../../redux/slices/user';
 
 // ----------------------------------------------------------------------
@@ -33,12 +33,6 @@ export default function FileManagerPage() {
 	const [openNewFolder, setOpenNewFolder] = useState(false);
 
 	const [folderName, setFolderName] = useState('');
-
-
-	const handleDeleteItem = (id: string) => {
-		const deleteRow = tableData.filter((row) => row.id !== id);
-		setTableData(deleteRow);
-	};
 
 	const handleDeleteItems = (selected: string[]) => {
 		const deleteRows = tableData.filter((row) => !selected.includes(row.id));
@@ -95,7 +89,7 @@ export default function FileManagerPage() {
 					heading="Folders"
 					links={[
 						{
-							name: 'Dashboard',
+							name: 'Home',
 							href: PATH_DASHBOARD.folders,
 						},
 						{ name: 'Folders' },
@@ -115,7 +109,6 @@ export default function FileManagerPage() {
 					loading={isLoading}
 					table={table}
 					data={tableData}
-					onDeleteItem={handleDeleteItem}
 					onOpenConfirm={handleOpenConfirm}
 				/>
 			</Container>

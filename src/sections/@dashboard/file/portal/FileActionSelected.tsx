@@ -1,15 +1,15 @@
 // @mui
 import { styled, SxProps, Theme } from '@mui/material/styles';
-import { Box, Typography, Checkbox, Portal } from '@mui/material';
+import { Box, Typography, Portal } from '@mui/material';
 // components
-import Iconify from '../../../../components/iconify';
+// import Iconify from '../../../../components/iconify';
 
 // ----------------------------------------------------------------------
 
 const StyledRoot = styled('div')(({ theme }) => ({
 	right: 24,
 	zIndex: 9,
-	bottom: 40,
+	bottom: 80,
 	display: 'flex',
 	position: 'fixed',
 	alignItems: 'center',
@@ -22,27 +22,16 @@ const StyledRoot = styled('div')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 type Props = {
-  action?: React.ReactNode;
-  numSelected: number;
-  rowCount: number;
-  selected?: string[];
-  onSelectAllItems: (checked: boolean) => void;
-  sx?: SxProps<Theme>;
+	action?: React.ReactNode;
+	selected?: string[];
+	sx?: SxProps<Theme>;
 };
 
-export default function FileActionSelected({
-	action,
-	selected,
-	rowCount,
-	numSelected,
-	onSelectAllItems,
-	sx,
-	...other
-}: Props) {
+export default function FileActionSelected({ action, selected, sx, ...other }: Props) {
 	return (
 		<Portal>
 			<StyledRoot sx={sx} {...other}>
-				<Checkbox
+				{/* <Checkbox
 					indeterminate={numSelected > 0 && numSelected < rowCount}
 					checked={rowCount > 0 && numSelected === rowCount}
 					onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
@@ -51,7 +40,7 @@ export default function FileActionSelected({
 					icon={<Iconify icon="eva:radio-button-off-fill" />}
 					checkedIcon={<Iconify icon="eva:checkmark-circle-2-fill" />}
 					indeterminateIcon={<Iconify icon="eva:minus-circle-fill" />}
-				/>
+				/> */}
 
 				{selected && (
 					<Typography
@@ -63,7 +52,7 @@ export default function FileActionSelected({
 					>
 						{selected.length}
 						<Box component="span" sx={{ ml: 0.5 }}>
-              items selected
+							items selected
 						</Box>
 					</Typography>
 				)}

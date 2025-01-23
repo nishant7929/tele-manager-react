@@ -14,10 +14,11 @@ import ConfirmDialog from '../../../../components/confirm-dialog';
 //
 import FileNewFolderDialog from '../portal/FileNewFolderDialog';
 import { useDispatch, useSelector } from '../../../../redux/store';
-import { userModel } from '../../../../utils/firebase';
+import { deleteFoldersById, getAllFolderIds, userModel } from '../../../../utils/firebase';
 import { updateUser } from '../../../../redux/slices/user';
 import { useUserContext } from '../../../../auth/useUserContext';
 import { formatBytes } from '../../../../utils/formatNumber';
+import { deleteSavedMessages } from '../../../../utils/telegram';
 
 // ----------------------------------------------------------------------
 
@@ -25,10 +26,10 @@ interface Props extends CardProps {
 	folder: FolderType;
 	selected?: boolean;
 	onSelect?: VoidFunction;
-	onDelete: VoidFunction;
+	onDelete?: VoidFunction;
 }
 
-export default function FileFolderCard({ folder, selected, onDelete, sx, ...other }: Props) {
+export default function FileFolderCard({ folder, selected, sx, ...other }: Props) {
 	const { tgMessages } = useUserContext();
 
 	const { user } = useSelector((state) => state.user);
@@ -45,31 +46,6 @@ export default function FileFolderCard({ folder, selected, onDelete, sx, ...othe
 	const [openEditFolder, setOpenEditFolder] = useState(false);
 
 	const [openPopover, setOpenPopover] = useState<HTMLElement | null>(null);
-
-	const getAllFolderIds = (folders: FolderType[], targetId: string): string[] => {
-		let result: string[] = [];
-
-		function collectIds(folder: FolderType): void {
-			result.push(folder.id);
-			if (folder.folders?.length) {
-				folder.folders.forEach(collectIds);
-			}
-		}
-
-		function findAndCollect(folders: FolderType[]): void {
-			for (const folder of folders) {
-				if (folder.id === targetId) {
-					collectIds(folder);
-					break;
-				} else if (folder.folders?.length) {
-					findAndCollect(folder.folders);
-				}
-			}
-		}
-
-		findAndCollect(folders);
-		return result;
-	};
 
 	const items = useMemo(() => {
 		const folderIds = getAllFolderIds(user?.folders || [], folder.id);
@@ -121,6 +97,24 @@ export default function FileFolderCard({ folder, selected, onDelete, sx, ...othe
 		enqueueSnackbar('Copied!');
 		// copy(folder.url);
 	};
+
+	const handleDeleteItem = async() => {
+		const folderIds = getAllFolderIds(user?.folders || [], folder.id);
+		const ids = tgMessages.filter((message) => {
+			return folderIds.some((id) => message.message.includes(id));
+		});
+
+		const isDeleted = await deleteSavedMessages(ids.map(item => item.id));
+		if (user && isDeleted) {
+			const newUser = await userModel.findByIdAndUpdate(user.id, {
+				...user,
+				folders: deleteFoldersById(user.folders, folderIds),
+			});
+			dispatch(updateUser(newUser));
+		}
+
+	};
+
 
 	const updatedFolders = (
 		folders: FolderType[],
@@ -269,7 +263,7 @@ export default function FileFolderCard({ folder, selected, onDelete, sx, ...othe
 				title="Delete"
 				content="Are you sure want to delete?"
 				action={
-					<Button variant="contained" color="error" onClick={onDelete}>
+					<Button variant="contained" color="error" onClick={handleDeleteItem}>
 						Delete
 					</Button>
 				}

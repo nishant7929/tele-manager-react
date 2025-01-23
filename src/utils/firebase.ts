@@ -13,7 +13,7 @@ import {
 	where,
 } from 'firebase/firestore';
 import { getAuth, signInAnonymously } from 'firebase/auth';
-import { UserTypeFirebase } from '../@types/user';
+import { FolderType, UserTypeFirebase } from '../@types/user';
 import { FIREBASE_API } from '../config-global';
 
 export const app = initializeApp(FIREBASE_API);
@@ -117,9 +117,9 @@ export class BaseModel {
 			await updateDoc(docRef, data);
 			return { id: id, ...data };
 		} catch (error: any) {
-		  throw error;
+			throw error;
 		}
-	  }
+	}
 }
 
 export class User extends BaseModel {
@@ -129,3 +129,44 @@ export class User extends BaseModel {
 }
 
 export const userModel = new User(db);
+
+// Get subfolder folder ids with current folder id
+export const getAllFolderIds = (folders: FolderType[] = [], targetId: string): string[] => {
+	let result: string[] = [];
+
+	function collectIds(folder: FolderType): void {
+		result.push(folder.id);
+		if (folder.folders?.length) {
+			folder.folders.forEach(collectIds);
+		}
+	}
+
+	function findAndCollect(folders: FolderType[]): void {
+		for (const folder of folders) {
+			if (folder.id === targetId) {
+				collectIds(folder);
+				break;
+			} else if (folder.folders?.length) {
+				findAndCollect(folder.folders);
+			}
+		}
+	}
+
+	findAndCollect(folders);
+	return result;
+};
+
+// Function to delete folders by IDs
+export function deleteFoldersById(folders: FolderType[] = [], folderIds: string[]): FolderType[] {
+	return folders
+		.filter((folder) => !folderIds.includes(folder.id))
+		.map((folder) => {
+			if (folder.folders?.length) {
+				return {
+					...folder,
+					folders: deleteFoldersById(folder.folders, folderIds),
+				};
+			}
+			return folder;
+		});
+}

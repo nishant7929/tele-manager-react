@@ -333,6 +333,25 @@ export const uploadFileHandlerV2 = async(
 	}
 };
 
+export const deleteSavedMessages = async(messageIds: number[]): Promise<boolean> => {
+	try {
+		const client = await getTelegramClient();
+
+		const savedMessagesChat = await client.getInputEntity('me');
+
+		await client.deleteMessages(savedMessagesChat, messageIds, { revoke: true });
+		return true;
+	} catch (error) {
+		if (error instanceof Error) {
+			console.error('Failed to delete messages:', error.message);
+			return false;
+		} else {
+			console.error('An unknown error occurred while deleting messages:', error);
+			return false;
+		}
+	}
+};
+
 const generateVideoThumbnail = async(videoFile: File): Promise<Blob> => {
 	return new Promise((resolve, reject) => {
 		const videoElement = document.createElement('video');
