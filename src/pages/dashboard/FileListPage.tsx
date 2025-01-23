@@ -1,22 +1,29 @@
-import { Helmet } from 'react-helmet-async';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useParams } from 'react-router-dom';
 import { Api } from 'telegram';
 import InfiniteScroll from 'react-infinite-scroll-component';
 // @mui
-import { Container, Button, CircularProgress } from '@mui/material';
+import { Container, Button, CircularProgress, Box } from '@mui/material';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
 // components
 import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
 import { useSettingsContext } from '../../components/settings';
 import Iconify from '../../components/iconify';
+import { useTable } from '../../components/table';
 // sections
 import { FileList } from '../../sections/@dashboard/file-manager';
 import FileUploadDialog from '../../sections/@dashboard/file/portal/FileUploadDialog';
 import { useUserContext } from '../../auth/useUserContext';
 import { getTelegramClient } from '../../utils/telegram';
 import { formatBytes } from '../../utils/formatNumber';
+import { useDispatch, useSelector } from '../../redux/store';
+import { FolderType } from '../../@types/user';
+import { FileGridView, FileNewFolderDialog } from '../../sections/@dashboard/file';
+import { updateUser } from '../../redux/slices/user';
+import { uuidv4V2 } from '../../utils/uuidv4';
+import { userModel } from '../../utils/firebase';
 
 // ----------------------------------------------------------------------
 
@@ -33,19 +40,30 @@ const ITEM_PER_VIEW = 20;
 
 export default function FileListPage() {
 	const { id } = useParams<{ id: string }>();
+	const dispatch = useDispatch();
 	const { tgMessages } = useUserContext();
+	const { user } = useSelector((state) => state.user);
 	const { themeStretch } = useSettingsContext();
+	const table = useTable({ defaultRowsPerPage: 10 });
 
 	const [filesData, setFilesData] = useState<IImageData[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [openUploadFile, setOpenUploadFile] = useState(false);
 	const [pagination, setPagination] = useState(ITEM_PER_VIEW);
+	const [openNewFolder, setOpenNewFolder] = useState(false);
+	const [folderName, setFolderName] = useState('');
 
 	const processedMessages = useMemo(() => {
+		setFilesData([]);
+		setLoading(true);
 		return tgMessages
 			.filter((message) => message.message.includes(id || ''))
 			.sort((a, b) => b.date - a.date);
 	}, [tgMessages, id]);
+
+	useEffect(() => {
+		fetchUploadedImages();
+	}, [processedMessages, pagination]);
 
 	const cachedThumbnails = useRef(new Map<number, string>());
 
@@ -55,6 +73,10 @@ export default function FileListPage() {
 
 	const handleCloseUploadFile = () => {
 		setOpenUploadFile(false);
+	};
+
+	const handleCloseNewFolder = () => {
+		setOpenNewFolder(false);
 	};
 
 	const processMessage = (msg: Api.Message): IImageData => {
@@ -146,9 +168,58 @@ export default function FileListPage() {
 		}
 	};
 
-	useEffect(() => {
-		fetchUploadedImages();
-	}, [processedMessages, pagination]);
+	function findSubFoldersById(folders?: FolderType[], targetId?: string): FolderType[] | undefined {
+		if (!folders || !targetId) return;
+		for (const folder of folders) {
+			if (folder.id === targetId) {
+				return folder.folders;
+			}
+			const found = findSubFoldersById(folder.folders, targetId);
+			if (found) {
+				return found;
+			}
+		}
+		return undefined;
+	}
+
+	const addSubFolder = (
+		folders?: FolderType[],
+		targetId?: string,
+		newFolder?: FolderType
+	): FolderType[] | undefined => {
+		if (!folders || !targetId || !newFolder) return;
+		return folders.map((folder) => {
+			if (folder.id === targetId) {
+				return {
+					...folder,
+					folders: [...(folder.folders || []), newFolder],
+				};
+			} else if (folder?.folders?.length) {
+				return {
+					...folder,
+					folders: addSubFolder(folder.folders, targetId, newFolder),
+				};
+			}
+			return folder;
+		});
+	};
+
+	const handleCreateSubFolder = async() => {
+		handleCloseNewFolder();
+		setFolderName('');
+		const newFolder: FolderType = {
+			name: folderName,
+			id: uuidv4V2(),
+			createdAt: new Date().toISOString(),
+		};
+		if (user) {
+			const newUser = await userModel.findByIdAndUpdate(user.id, {
+				...user,
+				folders: addSubFolder(user?.folders, id, newFolder),
+			});
+			dispatch(updateUser(newUser));
+		}
+	};
 
 	return (
 		<>
@@ -161,15 +232,38 @@ export default function FileListPage() {
 					heading="Files"
 					links={[{ name: 'Dashboard', href: PATH_DASHBOARD.root }, { name: 'Files' }]}
 					action={
-						<Button
-							variant="contained"
-							startIcon={<Iconify icon="eva:cloud-upload-fill" />}
-							onClick={handleOpenUploadFile}
-						>
-							Upload
-						</Button>
+						<>
+							<Button
+								variant="soft"
+								startIcon={<Iconify icon="eva:cloud-upload-fill" />}
+								onClick={handleOpenUploadFile}
+							>
+								Upload
+							</Button>
+							<Button
+								sx={{ marginLeft: 1 }}
+								variant="contained"
+								startIcon={<Iconify icon="eva:plus-fill" />}
+								onClick={() => setOpenNewFolder(true)}
+							>
+								New folder
+							</Button>
+						</>
 					}
 				/>
+
+				{findSubFoldersById(user?.folders, id)?.length && (
+					<Box sx={{ marginBottom: 1 }}>
+						<FileGridView
+							loading={false}
+							table={table}
+							data={findSubFoldersById(user?.folders, id) || []}
+							onDeleteItem={() => {
+								//
+							}}
+						/>
+					</Box>
+				)}
 
 				<InfiniteScroll
 					dataLength={filesData.length}
@@ -189,7 +283,7 @@ export default function FileListPage() {
 							</div>
 						) : null
 					}
-					scrollThreshold='100px'
+					scrollThreshold="100px"
 					style={{
 						overflowAnchor: 'none',
 					}}
@@ -198,6 +292,15 @@ export default function FileListPage() {
 				</InfiniteScroll>
 
 				<FileUploadDialog open={openUploadFile} onClose={handleCloseUploadFile} />
+
+				<FileNewFolderDialog
+					open={openNewFolder}
+					onClose={handleCloseNewFolder}
+					title="New Folder"
+					onCreate={handleCreateSubFolder}
+					folderName={folderName}
+					onChangeFolderName={(event) => setFolderName(event.target.value)}
+				/>
 			</Container>
 		</>
 	);

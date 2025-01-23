@@ -46,9 +46,35 @@ export default function FileFolderCard({ folder, selected, onDelete, sx, ...othe
 
 	const [openPopover, setOpenPopover] = useState<HTMLElement | null>(null);
 
+	const getAllFolderIds = (folders: FolderType[], targetId: string): string[] => {
+		let result: string[] = [];
+
+		function collectIds(folder: FolderType): void {
+			result.push(folder.id);
+			if (folder.folders?.length) {
+				folder.folders.forEach(collectIds);
+			}
+		}
+
+		function findAndCollect(folders: FolderType[]): void {
+			for (const folder of folders) {
+				if (folder.id === targetId) {
+					collectIds(folder);
+					break;
+				} else if (folder.folders?.length) {
+					findAndCollect(folder.folders);
+				}
+			}
+		}
+
+		findAndCollect(folders);
+		return result;
+	};
+
 	const items = useMemo(() => {
+		const folderIds = getAllFolderIds(user?.folders || [], folder.id);
 		return tgMessages.filter((message) => {
-			return message.message.includes(folder.id);
+			return folderIds.some((id) => message.message.includes(id));
 		});
 	}, [tgMessages, folder, location.pathname]);
 
@@ -96,23 +122,35 @@ export default function FileFolderCard({ folder, selected, onDelete, sx, ...othe
 		// copy(folder.url);
 	};
 
+	const updatedFolders = (
+		folders: FolderType[],
+		targetId: string,
+		newName: string
+	): FolderType[] => {
+		return folders.map((folder) => {
+			if (folder.id === targetId) {
+				return {
+					...folder,
+					name: newName,
+					updatedAt: new Date().toISOString(),
+				};
+			} else if (folder.folders?.length) {
+				return {
+					...folder,
+					folders: updatedFolders(folder.folders, targetId, newName),
+				};
+			}
+			return folder;
+		});
+	};
+
 	const handleUpdateFolder = async() => {
 		handleCloseEditFolder();
 		setFolderName(folderName);
 		if (user) {
-			const currentFolders = user.folders.map((item) => {
-				if (item.id === folder.id) {
-					return {
-						...item,
-						name: folderName,
-						updatedAt: new Date().toISOString(),
-					};
-				}
-				return item;
-			});
 			const newUser = await userModel.findByIdAndUpdate(user.id, {
 				...user,
-				folders: currentFolders,
+				folders: updatedFolders(user.folders, folder.id, folderName),
 			});
 			dispatch(updateUser(newUser));
 		}

@@ -19,7 +19,7 @@ type Props = {
 	loading: boolean;
 	table: TableProps;
 	data: FolderType[];
-	onOpenConfirm: VoidFunction;
+	onOpenConfirm?: VoidFunction;
 	onDeleteItem: (__id: string) => void;
 };
 

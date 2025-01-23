@@ -13,6 +13,7 @@ export interface FolderType {
 	id: string;
 	createdAt?: string;
 	updatedAt?: string;
+	folders?: FolderType[];
 }
 
 export interface IUserState {
