@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Navigate, useRoutes } from 'react-router-dom';
+import { Navigate, useLocation, useRoutes } from 'react-router-dom';
 // auth
 import AuthGuard from '../auth/AuthGuard';
 import GuestGuard from '../auth/GuestGuard';
@@ -20,17 +20,28 @@ import Home from '../pages/dashboard/Home';
 import ImageView from '../pages/dashboard/ImageView';
 import { getUserData } from '../redux/slices/user';
 import { useDispatch } from '../redux/store';
-
+import ReactGA from 'react-ga4';
 // ----------------------------------------------------------------------
+
+const initializeGA = () => {
+	ReactGA.initialize(import.meta.env.VITE_FIREBASE_MEASUREMENT_ID);
+};
+
+initializeGA();
 
 export default function Router() {
 	const { user } = useUserContext();
 	const dispatch = useDispatch();
+	const location = useLocation();
 	useEffect(() => {
 		if (user) {
 			dispatch(getUserData(user.tgId));
 		}
 	}, [user, dispatch]);
+
+	useEffect(() => {
+		ReactGA.send({ hitType: 'pageview', page: location.pathname + location.search });
+	  }, [location]);
 
 	return useRoutes([
 		{

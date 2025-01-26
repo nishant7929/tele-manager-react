@@ -102,7 +102,7 @@ function Searchbar() {
 
 	const [searchQuery, setSearchQuery] = useState('');
 
-	const reduceItems = NavConfig.map((list) =>
+	const reduceItems = NavConfig().map((list) =>
 		handleLoop(list.items, (list as any).subheader)
 	).flat();
 

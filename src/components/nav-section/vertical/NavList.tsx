@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
 // @mui
 import { Collapse } from '@mui/material';
 // hooks
@@ -17,7 +16,6 @@ type NavListRootProps = {
 };
 
 export default function NavList({ data, depth, hasChild }: NavListRootProps) {
-	const { pathname } = useLocation();
 
 	const { active, isExternalLink } = useActiveLink(data.path);
 
@@ -27,8 +25,7 @@ export default function NavList({ data, depth, hasChild }: NavListRootProps) {
 		if (!active) {
 			handleClose();
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [pathname]);
+	}, []);
 
 	const handleToggle = () => {
 		setOpen(!open);

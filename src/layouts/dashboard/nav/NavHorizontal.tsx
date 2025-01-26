@@ -10,10 +10,12 @@ import { bgBlur } from '../../../utils/cssStyles';
 import { NavSectionHorizontal } from '../../../components/nav-section';
 //
 import navConfig from './config-navigation';
+import { useSelector } from '../../../redux/store';
 
 // ----------------------------------------------------------------------
 
 function NavHorizontal() {
+	const { user } = useSelector((state) => state.user);
 	const theme = useTheme();
 
 	return (
@@ -32,7 +34,7 @@ function NavHorizontal() {
 					}),
 				}}
 			>
-				<NavSectionHorizontal data={navConfig} />
+				<NavSectionHorizontal data={navConfig(user?.folders)} />
 			</Toolbar>
 
 			<Shadow />

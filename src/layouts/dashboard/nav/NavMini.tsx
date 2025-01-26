@@ -10,10 +10,12 @@ import { NavSectionMini } from '../../../components/nav-section';
 //
 import navConfig from './config-navigation';
 import NavToggleButton from './NavToggleButton';
+import { useSelector } from '../../../redux/store';
 
 // ----------------------------------------------------------------------
 
 export default function NavMini() {
+	const { user } = useSelector((state) => state.user);
 	return (
 		<Box
 			component="nav"
@@ -41,7 +43,7 @@ export default function NavMini() {
 			>
 				<Logo sx={{ mx: 'auto', my: 2 }} />
 
-				<NavSectionMini data={navConfig} />
+				<NavSectionMini data={navConfig(user?.folders)} />
 			</Stack>
 		</Box>
 	);

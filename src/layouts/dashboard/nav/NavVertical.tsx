@@ -12,9 +12,9 @@ import Scrollbar from '../../../components/scrollbar';
 import { NavSectionVertical } from '../../../components/nav-section';
 //
 import navConfig from './config-navigation';
-import NavDocs from './NavDocs';
 import NavAccount from './NavAccount';
 import NavToggleButton from './NavToggleButton';
+import { useSelector } from '../../../redux/store';
 
 // ----------------------------------------------------------------------
 
@@ -25,7 +25,7 @@ type Props = {
 
 export default function NavVertical({ openNav, onCloseNav }: Props) {
 	const { pathname } = useLocation();
-
+	const { user } = useSelector((state) => state.user);
 	const isDesktop = useResponsive('up', 'lg');
 
 	useEffect(() => {
@@ -60,7 +60,7 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
 				<NavAccount />
 			</Stack>
 
-			<NavSectionVertical data={navConfig} />
+			<NavSectionVertical data={navConfig(user?.folders)} />
 
 			<Box sx={{ flexGrow: 1 }} />
 

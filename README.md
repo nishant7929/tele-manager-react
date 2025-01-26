@@ -7,3 +7,4 @@
 - File preview
 - video player
 - Folder and file sharing
+- Google analytics - [Released]
