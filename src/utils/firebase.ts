@@ -1,3 +1,5 @@
+/* eslint-disable no-prototype-builtins */
+/* eslint-disable no-useless-catch */
 import { initializeApp } from 'firebase/app';
 import {
 	addDoc,
@@ -132,7 +134,7 @@ export const userModel = new User(db);
 
 // Get subfolder folder ids with current folder id
 export const getAllFolderIds = (folders: FolderType[] = [], targetId: string): string[] => {
-	let result: string[] = [];
+	const result: string[] = [];
 
 	function collectIds(folder: FolderType): void {
 		result.push(folder.id);

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 // ----------------------------------------------------------------------
 
 export function emptyRows(page: number, rowsPerPage: number, arrayLength: number) {

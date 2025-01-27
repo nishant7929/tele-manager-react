@@ -1,11 +1,6 @@
 import { useState, useCallback } from 'react';
 // @mui
-import {
-	Dialog,
-	DialogProps,
-	DialogTitle,
-	DialogContent,
-} from '@mui/material';
+import { Dialog, DialogProps, DialogTitle, DialogContent } from '@mui/material';
 import { Upload } from '../../../../components/upload';
 import { uploadFileHandlerV2, UploadFileType } from '../../../../utils/telegram';
 import { useParams } from 'react-router-dom';
@@ -28,7 +23,7 @@ export default function FileUploadDialog({
 }: Props) {
 	const { id } = useParams<{ id: string }>();
 	const { addMessage } = useUserContext();
-	const [files, setFiles] = useState<(UploadFileType)[]>([]);
+	const [files, setFiles] = useState<UploadFileType[]>([]);
 
 	const handleDrop = useCallback(
 		(acceptedFiles: File[]) => {

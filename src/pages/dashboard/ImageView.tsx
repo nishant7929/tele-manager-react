@@ -12,32 +12,24 @@ const ImageView: React.FC = () => {
 	const [downloadProgress, setDownloadProgress] = useState<number>(0);
 
 	useEffect(() => {
-		const fetchImageData = async() => {
+		const fetchImageData = async () => {
 			try {
 				const client = await getTelegramClient();
 				const savedMessagesPeer = await client.getInputEntity('me');
-				const messages: any = await client.getMessages(
-					savedMessagesPeer,
-					{
-						ids: [Number(id)],
-					}
-				);
+				const messages: any = await client.getMessages(savedMessagesPeer, {
+					ids: [Number(id)],
+				});
 
 				if (messages.length > 0) {
 					// Use thumbnail while loading
 					if (messages[0].media?.document?.thumbs) {
 						const thumbs = messages[0].media.document.thumbs;
 						const smallestThumb = thumbs[1] || thumbs[0];
-						const thumbFile = await client.downloadMedia(
-							messages[0].media,
-							{
-								thumb: smallestThumb,
-							}
-						);
+						const thumbFile = await client.downloadMedia(messages[0].media, {
+							thumb: smallestThumb,
+						});
 						if (thumbFile) {
-							const thumbUrl = URL.createObjectURL(
-								new Blob([thumbFile], { type: 'image/jpeg' })
-							);
+							const thumbUrl = URL.createObjectURL(new Blob([thumbFile], { type: 'image/jpeg' }));
 							setThumbnail(thumbUrl);
 						}
 					}
@@ -60,7 +52,7 @@ const ImageView: React.FC = () => {
 						for await (const chunk of client.iterDownload({
 							file: inputFileLocation,
 							requestSize: 2048 * 1024, // 2MB chunks
-							chunkSize: 2048 * 1024
+							chunkSize: 2048 * 1024,
 						})) {
 							chunks.push(chunk);
 							totalBytes += chunk.length;
@@ -108,10 +100,8 @@ const ImageView: React.FC = () => {
 		>
 			<Link to="/telegram">Back to gallery</Link>
 			<div style={{ flex: 1, position: 'relative' }}>
-
-
 				{loading && <div>Loading...</div>}
-				{(downloadProgress > 0 && downloadProgress !== 100) && <span>({downloadProgress}%)</span>}
+				{downloadProgress > 0 && downloadProgress !== 100 && <span>({downloadProgress}%)</span>}
 				{(imageData || thumbnail) && (
 					<img
 						style={{

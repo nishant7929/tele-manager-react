@@ -14,11 +14,11 @@ import {
 // ----------------------------------------------------------------------
 
 type Props = RadioGroupProps & {
-  name: string;
-  options: { label: string; value: any }[];
-  label?: string;
-  spacing?: number;
-  helperText?: React.ReactNode;
+	name: string;
+	options: { label: string; value: any }[];
+	label?: string;
+	spacing?: number;
+	helperText?: React.ReactNode;
 };
 
 export default function RHFRadioGroup({
@@ -38,7 +38,7 @@ export default function RHFRadioGroup({
 		<Controller
 			name={name}
 			control={control}
-			render={({ field, fieldState: { error }}) => (
+			render={({ field, fieldState: { error } }) => (
 				<FormControl component="fieldset">
 					{label && (
 						<FormLabel component="legend" id={labelledby} sx={{ typography: 'body2' }}>

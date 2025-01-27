@@ -6,8 +6,8 @@ import { Switch, FormControlLabel, FormControlLabelProps, FormHelperText } from 
 // ----------------------------------------------------------------------
 
 interface Props extends Omit<FormControlLabelProps, 'control'> {
-  name: string;
-  helperText?: React.ReactNode;
+	name: string;
+	helperText?: React.ReactNode;
 }
 
 export default function RHFSwitch({ name, helperText, ...other }: Props) {
@@ -17,7 +17,7 @@ export default function RHFSwitch({ name, helperText, ...other }: Props) {
 		<Controller
 			name={name}
 			control={control}
-			render={({ field, fieldState: { error }}) => (
+			render={({ field, fieldState: { error } }) => (
 				<div>
 					<FormControlLabel control={<Switch {...field} checked={field.value} />} {...other} />
 

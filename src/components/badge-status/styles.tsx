@@ -10,12 +10,12 @@ export const StyledBadgeStatus = styled('span')(
 		theme,
 		ownerState,
 	}: {
-    theme: Theme;
-    ownerState: {
-      size: BadgeSizeValue;
-      status: BadgeStatusValue;
-    };
-  }) => {
+		theme: Theme;
+		ownerState: {
+			size: BadgeSizeValue;
+			status: BadgeStatusValue;
+		};
+	}) => {
 		const { status, size } = ownerState;
 
 		return {
@@ -26,7 +26,7 @@ export const StyledBadgeStatus = styled('span')(
 			alignItems: 'center',
 			justifyContent: 'center',
 			'&:before, &:after': {
-				content: '\'\'',
+				content: "''",
 				borderRadius: 1,
 				backgroundColor: theme.palette.common.white,
 			},

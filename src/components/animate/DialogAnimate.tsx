@@ -7,8 +7,8 @@ import { varFade } from './variants';
 // ----------------------------------------------------------------------
 
 export interface Props extends DialogProps {
-  variants?: Record<string, unknown>;
-  onClose?: VoidFunction;
+	variants?: Record<string, unknown>;
+	onClose?: VoidFunction;
 }
 
 export default function DialogAnimate({
@@ -31,12 +31,12 @@ export default function DialogAnimate({
 						<Box
 							component={m.div}
 							{...(variants ||
-                varFade({
-                	distance: 120,
-                	durationIn: 0.32,
-                	durationOut: 0.24,
-                	easeIn: 'easeInOut',
-                }).inUp)}
+								varFade({
+									distance: 120,
+									durationIn: 0.32,
+									durationOut: 0.24,
+									easeIn: 'easeInOut',
+								}).inUp)}
 							sx={{
 								width: '100%',
 								height: '100%',

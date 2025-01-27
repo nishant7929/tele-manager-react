@@ -23,7 +23,11 @@ export default function NavAccount() {
 
 	return (
 		<StyledRoot>
-			<CustomAvatar src={user?.photoURL || '/assets/images/avatars/avatar_default.jpg'} alt={user?.displayName} name={user?.displayName} />
+			<CustomAvatar
+				src={user?.photoURL || '/assets/images/avatars/avatar_default.jpg'}
+				alt={user?.displayName}
+				name={user?.displayName}
+			/>
 
 			<Box sx={{ ml: 2, minWidth: 0 }}>
 				<Typography variant="subtitle2" noWrap>

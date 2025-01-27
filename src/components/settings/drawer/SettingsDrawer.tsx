@@ -51,12 +51,12 @@ export default function SettingsDrawer() {
 	};
 
 	const notDefault =
-    themeMode !== defaultSettings.themeMode ||
-    themeLayout !== defaultSettings.themeLayout ||
-    themeStretch !== defaultSettings.themeStretch ||
-    themeContrast !== defaultSettings.themeContrast ||
-    themeDirection !== defaultSettings.themeDirection ||
-    themeColorPresets !== defaultSettings.themeColorPresets;
+		themeMode !== defaultSettings.themeMode ||
+		themeLayout !== defaultSettings.themeLayout ||
+		themeStretch !== defaultSettings.themeStretch ||
+		themeContrast !== defaultSettings.themeContrast ||
+		themeDirection !== defaultSettings.themeDirection ||
+		themeColorPresets !== defaultSettings.themeColorPresets;
 
 	return (
 		<>
@@ -85,7 +85,7 @@ export default function SettingsDrawer() {
 					sx={{ py: 2, pr: 1, pl: SPACING }}
 				>
 					<Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
-            Settings
+						Settings
 					</Typography>
 
 					<Tooltip title="Reset">

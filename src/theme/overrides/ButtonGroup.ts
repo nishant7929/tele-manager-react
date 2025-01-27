@@ -7,9 +7,9 @@ const COLORS = ['primary', 'secondary', 'info', 'success', 'warning', 'error'] a
 
 // NEW VARIANT
 declare module '@mui/material/ButtonGroup' {
-  interface ButtonGroupPropsVariantOverrides {
-    soft: true;
-  }
+	interface ButtonGroupPropsVariantOverrides {
+		soft: true;
+	}
 }
 
 export default function ButtonGroup(theme: Theme) {

@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Theme } from '@mui/material/styles';
 
 // ----------------------------------------------------------------------
 
-export default function LoadingButton(theme: Theme) {
+export default function LoadingButton(_theme: Theme) {
 	return {
 		MuiLoadingButton: {
 			variants: [

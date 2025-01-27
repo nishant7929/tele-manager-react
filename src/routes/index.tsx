@@ -10,10 +10,7 @@ import DashboardLayout from '../layouts/dashboard';
 // config
 import { PATH_AFTER_LOGIN } from '../config-global';
 //
-import {
-	Page404,
-	LoginPage,
-} from './elements';
+import { Page404, LoginPage } from './elements';
 import FileManagerPage from '../pages/dashboard/FileManagerPage';
 import FileListPage from '../pages/dashboard/FileListPage';
 import Home from '../pages/dashboard/Home';
@@ -41,7 +38,7 @@ export default function Router() {
 
 	useEffect(() => {
 		ReactGA.send({ hitType: 'pageview', page: location.pathname + location.search });
-	  }, [location]);
+	}, [location]);
 
 	return useRoutes([
 		{
@@ -54,9 +51,7 @@ export default function Router() {
 							<CompactLayout />
 						</GuestGuard>
 					),
-					children: [
-						{ path: '/login', element: <LoginPage /> },
-					],
+					children: [{ path: '/login', element: <LoginPage /> }],
 				},
 			],
 		},

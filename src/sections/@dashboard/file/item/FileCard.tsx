@@ -32,10 +32,10 @@ import FileDetailsDrawer from '../portal/FileDetailsDrawer';
 // ----------------------------------------------------------------------
 
 interface Props extends CardProps {
-  file: IFileManager;
-  selected?: boolean;
-  onSelect?: VoidFunction;
-  onDelete: VoidFunction;
+	file: IFileManager;
+	selected?: boolean;
+	onSelect?: VoidFunction;
+	onDelete: VoidFunction;
 }
 
 export default function FileCard({ file, selected, onSelect, onDelete, sx, ...other }: Props) {
@@ -193,7 +193,7 @@ export default function FileCard({ file, selected, onSelect, onDelete, sx, ...ot
 					}}
 				>
 					<Iconify icon="eva:link-2-fill" />
-          Copy Link
+					Copy Link
 				</MenuItem>
 
 				<MenuItem
@@ -203,7 +203,7 @@ export default function FileCard({ file, selected, onSelect, onDelete, sx, ...ot
 					}}
 				>
 					<Iconify icon="eva:share-fill" />
-          Share
+					Share
 				</MenuItem>
 
 				<Divider sx={{ borderStyle: 'dashed' }} />
@@ -216,7 +216,7 @@ export default function FileCard({ file, selected, onSelect, onDelete, sx, ...ot
 					sx={{ color: 'error.main' }}
 				>
 					<Iconify icon="eva:trash-2-outline" />
-          Delete
+					Delete
 				</MenuItem>
 			</MenuPopover>
 
@@ -252,7 +252,7 @@ export default function FileCard({ file, selected, onSelect, onDelete, sx, ...ot
 				content="Are you sure want to delete?"
 				action={
 					<Button variant="contained" color="error" onClick={onDelete}>
-            Delete
+						Delete
 					</Button>
 				}
 			/>

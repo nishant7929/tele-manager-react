@@ -16,7 +16,7 @@ import { telegramClient } from '../../../utils/telegram';
 
 // ----------------------------------------------------------------------
 
-const OPTIONS = [
+export const OPTIONS = [
 	{
 		label: 'Home',
 		linkTo: '/',
@@ -50,7 +50,7 @@ export default function AccountPopover() {
 		setOpenPopover(null);
 	};
 
-	const handleLogout = async() => {
+	const handleLogout = async () => {
 		try {
 			await telegramClient.logout();
 			logout();
@@ -71,7 +71,7 @@ export default function AccountPopover() {
 					...(openPopover && {
 						'&:before': {
 							zIndex: 1,
-							content: '\'\'',
+							content: "''",
 							width: '100%',
 							height: '100%',
 							borderRadius: '50%',
@@ -81,7 +81,11 @@ export default function AccountPopover() {
 					}),
 				}}
 			>
-				<CustomAvatar src={user?.photoURL || '/assets/images/avatars/avatar_default.jpg'} alt={user?.displayName} name={user?.displayName} />
+				<CustomAvatar
+					src={user?.photoURL || '/assets/images/avatars/avatar_default.jpg'}
+					alt={user?.displayName}
+					name={user?.displayName}
+				/>
 			</IconButtonAnimate>
 
 			<MenuPopover open={openPopover} onClose={handleClosePopover} sx={{ width: 200, p: 0 }}>

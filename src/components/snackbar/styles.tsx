@@ -22,10 +22,10 @@ export default function StyledNotistack() {
 						color: isLight ? theme.palette.common.white : theme.palette.grey[800],
 						backgroundColor: isLight ? theme.palette.grey[900] : theme.palette.common.white,
 						'&.SnackbarItem-variantSuccess, &.SnackbarItem-variantError, &.SnackbarItem-variantWarning, &.SnackbarItem-variantInfo':
-              {
-              	color: theme.palette.text.primary,
-              	backgroundColor: theme.palette.background.paper,
-              },
+							{
+								color: theme.palette.text.primary,
+								backgroundColor: theme.palette.background.paper,
+							},
 						[theme.breakpoints.up('md')]: {
 							minWidth: 240,
 						},

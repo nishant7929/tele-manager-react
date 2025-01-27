@@ -1,7 +1,12 @@
 import React, { type BaseSyntheticEvent, useEffect, useState } from 'react';
 import { Api } from 'telegram';
 import { Link } from 'react-router-dom';
-import { getTelegramClient, sendCodeHandler, uploadFileHandler, verifyOtp } from '../../utils/telegram';
+import {
+	getTelegramClient,
+	sendCodeHandler,
+	uploadFileHandler,
+	verifyOtp,
+} from '../../utils/telegram';
 
 interface IInitialState {
 	phoneNumber: string;
@@ -20,12 +25,9 @@ interface IImageData {
 }
 
 function Home(): React.JSX.Element {
-	const [{ phoneNumber, phoneCode }, setAuthInfo] =
-		useState<IInitialState>(initialState);
+	const [{ phoneNumber, phoneCode }, setAuthInfo] = useState<IInitialState>(initialState);
 	const [loggedIn, setLoggedIn] = useState<boolean>(!!savedSession);
-	const [loginStep, setLoginStep] = useState<
-		'LOGIN' | 'OTP' | ''
-	>('LOGIN');
+	const [loginStep, setLoginStep] = useState<'LOGIN' | 'OTP' | ''>('LOGIN');
 	const [imagesData, setImagesData] = useState<IImageData[]>([]);
 	const [offsetId, setOffsetId] = useState<number>(0);
 	const [uploadingImages, setUploadingImages] = useState<any[]>([]);
@@ -33,7 +35,7 @@ function Home(): React.JSX.Element {
 
 	useEffect(() => {
 		if (savedSession) {
-			(async() => {
+			(async () => {
 				try {
 					await getTelegramClient();
 					setLoggedIn(true);
@@ -51,10 +53,9 @@ function Home(): React.JSX.Element {
 		if (loggedIn) {
 			fetchUploadedImages();
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [loggedIn]);
 
-	const handleLogout = async(): Promise<void> => {
+	const handleLogout = async (): Promise<void> => {
 		try {
 			const client = await getTelegramClient();
 
@@ -68,13 +69,11 @@ function Home(): React.JSX.Element {
 		}
 	};
 
-	function inputChangeHandler({
-		target: { name, value },
-	}: BaseSyntheticEvent): void {
+	function inputChangeHandler({ target: { name, value } }: BaseSyntheticEvent): void {
 		setAuthInfo((authInfo) => ({ ...authInfo, [name]: value }));
 	}
 
-	const fetchUploadedImages = async(): Promise<void> => {
+	const fetchUploadedImages = async (): Promise<void> => {
 		try {
 			const client = await getTelegramClient();
 			const savedMessagesPeer = await client.getInputEntity('me');
@@ -96,9 +95,7 @@ function Home(): React.JSX.Element {
 					if (sizeInBytes > 0) {
 						size =
 							sizeInBytes >= 1024 * 1024
-								? `${(sizeInBytes / (1024 * 1024)).toFixed(
-									2
-								  )} MB`
+								? `${(sizeInBytes / (1024 * 1024)).toFixed(2)} MB`
 								: `${(sizeInBytes / 1024).toFixed(2)} KB`;
 					}
 
@@ -112,7 +109,7 @@ function Home(): React.JSX.Element {
 				});
 			setImagesData([...imagesData, ...initialData]);
 			setOffsetId(messages[messages.length - 1].id);
-			const downloadPromises = messages.map(async(msg) => {
+			const downloadPromises = messages.map(async (msg) => {
 				if (msg.media) {
 					try {
 						let file = null;
@@ -140,22 +137,15 @@ function Home(): React.JSX.Element {
 						}
 
 						if (file) {
-							const fileUrl = URL.createObjectURL(
-								new Blob([file], { type: 'image/jpeg' })
-							);
+							const fileUrl = URL.createObjectURL(new Blob([file], { type: 'image/jpeg' }));
 							setImagesData((prevData) =>
 								prevData.map((data) =>
-									data.id === msg.id
-										? { ...data, thumbnail: fileUrl }
-										: data
+									data.id === msg.id ? { ...data, thumbnail: fileUrl } : data
 								)
 							);
 						}
 					} catch (downloadError) {
-						console.error(
-							`Error downloading media for message ID ${msg.id}:`,
-							downloadError
-						);
+						console.error(`Error downloading media for message ID ${msg.id}:`, downloadError);
 					}
 				}
 			});
@@ -215,11 +205,8 @@ function Home(): React.JSX.Element {
 				/>
 				<button
 					style={{ marginLeft: '25px' }}
-					onClick={async() => {
-						await verifyOtp(
-							phoneNumber,
-							phoneCode
-						);
+					onClick={async () => {
+						await verifyOtp(phoneNumber, phoneCode);
 						setLoggedIn(true);
 						fetchUploadedImages();
 					}}
@@ -230,7 +217,7 @@ function Home(): React.JSX.Element {
 		);
 	};
 
-	if (loggedIn && loading){
+	if (loggedIn && loading) {
 		return <div>Loading....</div>;
 	}
 
@@ -241,8 +228,8 @@ function Home(): React.JSX.Element {
 
 			{loggedIn && (
 				<>
-					<h3>Welcome! You are logged in.
-
+					<h3>
+						Welcome! You are logged in.
 						<button onClick={handleLogout} style={{ marginLeft: '15px', cursor: 'pointer' }}>
 							Logout
 						</button>
@@ -252,9 +239,7 @@ function Home(): React.JSX.Element {
 						type="file"
 						accept="image/*"
 						multiple
-						onChange={(e) =>
-							uploadFileHandler(e, setUploadingImages)
-						}
+						onChange={(e) => uploadFileHandler(e, setUploadingImages)}
 					/>
 					<div
 						style={{
@@ -265,9 +250,7 @@ function Home(): React.JSX.Element {
 							marginTop: '20px',
 						}}
 					>
-						{uploadingImages.length > 0 && (
-							<h4>Uploading Images:</h4>
-						)}
+						{uploadingImages.length > 0 && <h4>Uploading Images:</h4>}
 						{uploadingImages.map((data, index) => (
 							<div key={index}>
 								<img
@@ -290,13 +273,9 @@ function Home(): React.JSX.Element {
 									{data.status === 'uploading' ? (
 										<span>{data.progress}%</span>
 									) : data.status === 'success' ? (
-										<span style={{ color: 'green' }}>
-											Uploaded
-										</span>
+										<span style={{ color: 'green' }}>Uploaded</span>
 									) : (
-										<span style={{ color: 'red' }}>
-											Failed
-										</span>
+										<span style={{ color: 'red' }}>Failed</span>
 									)}
 								</div>
 							</div>
@@ -315,11 +294,7 @@ function Home(): React.JSX.Element {
 						{imagesData.map((data, index) => (
 							<div key={index}>
 								{data.thumbnail ? (
-									<Link
-										to={`/image/${data.id}`}
-										key={data.id}
-										style={{ textDecoration: 'none' }}
-									>
+									<Link to={`/image/${data.id}`} key={data.id} style={{ textDecoration: 'none' }}>
 										<img
 											src={data.thumbnail}
 											alt={data.name}
@@ -350,10 +325,7 @@ function Home(): React.JSX.Element {
 							</div>
 						))}
 						{imagesData.length > 0 && (
-							<p
-								style={{ cursor: 'pointer' }}
-								onClick={fetchUploadedImages}
-							>
+							<p style={{ cursor: 'pointer' }} onClick={fetchUploadedImages}>
 								Load more...
 							</p>
 						)}

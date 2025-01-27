@@ -7,12 +7,12 @@ const COLORS = ['primary', 'secondary', 'info', 'success', 'warning', 'error'] a
 
 // NEW VARIANT
 declare module '@mui/material/Fab' {
-  interface FabPropsVariantOverrides {
-    outlined: true;
-    outlinedExtended: true;
-    soft: true;
-    softExtended: true;
-  }
+	interface FabPropsVariantOverrides {
+		outlined: true;
+		outlinedExtended: true;
+		soft: true;
+		softExtended: true;
+	}
 }
 
 export default function Fab(theme: Theme) {

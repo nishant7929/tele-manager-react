@@ -6,7 +6,7 @@ import { Box, Fab, FabProps, SxProps } from '@mui/material';
 // ----------------------------------------------------------------------
 
 export interface FabButtonAnimateProps extends FabProps {
-  sxWrap?: SxProps;
+	sxWrap?: SxProps;
 }
 
 const FabButtonAnimate = forwardRef<HTMLButtonElement, FabButtonAnimateProps>(
@@ -24,9 +24,9 @@ export default FabButtonAnimate;
 // ----------------------------------------------------------------------
 
 type AnimateWrapProp = {
-  children: React.ReactNode;
-  size: 'small' | 'medium' | 'large';
-  sxWrap?: SxProps;
+	children: React.ReactNode;
+	size: 'small' | 'medium' | 'large';
+	sxWrap?: SxProps;
 };
 
 const varSmall = {

@@ -119,9 +119,11 @@ export default function FileListPage() {
 		};
 	};
 
-	const downloadImage = async(msg: any, client: any): Promise<void> => {
+	const downloadImage = async (msg: any, client: any): Promise<void> => {
 		try {
-			if (!msg) return;
+			if (!msg) {
+				return;
+			}
 			let file = null;
 
 			if (msg.media instanceof Api.MessageMediaPhoto && msg.media.photo instanceof Api.Photo) {
@@ -155,7 +157,7 @@ export default function FileListPage() {
 		}
 	};
 
-	const fetchUploadedImages = async(): Promise<void> => {
+	const fetchUploadedImages = async (): Promise<void> => {
 		try {
 			const client = await getTelegramClient();
 
@@ -173,7 +175,7 @@ export default function FileListPage() {
 			// Wait for first image download complete
 			await downloadImage(firstDownload, client);
 
-			const downloadPromises = processedMessages.map(async(msg) => {
+			const downloadPromises = processedMessages.map(async (msg) => {
 				if (msg.media && !cachedThumbnails.current.has(msg.id)) {
 					await downloadImage(msg, client);
 				}
@@ -186,7 +188,9 @@ export default function FileListPage() {
 	};
 
 	function findSubFoldersById(folders?: FolderType[], targetId?: string): FolderType[] | undefined {
-		if (!folders || !targetId) return;
+		if (!folders || !targetId) {
+			return;
+		}
 		for (const folder of folders) {
 			if (folder.id === targetId) {
 				return folder.folders;
@@ -204,7 +208,9 @@ export default function FileListPage() {
 		targetId?: string,
 		newFolder?: FolderType
 	): FolderType[] | undefined => {
-		if (!folders || !targetId || !newFolder) return;
+		if (!folders || !targetId || !newFolder) {
+			return;
+		}
 		return folders.map((folder) => {
 			if (folder.id === targetId) {
 				return {
@@ -221,7 +227,7 @@ export default function FileListPage() {
 		});
 	};
 
-	const handleCreateSubFolder = async() => {
+	const handleCreateSubFolder = async () => {
 		handleCloseNewFolder();
 		setFolderName('');
 		const newFolder: FolderType = {
@@ -305,7 +311,12 @@ export default function FileListPage() {
 						overflowAnchor: 'none',
 					}}
 				>
-					<FileList table={table} files={filesData} loading={loading} onOpenConfirm={handleOpenConfirm} />
+					<FileList
+						table={table}
+						files={filesData}
+						loading={loading}
+						onOpenConfirm={handleOpenConfirm}
+					/>
 				</InfiniteScroll>
 
 				<FileUploadDialog open={openUploadFile} onClose={handleCloseUploadFile} />

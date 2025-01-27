@@ -9,7 +9,7 @@ import { varFade } from './variants';
 type Props = BoxProps & MotionProps;
 
 interface TextAnimateProps extends Props {
-  text: string;
+	text: string;
 }
 
 export default function TextAnimate({ text, variants, sx, ...other }: TextAnimateProps) {

@@ -7,9 +7,9 @@ import { BreadcrumbsLinkProps } from './types';
 // ----------------------------------------------------------------------
 
 type Props = {
-  link: BreadcrumbsLinkProps;
-  activeLast?: boolean;
-  disabled: boolean;
+	link: BreadcrumbsLinkProps;
+	activeLast?: boolean;
+	disabled: boolean;
 };
 
 export default function BreadcrumbsLink({ link, activeLast, disabled }: Props) {
@@ -20,11 +20,11 @@ export default function BreadcrumbsLink({ link, activeLast, disabled }: Props) {
 		alignItems: 'center',
 		color: 'text.primary',
 		...(disabled &&
-      !activeLast && {
-			cursor: 'default',
-			pointerEvents: 'none',
-			color: 'text.disabled',
-		}),
+			!activeLast && {
+				cursor: 'default',
+				pointerEvents: 'none',
+				color: 'text.disabled',
+			}),
 	};
 
 	const renderContent = (

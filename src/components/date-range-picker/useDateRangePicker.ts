@@ -17,7 +17,7 @@ export default function useDateRangePicker(start: Date | null, end: Date | null)
 	const [startDate, setStartDate] = useState(start);
 
 	const isError =
-    (startDate && endDate && isBefore(new Date(endDate), new Date(startDate))) || false;
+		(startDate && endDate && isBefore(new Date(endDate), new Date(startDate))) || false;
 
 	const currentYear = new Date().getFullYear();
 
@@ -28,10 +28,10 @@ export default function useDateRangePicker(start: Date | null, end: Date | null)
 	const isCurrentYear = currentYear === startDateYear && currentYear === endDateYear;
 
 	const isSameDays =
-    startDate && endDate ? isSameDay(new Date(startDate), new Date(endDate)) : false;
+		startDate && endDate ? isSameDay(new Date(startDate), new Date(endDate)) : false;
 
 	const isSameMonths =
-    startDate && endDate ? isSameMonth(new Date(startDate), new Date(endDate)) : false;
+		startDate && endDate ? isSameMonth(new Date(startDate), new Date(endDate)) : false;
 
 	const standardLabel = `${fDate(startDate)} - ${fDate(endDate)}`;
 

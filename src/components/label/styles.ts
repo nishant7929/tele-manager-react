@@ -11,12 +11,12 @@ export const StyledLabel = styled(Box)(
 		theme,
 		ownerState,
 	}: {
-    theme: Theme;
-    ownerState: {
-      color: LabelColor;
-      variant: LabelVariant;
-    };
-  }) => {
+		theme: Theme;
+		ownerState: {
+			color: LabelColor;
+			variant: LabelVariant;
+		};
+	}) => {
 		const isLight = theme.palette.mode === 'light';
 
 		const filledVariant = ownerState.variant === 'filled';

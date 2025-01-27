@@ -9,7 +9,7 @@ import { useSettingsContext } from './SettingsContext';
 // ----------------------------------------------------------------------
 
 type Props = {
-  children: React.ReactNode;
+	children: React.ReactNode;
 };
 
 export default function ThemeContrast({ children }: Props) {
@@ -43,7 +43,6 @@ export default function ThemeContrast({ children }: Props) {
 			},
 		}),
 
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[isLight, themeContrast]
 	);
 

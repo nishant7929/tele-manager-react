@@ -16,17 +16,17 @@ export default function useTypography(variant: Variant) {
 	const key = theme.breakpoints.up(breakpoints === 'xl' ? 'lg' : breakpoints);
 
 	const hasResponsive =
-    variant === 'h1' ||
-    variant === 'h2' ||
-    variant === 'h3' ||
-    variant === 'h4' ||
-    variant === 'h5' ||
-    variant === 'h6';
+		variant === 'h1' ||
+		variant === 'h2' ||
+		variant === 'h3' ||
+		variant === 'h4' ||
+		variant === 'h5' ||
+		variant === 'h6';
 
 	const getFont: any =
-    hasResponsive && theme.typography[variant][key]
-    	? theme.typography[variant][key]
-    	: theme.typography[variant];
+		hasResponsive && theme.typography[variant][key]
+			? theme.typography[variant][key]
+			: theme.typography[variant];
 
 	const fontSize = remToPx(getFont.fontSize);
 

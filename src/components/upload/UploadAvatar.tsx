@@ -1,8 +1,7 @@
 import { useDropzone } from 'react-dropzone';
 // @mui
-import { Typography } from '@mui/material';
+import { Typography, Theme } from '@mui/material';
 import { styled, alpha } from '@mui/material/styles';
-import { Theme } from '@mui/material';
 //
 import Iconify from '../iconify';
 //

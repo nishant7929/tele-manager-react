@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Theme } from '@mui/material/styles';
 
 // ----------------------------------------------------------------------
 
-export default function Badge(theme: Theme) {
+export default function Badge(_theme: Theme) {
 	return {
 		MuiBadge: {
 			styleOverrides: {

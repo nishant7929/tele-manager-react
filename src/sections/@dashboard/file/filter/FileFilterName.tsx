@@ -6,8 +6,8 @@ import Iconify from '../../../../components/iconify';
 // ----------------------------------------------------------------------
 
 type Props = {
-  filterName: string;
-  onFilterName: (event: React.ChangeEvent<HTMLInputElement>) => void;
+	filterName: string;
+	onFilterName: (_event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
 export default function FileFilterName({ filterName, onFilterName }: Props) {

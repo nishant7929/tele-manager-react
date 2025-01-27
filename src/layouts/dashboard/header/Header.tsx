@@ -18,7 +18,7 @@ import AccountPopover from './AccountPopover';
 // ----------------------------------------------------------------------
 
 type Props = {
-  onOpenNav?: VoidFunction;
+	onOpenNav?: VoidFunction;
 };
 
 export default function Header({ onOpenNav }: Props) {

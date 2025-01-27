@@ -8,7 +8,7 @@ import { useUserContext } from './useUserContext';
 // ----------------------------------------------------------------------
 
 type GuestGuardProps = {
-  children: ReactNode;
+	children: ReactNode;
 };
 
 export default function GuestGuard({ children }: GuestGuardProps) {

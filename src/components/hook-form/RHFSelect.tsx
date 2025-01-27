@@ -39,7 +39,7 @@ export function RHFSelect({
 		<Controller
 			name={name}
 			control={control}
-			render={({ field, fieldState: { error }}) => (
+			render={({ field, fieldState: { error } }) => (
 				<TextField
 					{...field}
 					select
@@ -130,7 +130,7 @@ export function RHFMultiSelect({
 		<Controller
 			name={name}
 			control={control}
-			render={({ field, fieldState: { error }}) => (
+			render={({ field, fieldState: { error } }) => (
 				<FormControl sx={sx}>
 					{label && <InputLabel id={name}> {label} </InputLabel>}
 

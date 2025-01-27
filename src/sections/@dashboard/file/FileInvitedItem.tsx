@@ -19,7 +19,7 @@ import MenuPopover from '../../../components/menu-popover';
 // ----------------------------------------------------------------------
 
 type Props = {
-  person: IFileShared;
+	person: IFileShared;
 };
 
 export default function FileInvitedItem({ person }: Props) {
@@ -75,7 +75,7 @@ export default function FileInvitedItem({ person }: Props) {
 						}),
 					}}
 				>
-          Can {permission}
+					Can {permission}
 				</Button>
 			</ListItem>
 
@@ -93,7 +93,7 @@ export default function FileInvitedItem({ person }: Props) {
 						}}
 					>
 						<Iconify icon="eva:eye-fill" />
-            Can view
+						Can view
 					</MenuItem>
 
 					<MenuItem
@@ -108,7 +108,7 @@ export default function FileInvitedItem({ person }: Props) {
 						}}
 					>
 						<Iconify icon="eva:edit-fill" />
-            Can edit
+						Can edit
 					</MenuItem>
 
 					<Divider sx={{ borderStyle: 'dashed' }} />
@@ -120,7 +120,7 @@ export default function FileInvitedItem({ person }: Props) {
 						sx={{ color: 'error.main' }}
 					>
 						<Iconify icon="eva:trash-2-outline" />
-            Remove
+						Remove
 					</MenuItem>
 				</>
 			</MenuPopover>

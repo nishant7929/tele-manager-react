@@ -6,7 +6,7 @@ import EmptyContent from '../empty-content';
 // ----------------------------------------------------------------------
 
 type Props = {
-  isNotFound: boolean;
+	isNotFound: boolean;
 };
 
 export default function TableNoData({ isNotFound }: Props) {

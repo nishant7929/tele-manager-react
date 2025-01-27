@@ -6,9 +6,9 @@ import Image from '../image';
 // ----------------------------------------------------------------------
 
 interface EmptyContentProps extends StackProps {
-  title: string;
-  img?: string;
-  description?: string;
+	title: string;
+	img?: string;
+	description?: string;
 }
 
 export default function EmptyContent({ title, description, img, sx, ...other }: EmptyContentProps) {

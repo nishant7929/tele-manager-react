@@ -1,9 +1,9 @@
 // ----------------------------------------------------------------------
 
 export type Props = {
-  staggerIn?: number;
-  delayIn?: number;
-  staggerOut?: number;
+	staggerIn?: number;
+	delayIn?: number;
+	staggerOut?: number;
 };
 
 export const varContainer = (props?: Props) => {

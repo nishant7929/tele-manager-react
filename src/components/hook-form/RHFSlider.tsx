@@ -6,8 +6,8 @@ import { Slider, SliderProps, FormHelperText } from '@mui/material';
 // ----------------------------------------------------------------------
 
 type Props = SliderProps & {
-  name: string;
-  helperText?: React.ReactNode;
+	name: string;
+	helperText?: React.ReactNode;
 };
 
 export default function RHFSlider({ name, helperText, ...other }: Props) {
@@ -17,7 +17,7 @@ export default function RHFSlider({ name, helperText, ...other }: Props) {
 		<Controller
 			name={name}
 			control={control}
-			render={({ field, fieldState: { error }}) => (
+			render={({ field, fieldState: { error } }) => (
 				<div>
 					<Slider {...field} valueLabelDisplay="auto" {...other} />
 

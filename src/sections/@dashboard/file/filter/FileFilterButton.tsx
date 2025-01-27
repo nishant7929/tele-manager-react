@@ -4,8 +4,8 @@ import { Box, Button, ButtonProps } from '@mui/material';
 // ----------------------------------------------------------------------
 
 interface Props extends ButtonProps {
-  children?: React.ReactNode;
-  isSelected: boolean;
+	children?: React.ReactNode;
+	isSelected: boolean;
 }
 
 export default function FileFilterButton({ children, isSelected, ...other }: Props) {

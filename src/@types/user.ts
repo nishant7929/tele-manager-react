@@ -18,6 +18,6 @@ export interface FolderType {
 
 export interface IUserState {
 	isLoading: boolean;
-	error: Error | string | null,
-	user: UserTypeFirebase | null,
+	error: Error | string | null;
+	user: UserTypeFirebase | null;
 }

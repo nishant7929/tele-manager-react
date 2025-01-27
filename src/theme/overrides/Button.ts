@@ -7,9 +7,9 @@ const COLORS = ['primary', 'secondary', 'info', 'success', 'warning', 'error'] a
 
 // NEW VARIANT
 declare module '@mui/material/Button' {
-  interface ButtonPropsVariantOverrides {
-    soft: true;
-  }
+	interface ButtonPropsVariantOverrides {
+		soft: true;
+	}
 }
 
 export default function Button(theme: Theme) {

@@ -43,9 +43,9 @@ export default function LoadingScreen() {
 	const isDashboard = isInitialized && isDesktop;
 
 	const size =
-    (themeLayout === 'mini' && NAV.W_DASHBOARD_MINI) ||
-    (themeLayout === 'vertical' && NAV.W_DASHBOARD) ||
-    128;
+		(themeLayout === 'mini' && NAV.W_DASHBOARD_MINI) ||
+		(themeLayout === 'vertical' && NAV.W_DASHBOARD) ||
+		128;
 
 	return (
 		<>

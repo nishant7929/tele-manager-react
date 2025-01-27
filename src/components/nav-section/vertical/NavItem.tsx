@@ -75,12 +75,13 @@ export default function NavItem({
 
 	const renderItem = () => {
 		// ExternalLink
-		if (isExternalLink)
+		if (isExternalLink) {
 			return (
 				<Link href={path} target="_blank" rel="noopener" underline="none">
 					{renderContent}
 				</Link>
 			);
+		}
 
 		// Has child
 		if (children) {

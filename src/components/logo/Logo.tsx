@@ -7,7 +7,7 @@ import { Box, Link, BoxProps } from '@mui/material';
 // ----------------------------------------------------------------------
 
 export interface LogoProps extends BoxProps {
-  disabledLink?: boolean;
+	disabledLink?: boolean;
 }
 
 const Logo = forwardRef<HTMLDivElement, LogoProps>(

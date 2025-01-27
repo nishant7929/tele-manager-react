@@ -58,12 +58,12 @@ export const StyledItem = styled(ListItemButton, {
 		}),
 		// Active sub item
 		...(subItem &&
-      active && {
-			...activeSubStyle,
-			'&:hover': {
+			active && {
 				...activeSubStyle,
-			},
-		}),
+				'&:hover': {
+					...activeSubStyle,
+				},
+			}),
 		// Open
 		...(open && !active && hoverStyle),
 		// Disabled

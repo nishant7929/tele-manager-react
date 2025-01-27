@@ -51,9 +51,8 @@ export const navConfig = (folders: FolderType[] = []) => {
 					icon: ICONS.folder,
 					children: transformFoldersToMenu(folders),
 				},
-			]
+			],
 		},
-
 	];
 };
 

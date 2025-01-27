@@ -12,9 +12,9 @@ import BadgeDot from './BadgeDot';
 // ----------------------------------------------------------------------
 
 type Props = {
-  open: boolean;
-  notDefault: boolean;
-  onToggle: VoidFunction;
+	open: boolean;
+	notDefault: boolean;
+	onToggle: VoidFunction;
 };
 
 export default function ToggleButton({ notDefault, open, onToggle }: Props) {

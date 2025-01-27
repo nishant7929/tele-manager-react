@@ -12,7 +12,7 @@ import StyledNotistack from './styles';
 // ----------------------------------------------------------------------
 
 type Props = {
-  children: React.ReactNode;
+	children: React.ReactNode;
 };
 
 export default function SnackbarProvider({ children }: Props) {
@@ -61,8 +61,8 @@ export default function SnackbarProvider({ children }: Props) {
 // ----------------------------------------------------------------------
 
 type SnackbarIconProps = {
-  icon: IconifyProps;
-  color: 'info' | 'success' | 'warning' | 'error';
+	icon: IconifyProps;
+	color: 'info' | 'success' | 'warning' | 'error';
 };
 
 function SnackbarIcon({ icon, color }: SnackbarIconProps) {

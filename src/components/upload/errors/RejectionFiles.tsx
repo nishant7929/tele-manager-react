@@ -10,7 +10,7 @@ import { fileData } from '../../file-thumbnail';
 // ----------------------------------------------------------------------
 
 type Props = {
-  fileRejections: readonly FileRejection[];
+	fileRejections: readonly FileRejection[];
 };
 
 export default function RejectionFiles({ fileRejections }: Props) {
@@ -40,7 +40,7 @@ export default function RejectionFiles({ fileRejections }: Props) {
 
 						{errors.map((error) => (
 							<Box key={error.code} component="span" sx={{ typography: 'caption' }}>
-                - {error.message}
+								- {error.message}
 							</Box>
 						))}
 					</Box>

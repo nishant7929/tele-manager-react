@@ -20,8 +20,8 @@ type FormValuesProps = {
 function countryToFlag(isoCode: string) {
 	return typeof String.fromCodePoint !== 'undefined'
 		? isoCode
-			.toUpperCase()
-			.replace(/./g, (char) => String.fromCodePoint(char.charCodeAt(0) + 127397))
+				.toUpperCase()
+				.replace(/./g, (char) => String.fromCodePoint(char.charCodeAt(0) + 127397))
 		: isoCode;
 }
 
@@ -33,9 +33,9 @@ export default function AuthLoginForm({ handleCodeSend }: Props) {
 	const { enqueueSnackbar } = useSnackbar();
 	const LoginSchema = Yup.object().shape({
 		phoneNumber: Yup.string()
-		  .required('Phone number is required')
-		  .length(10, 'Phone number must be exactly 10 digits'),
-	  });
+			.required('Phone number is required')
+			.length(10, 'Phone number must be exactly 10 digits'),
+	});
 
 	const methods = useForm<FormValuesProps>({
 		resolver: yupResolver(LoginSchema),
@@ -46,7 +46,7 @@ export default function AuthLoginForm({ handleCodeSend }: Props) {
 		formState: { isSubmitting },
 	} = methods;
 
-	const onSubmit = async(data: FormValuesProps) => {
+	const onSubmit = async (data: FormValuesProps) => {
 		try {
 			const { message, success } = await sendCodeHandler(`+91 ${data.phoneNumber}`);
 			if (success) {
@@ -77,14 +77,9 @@ export default function AuthLoginForm({ handleCodeSend }: Props) {
 							{option.label} ({option.code}) +{option.phone}
 						</Box>
 					)}
-					renderInput={(params) => (
-						<TextField
-							{...params}
-							label="Code"
-						/>
-					)}
+					renderInput={(params) => <TextField {...params} label="Code" />}
 				/>
-				<RHFTextField name="phoneNumber" type='number' label="Phone Number" />
+				<RHFTextField name="phoneNumber" type="number" label="Phone Number" />
 			</Stack>
 
 			<LoadingButton

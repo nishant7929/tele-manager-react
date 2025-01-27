@@ -10,9 +10,9 @@ import NavItem from './NavItem';
 // ----------------------------------------------------------------------
 
 type NavListRootProps = {
-  data: NavListProps;
-  depth: number;
-  hasChild: boolean;
+	data: NavListProps;
+	depth: number;
+	hasChild: boolean;
 };
 
 export default function NavList({ data, depth, hasChild }: NavListRootProps) {
@@ -28,7 +28,6 @@ export default function NavList({ data, depth, hasChild }: NavListRootProps) {
 		if (open) {
 			handleClose();
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [pathname]);
 
 	useEffect(() => {
@@ -93,8 +92,8 @@ export default function NavList({ data, depth, hasChild }: NavListRootProps) {
 // ----------------------------------------------------------------------
 
 type NavListSubProps = {
-  data: NavListProps[];
-  depth: number;
+	data: NavListProps[];
+	depth: number;
 };
 
 function NavSubList({ data, depth }: NavListSubProps) {

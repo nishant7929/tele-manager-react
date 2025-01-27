@@ -9,9 +9,9 @@ import { StyledRoot, StyledSectionBg, StyledSection, StyledContent } from './sty
 // ----------------------------------------------------------------------
 
 type Props = {
-  title?: string;
-  illustration?: string;
-  children: React.ReactNode;
+	title?: string;
+	illustration?: string;
+	children: React.ReactNode;
 };
 
 export default function LoginLayout({ children, illustration, title }: Props) {

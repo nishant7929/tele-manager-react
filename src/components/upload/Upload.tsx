@@ -60,38 +60,40 @@ export default function Upload({
 
 	return (
 		<Box sx={{ width: 1, position: 'relative', ...sx }}>
-			{!hasFiles && <StyledDropZone
-				{...getRootProps()}
-				sx={{
-					...(isDragActive && {
-						opacity: 0.72,
-					}),
-					...(isError && {
-						color: 'error.main',
-						bgcolor: 'error.lighter',
-						borderColor: 'error.light',
-					}),
-					...(disabled && {
-						opacity: 0.48,
-						pointerEvents: 'none',
-					}),
-					...(hasFile && {
-						padding: '12% 0',
-					}),
-				}}
-			>
-				<input {...getInputProps()} />
-
-				<Placeholder
+			{!hasFiles && (
+				<StyledDropZone
+					{...getRootProps()}
 					sx={{
+						...(isDragActive && {
+							opacity: 0.72,
+						}),
+						...(isError && {
+							color: 'error.main',
+							bgcolor: 'error.lighter',
+							borderColor: 'error.light',
+						}),
+						...(disabled && {
+							opacity: 0.48,
+							pointerEvents: 'none',
+						}),
 						...(hasFile && {
-							opacity: 0,
+							padding: '12% 0',
 						}),
 					}}
-				/>
+				>
+					<input {...getInputProps()} />
 
-				{hasFile && <SingleFilePreview file={file} />}
-			</StyledDropZone>}
+					<Placeholder
+						sx={{
+							...(hasFile && {
+								opacity: 0,
+							}),
+						}}
+					/>
+
+					{hasFile && <SingleFilePreview file={file} />}
+				</StyledDropZone>
+			)}
 
 			{helperText && helperText}
 

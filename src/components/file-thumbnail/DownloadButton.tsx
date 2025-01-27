@@ -9,7 +9,7 @@ import Iconify from '../iconify';
 // ----------------------------------------------------------------------
 
 type Props = {
-  onDownload?: VoidFunction;
+	onDownload?: VoidFunction;
 };
 
 export default function DownloadButton({ onDownload }: Props) {

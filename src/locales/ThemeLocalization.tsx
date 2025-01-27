@@ -6,7 +6,7 @@ import useLocales from './useLocales';
 // ----------------------------------------------------------------------
 
 type Props = {
-  children: React.ReactNode;
+	children: React.ReactNode;
 };
 
 export default function ThemeLocalization({ children }: Props) {

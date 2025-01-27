@@ -4,11 +4,11 @@ import { Checkbox, Typography, Stack, StackProps } from '@mui/material';
 // ----------------------------------------------------------------------
 
 interface Props extends StackProps {
-  dense?: boolean;
-  action?: React.ReactNode;
-  rowCount: number;
-  numSelected: number;
-  onSelectAllRows: (checked: boolean) => void;
+	dense?: boolean;
+	action?: React.ReactNode;
+	rowCount: number;
+	numSelected: number;
+	onSelectAllRows: (_checked: boolean) => void;
 }
 
 export default function TableSelectedAction({

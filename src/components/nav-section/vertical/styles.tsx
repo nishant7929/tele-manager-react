@@ -9,8 +9,8 @@ import { NavItemProps } from '../types';
 // ----------------------------------------------------------------------
 
 type StyledItemProps = Omit<NavItemProps, 'item'> & {
-  caption?: boolean;
-  disabled?: boolean;
+	caption?: boolean;
+	disabled?: boolean;
 };
 
 export const StyledItem = styled(ListItemButton, {
@@ -61,12 +61,12 @@ export const StyledItem = styled(ListItemButton, {
 		}),
 		// Active sub item
 		...(subItem &&
-      active && {
-			...activeSubStyle,
-			'&:hover': {
+			active && {
 				...activeSubStyle,
-			},
-		}),
+				'&:hover': {
+					...activeSubStyle,
+				},
+			}),
 		// Disabled
 		...(disabled && {
 			'&.Mui-disabled': {
@@ -89,7 +89,7 @@ export const StyledIcon = styled(ListItemIcon)({
 // ----------------------------------------------------------------------
 
 type StyledDotIconProps = {
-  active?: boolean;
+	active?: boolean;
 };
 
 export const StyledDotIcon = styled('span', {

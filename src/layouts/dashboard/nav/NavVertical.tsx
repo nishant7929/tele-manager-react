@@ -19,8 +19,8 @@ import { useSelector } from '../../../redux/store';
 // ----------------------------------------------------------------------
 
 type Props = {
-  openNav: boolean;
-  onCloseNav: VoidFunction;
+	openNav: boolean;
+	onCloseNav: VoidFunction;
 };
 
 export default function NavVertical({ openNav, onCloseNav }: Props) {
@@ -32,7 +32,6 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
 		if (openNav) {
 			onCloseNav();
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [pathname]);
 
 	const renderContent = (

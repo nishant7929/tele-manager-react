@@ -7,12 +7,12 @@ import { TableProps } from './types';
 type ReturnType = TableProps;
 
 export type UseTableProps = {
-  defaultDense?: boolean;
-  defaultOrder?: 'asc' | 'desc';
-  defaultOrderBy?: string;
-  defaultSelected?: string[];
-  defaultRowsPerPage?: number;
-  defaultCurrentPage?: number;
+	defaultDense?: boolean;
+	defaultOrder?: 'asc' | 'desc';
+	defaultOrderBy?: string;
+	defaultSelected?: string[];
+	defaultRowsPerPage?: number;
+	defaultCurrentPage?: number;
 };
 
 export default function useTable(props?: UseTableProps): ReturnType {
@@ -70,7 +70,7 @@ export default function useTable(props?: UseTableProps): ReturnType {
 		setSelected([]);
 	}, []);
 
-	const onChangePage = useCallback((event: unknown, newPage: number) => {
+	const onChangePage = useCallback((_event: unknown, newPage: number) => {
 		setPage(newPage);
 	}, []);
 

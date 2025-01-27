@@ -20,7 +20,6 @@ export default function FileCard({ file, selected, onSelect }: Props) {
 	return (
 		<Card>
 			<Box sx={{ position: 'relative' }}>
-
 				<Checkbox
 					checked={selected}
 					onClick={onSelect}

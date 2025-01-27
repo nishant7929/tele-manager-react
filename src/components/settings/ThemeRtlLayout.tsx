@@ -11,7 +11,7 @@ import { useTheme } from '@mui/material/styles';
 // ----------------------------------------------------------------------
 
 type Props = {
-  children: React.ReactNode;
+	children: React.ReactNode;
 };
 
 export default function ThemeRtlLayout({ children }: Props) {

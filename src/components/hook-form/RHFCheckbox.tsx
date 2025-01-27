@@ -14,8 +14,8 @@ import {
 // ----------------------------------------------------------------------
 
 interface RHFCheckboxProps extends Omit<FormControlLabelProps, 'control'> {
-  name: string;
-  helperText?: React.ReactNode;
+	name: string;
+	helperText?: React.ReactNode;
 }
 
 export function RHFCheckbox({ name, helperText, ...other }: RHFCheckboxProps) {
@@ -25,7 +25,7 @@ export function RHFCheckbox({ name, helperText, ...other }: RHFCheckboxProps) {
 		<Controller
 			name={name}
 			control={control}
-			render={({ field, fieldState: { error }}) => (
+			render={({ field, fieldState: { error } }) => (
 				<div>
 					<FormControlLabel control={<Checkbox {...field} checked={field.value} />} {...other} />
 
@@ -41,12 +41,12 @@ export function RHFCheckbox({ name, helperText, ...other }: RHFCheckboxProps) {
 // ----------------------------------------------------------------------
 
 interface RHFMultiCheckboxProps extends Omit<FormControlLabelProps, 'control' | 'label'> {
-  name: string;
-  options: { label: string; value: any }[];
-  row?: boolean;
-  label?: string;
-  spacing?: number;
-  helperText?: React.ReactNode;
+	name: string;
+	options: { label: string; value: any }[];
+	row?: boolean;
+	label?: string;
+	spacing?: number;
+	helperText?: React.ReactNode;
 }
 
 export function RHFMultiCheckbox({
@@ -69,7 +69,7 @@ export function RHFMultiCheckbox({
 		<Controller
 			name={name}
 			control={control}
-			render={({ field, fieldState: { error }}) => (
+			render={({ field, fieldState: { error } }) => (
 				<FormControl component="fieldset">
 					{label && (
 						<FormLabel component="legend" sx={{ typography: 'body2' }}>

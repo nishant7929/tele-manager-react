@@ -18,7 +18,7 @@ export interface SendCodeResult {
 
 let globalTelegramClient: TelegramClient | null = null;
 
-export const getTelegramClient = async(): Promise<TelegramClient> => {
+export const getTelegramClient = async (): Promise<TelegramClient> => {
 	if (!globalTelegramClient) {
 		globalTelegramClient = new TelegramClient(SESSION, Number(API_ID), API_HASH as string, {
 			connectionRetries: 5,
@@ -31,14 +31,14 @@ export const getTelegramClient = async(): Promise<TelegramClient> => {
 };
 
 export const telegramClient = {
-	logout: async(): Promise<void> => {
+	logout: async (): Promise<void> => {
 		const client = await getTelegramClient();
 		localStorage.removeItem('telegram_session');
 		await client.invoke(new Api.auth.LogOut());
 	},
 };
 
-export const sendCodeHandler = async(phoneNumber: string): Promise<SendCodeResult> => {
+export const sendCodeHandler = async (phoneNumber: string): Promise<SendCodeResult> => {
 	try {
 		const client = await getTelegramClient();
 
@@ -64,7 +64,7 @@ export const sendCodeHandler = async(phoneNumber: string): Promise<SendCodeResul
 	}
 };
 
-export const verifyOtp = async(
+export const verifyOtp = async (
 	phoneNumber: string,
 	phoneCode: string
 ): Promise<{
@@ -76,8 +76,8 @@ export const verifyOtp = async(
 		const client = await getTelegramClient();
 
 		await client.start({
-			phoneNumber: async() => phoneNumber,
-			phoneCode: async() => phoneCode,
+			phoneNumber: async () => phoneNumber,
+			phoneCode: async () => phoneCode,
 			onError: (err) => {
 				throw new Error(err.message);
 			},
@@ -123,7 +123,7 @@ export const verifyOtp = async(
 	}
 };
 
-export const uploadFileHandler = async(
+export const uploadFileHandler = async (
 	event: BaseSyntheticEvent,
 	setUploadingImages: React.Dispatch<React.SetStateAction<any[]>>
 ): Promise<void> => {
@@ -148,11 +148,11 @@ export const uploadFileHandler = async(
 		setUploadingImages((prev) => [...prev, ...uploadingFiles]);
 
 		await Promise.all(
-			uploadingFiles.map(async(fileData, index) => {
+			uploadingFiles.map(async (fileData, index) => {
 				const file = files[index] as File;
 
 				const reader = new FileReader();
-				reader.onload = async() => {
+				reader.onload = async () => {
 					try {
 						const uploadedFile = await client.uploadFile({
 							file,
@@ -186,9 +186,9 @@ export const uploadFileHandler = async(
 							prev.map((img) =>
 								img.id === fileData.id
 									? {
-										...img,
-										progress: 100,
-										status: 'success',
+											...img,
+											progress: 100,
+											status: 'success',
 									  }
 									: img
 							)
@@ -219,7 +219,7 @@ export interface UploadFileType {
 	preview: string | null;
 }
 
-export const uploadFileHandlerV2 = async(
+export const uploadFileHandlerV2 = async (
 	folderId: string,
 	files: File[],
 	setUploadingFiles: React.Dispatch<React.SetStateAction<UploadFileType[]>>,
@@ -243,16 +243,16 @@ export const uploadFileHandlerV2 = async(
 
 		setUploadingFiles((prev) => [...prev, ...uploadingFiles]);
 
-		const uploadFilesWithLimit = async() => {
+		const uploadFilesWithLimit = async () => {
 			const maxConcurrentUploads = 7;
 			const queue: Array<() => Promise<void>> = [];
 			let activeUploads = 0;
 
-			const processUpload = async(fileData: UploadFileType, index: number) => {
+			const processUpload = async (fileData: UploadFileType, index: number) => {
 				const file = files[index] as File;
 
 				const reader = new FileReader();
-				reader.onload = async() => {
+				reader.onload = async () => {
 					try {
 						activeUploads++;
 						const uploadedFile = await client.uploadFile({
@@ -316,7 +316,7 @@ export const uploadFileHandlerV2 = async(
 			};
 
 			uploadingFiles.forEach((fileData, index) => {
-				const uploadTask = async() => {
+				const uploadTask = async () => {
 					await processUpload(fileData, index);
 				};
 				queue.push(uploadTask);
@@ -333,7 +333,7 @@ export const uploadFileHandlerV2 = async(
 	}
 };
 
-export const deleteSavedMessages = async(messageIds: number[]): Promise<boolean> => {
+export const deleteSavedMessages = async (messageIds: number[]): Promise<boolean> => {
 	try {
 		const client = await getTelegramClient();
 
@@ -352,7 +352,7 @@ export const deleteSavedMessages = async(messageIds: number[]): Promise<boolean>
 	}
 };
 
-const generateVideoThumbnail = async(videoFile: File): Promise<Blob> => {
+const generateVideoThumbnail = async (videoFile: File): Promise<Blob> => {
 	return new Promise((resolve, reject) => {
 		const videoElement = document.createElement('video');
 		const canvas = document.createElement('canvas');
@@ -393,7 +393,7 @@ const generateVideoThumbnail = async(videoFile: File): Promise<Blob> => {
 	});
 };
 
-export const compressImage = async(file: File, maxSizeMB: number): Promise<Blob> => {
+export const compressImage = async (file: File, maxSizeMB: number): Promise<Blob> => {
 	const options = {
 		maxSizeMB,
 		maxWidthOrHeight: 800,

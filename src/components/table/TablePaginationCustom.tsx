@@ -13,9 +13,9 @@ import {
 // ----------------------------------------------------------------------
 
 type Props = {
-  dense?: boolean;
-  onChangeDense?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  sx?: SxProps<Theme>;
+	dense?: boolean;
+	onChangeDense?: (_event: React.ChangeEvent<HTMLInputElement>) => void;
+	sx?: SxProps<Theme>;
 };
 
 export default function TablePaginationCustom({

@@ -87,7 +87,7 @@ export default function getPosition(arrow: string) {
 			};
 			break;
 
-			// top-right
+		// top-right
 		default:
 			props = {
 				style: { ml: 0.75 },

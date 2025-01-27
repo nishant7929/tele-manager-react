@@ -33,7 +33,7 @@ export default memo(NavSectionHorizontal);
 // ----------------------------------------------------------------------
 
 type ItemsProps = {
-  items: NavListProps[];
+	items: NavListProps[];
 };
 
 function Items({ items }: ItemsProps) {

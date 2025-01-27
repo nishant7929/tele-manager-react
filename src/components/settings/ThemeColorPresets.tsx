@@ -8,7 +8,7 @@ import { useSettingsContext } from './SettingsContext';
 // ----------------------------------------------------------------------
 
 type Props = {
-  children: React.ReactNode;
+	children: React.ReactNode;
 };
 
 export default function ThemeColorPresets({ children }: Props) {

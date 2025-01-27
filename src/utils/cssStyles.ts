@@ -4,10 +4,10 @@ import { alpha } from '@mui/material/styles';
 // ----------------------------------------------------------------------
 
 type BgBlurProps = {
-  blur?: number;
-  opacity?: number;
-  color?: string;
-  imgUrl?: string;
+	blur?: number;
+	opacity?: number;
+	color?: string;
+	imgUrl?: string;
 };
 
 export function bgBlur(props?: BgBlurProps) {
@@ -45,11 +45,11 @@ export function bgBlur(props?: BgBlurProps) {
 // ----------------------------------------------------------------------
 
 type BgGradientProps = {
-  direction?: string;
-  color?: string;
-  startColor?: string;
-  endColor?: string;
-  imgUrl?: string;
+	direction?: string;
+	color?: string;
+	startColor?: string;
+	endColor?: string;
+	imgUrl?: string;
 };
 
 export function bgGradient(props?: BgGradientProps) {

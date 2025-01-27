@@ -35,8 +35,7 @@ const slice = createSlice({
 		// UPDATE USER
 		updateUser(state, action) {
 			state.user = action.payload;
-		}
-
+		},
 	},
 });
 
@@ -44,15 +43,12 @@ const slice = createSlice({
 export default slice.reducer;
 
 // Actions
-export const {
-	updateUser
-} = slice.actions;
-
+export const { updateUser } = slice.actions;
 
 // ----------------------------------------------------------------------
 
 export function getUserData(tgId: string) {
-	return async(dispatch: Dispatch) => {
+	return async (dispatch: Dispatch) => {
 		dispatch(slice.actions.startLoading());
 		try {
 			const user = await userModel.findByTgId(tgId);

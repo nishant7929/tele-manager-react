@@ -95,7 +95,6 @@ const reducer = (state: AuthStateType, action: ActionsType): AuthStateType => {
 
 // ----------------------------------------------------------------------
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const UserContext = createContext<UserContextType | null>(null);
 
 // ----------------------------------------------------------------------
@@ -109,7 +108,7 @@ export function UserProvider({ children }: AuthProviderProps) {
 
 	const storageAvailable = localStorageAvailable();
 
-	const initialize = useCallback(async() => {
+	const initialize = useCallback(async () => {
 		try {
 			const savedSession = storageAvailable ? localStorage.getItem('telegram_session') || '' : '';
 
@@ -198,7 +197,7 @@ export function UserProvider({ children }: AuthProviderProps) {
 	}, [initialize]);
 
 	// LOGIN
-	const login = useCallback(async(userInfo: AuthUserType) => {
+	const login = useCallback(async (userInfo: AuthUserType) => {
 		const client = await getTelegramClient();
 		const savedMessagesPeer = await client.getInputEntity('me');
 		const messages = await client.getMessages(savedMessagesPeer, {

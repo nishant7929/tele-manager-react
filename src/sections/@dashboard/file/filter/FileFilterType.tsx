@@ -13,10 +13,10 @@ import FileFilterButton from './FileFilterButton';
 // ----------------------------------------------------------------------
 
 type Props = {
-  filterType: string[];
-  optionsType: string[];
-  onReset: VoidFunction;
-  onFilterType: (type: string) => void;
+	filterType: string[];
+	optionsType: string[];
+	onReset: VoidFunction;
+	onFilterType: (_type: string) => void;
 };
 
 export default function FileFilterType({ optionsType, filterType, onFilterType, onReset }: Props) {
@@ -44,7 +44,7 @@ export default function FileFilterType({ optionsType, filterType, onFilterType, 
 				{renderLabel}
 				{filterType.length > 2 && (
 					<Label color="info" sx={{ ml: 1 }}>
-            +{filterType.length - 2}
+						+{filterType.length - 2}
 					</Label>
 				)}
 			</FileFilterButton>
@@ -87,11 +87,11 @@ export default function FileFilterType({ optionsType, filterType, onFilterType, 
 
 					<Stack spacing={1} direction="row" alignItems="center" justifyContent="flex-end">
 						<Button variant="outlined" color="inherit" onClick={onReset}>
-              Clear
+							Clear
 						</Button>
 
 						<Button variant="contained" onClick={handleClosePopover}>
-              Apply
+							Apply
 						</Button>
 					</Stack>
 				</Stack>

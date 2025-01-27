@@ -7,16 +7,16 @@ const COLORS = ['primary', 'secondary', 'info', 'success', 'warning', 'error'] a
 
 // NEW VARIANT
 declare module '@mui/material/Pagination' {
-  interface PaginationPropsVariantOverrides {
-    soft: true;
-  }
+	interface PaginationPropsVariantOverrides {
+		soft: true;
+	}
 
-  interface PaginationPropsColorOverrides {
-    info: true;
-    success: true;
-    warning: true;
-    error: true;
-  }
+	interface PaginationPropsColorOverrides {
+		info: true;
+		success: true;
+		warning: true;
+		error: true;
+	}
 }
 
 export default function Pagination(theme: Theme) {

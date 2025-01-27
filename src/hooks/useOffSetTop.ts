@@ -6,8 +6,8 @@ import { useState, useEffect } from 'react';
 type ReturnType = boolean;
 
 interface UseScrollOptions extends Omit<ScrollOptions, 'container' | 'target'> {
-  container?: React.RefObject<HTMLElement>;
-  target?: React.RefObject<HTMLElement>;
+	container?: React.RefObject<HTMLElement>;
+	target?: React.RefObject<HTMLElement>;
 }
 
 export default function useOffSetTop(top = 100, options?: UseScrollOptions): ReturnType {

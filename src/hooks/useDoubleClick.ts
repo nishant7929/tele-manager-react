@@ -3,9 +3,9 @@ import { useCallback, useRef } from 'react';
 // ----------------------------------------------------------------------
 
 type Props = {
-  timeout?: number;
-  click?: (e: React.SyntheticEvent) => void;
-  doubleClick: (e: React.SyntheticEvent) => void;
+	timeout?: number;
+	click?: (_e: React.SyntheticEvent) => void;
+	doubleClick: (_e: React.SyntheticEvent) => void;
 };
 
 export default function useDoubleClick({ click, doubleClick, timeout = 250 }: Props) {

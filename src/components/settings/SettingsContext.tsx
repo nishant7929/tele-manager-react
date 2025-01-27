@@ -42,7 +42,9 @@ export const SettingsContext = createContext(initialState);
 export const useSettingsContext = () => {
 	const context = useContext(SettingsContext);
 
-	if (!context) throw new Error('useSettingsContext must be use inside SettingsProvider');
+	if (!context) {
+		throw new Error('useSettingsContext must be use inside SettingsProvider');
+	}
 
 	return context;
 };
@@ -50,7 +52,7 @@ export const useSettingsContext = () => {
 // ----------------------------------------------------------------------
 
 type SettingsProviderProps = {
-  children: ReactNode;
+	children: ReactNode;
 };
 
 export function SettingsProvider({ children }: SettingsProviderProps) {
@@ -66,7 +68,6 @@ export function SettingsProvider({ children }: SettingsProviderProps) {
 		if (isArabic) {
 			onChangeDirectionByLang('ar');
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [isArabic]);
 
 	// Mode

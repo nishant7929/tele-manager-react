@@ -21,13 +21,13 @@ import FileInvitedItem from '../FileInvitedItem';
 // ----------------------------------------------------------------------
 
 interface Props extends DialogProps {
-  inviteEmail?: string;
-  shared?: IFileShared[] | null;
-  onCopyLink?: VoidFunction;
-  onChangeInvite?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  //
-  open: boolean;
-  onClose: VoidFunction;
+	inviteEmail?: string;
+	shared?: IFileShared[] | null;
+	onCopyLink?: VoidFunction;
+	onChangeInvite?: (_event: React.ChangeEvent<HTMLInputElement>) => void;
+	//
+	open: boolean;
+	onClose: VoidFunction;
 }
 
 export default function FileShareDialog({
@@ -57,7 +57,7 @@ export default function FileShareDialog({
 							onChange={onChangeInvite}
 						/>
 						<Button disabled={!inviteEmail} variant="contained" sx={{ flexShrink: 0 }}>
-              Send Invite
+							Send Invite
 						</Button>
 					</Stack>
 				)}
@@ -76,13 +76,13 @@ export default function FileShareDialog({
 			<DialogActions sx={{ justifyContent: 'space-between' }}>
 				{onCopyLink && (
 					<Button startIcon={<Iconify icon="eva:link-2-fill" />} onClick={onCopyLink}>
-            Copy link
+						Copy link
 					</Button>
 				)}
 
 				{onClose && (
 					<Button variant="outlined" color="inherit" onClick={onClose}>
-            Close
+						Close
 					</Button>
 				)}
 			</DialogActions>

@@ -27,14 +27,14 @@ const visuallyHidden = {
 // ----------------------------------------------------------------------
 
 type Props = {
-  order?: 'asc' | 'desc';
-  orderBy?: string;
-  headLabel: any[];
-  rowCount?: number;
-  numSelected?: number;
-  onSort?: (id: string) => void;
-  onSelectAllRows?: (checked: boolean) => void;
-  sx?: SxProps<Theme>;
+	order?: 'asc' | 'desc';
+	orderBy?: string;
+	headLabel: any[];
+	rowCount?: number;
+	numSelected?: number;
+	onSort?: (_id: string) => void;
+	onSelectAllRows?: (_checked: boolean) => void;
+	sx?: SxProps<Theme>;
 };
 
 export default function TableHeadCustom({

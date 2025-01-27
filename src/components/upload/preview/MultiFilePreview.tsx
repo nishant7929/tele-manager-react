@@ -21,7 +21,7 @@ export default function MultiFilePreview({ thumbnail, files, onRemove, sx }: Upl
 	return (
 		<AnimatePresence initial={false}>
 			{files.map((file) => {
-				const { key, path = '', size = 0 } = fileData(file.file);
+				const { path = '', size = 0 } = fileData(file.file);
 
 				const isNotFormatFile = typeof file === 'string';
 
@@ -104,9 +104,17 @@ export default function MultiFilePreview({ thumbnail, files, onRemove, sx }: Upl
 								{isNotFormatFile ? '' : fData(size)}
 							</Typography>
 
-							{file.progress === 100
-								? <Typography variant="subtitle2" noWrap>Uploaded</Typography>
-								: <LinearProgress color={file.progress === 0 ? 'warning' : 'primary'} variant='determinate' value={file.progress || 0} />}
+							{file.progress === 100 ? (
+								<Typography variant="subtitle2" noWrap>
+									Uploaded
+								</Typography>
+							) : (
+								<LinearProgress
+									color={file.progress === 0 ? 'warning' : 'primary'}
+									variant="determinate"
+									value={file.progress || 0}
+								/>
+							)}
 						</Stack>
 
 						{onRemove && (

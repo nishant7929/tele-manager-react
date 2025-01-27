@@ -27,14 +27,11 @@ export default function LoginPage() {
 
 	return (
 		<>
-			{
-				!Boolean(phoneNumber)
-					? renderLogin()
-					: <VerifyCodePage
-						phoneNumber={phoneNumber}
-						setPhoneNumber={setPhoneNumber}
-					/>
-			}
+			{!phoneNumber ? (
+				renderLogin()
+			) : (
+				<VerifyCodePage phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber} />
+			)}
 		</>
 	);
 }

@@ -9,8 +9,8 @@ import useEventListener from '../../hooks/useEventListener';
 // ----------------------------------------------------------------------
 
 type Props = TextFieldProps & {
-  keyName: string;
-  inputs: string[];
+	keyName: string;
+	inputs: string[];
 };
 
 export default function RHFCodes({ keyName = '', inputs = [], ...other }: Props) {
@@ -32,20 +32,20 @@ export default function RHFCodes({ keyName = '', inputs = [], ...other }: Props)
 		const { value } = event.target as HTMLInputElement;
 
 		if (value.length === 0) {
-		  const fieldIndex = name.replace(keyName, '');
-		  const fieldIntIndex = Number(fieldIndex);
+			const fieldIndex = name.replace(keyName, '');
+			const fieldIntIndex = Number(fieldIndex);
 
-		  if (fieldIntIndex > 1) {
+			if (fieldIntIndex > 1) {
 				const previousField: HTMLElement | null = document.querySelector(
-			  `input[name=${keyName}${fieldIntIndex - 1}]`
+					`input[name=${keyName}${fieldIntIndex - 1}]`
 				);
 
 				if (previousField !== null) {
-			  (previousField as HTMLElement).focus();
+					(previousField as HTMLElement).focus();
 				}
-		  }
+			}
 		}
-	  };
+	};
 
 	const handleChangeWithNextField = (
 		event: React.ChangeEvent<HTMLInputElement>,
@@ -81,7 +81,7 @@ export default function RHFCodes({ keyName = '', inputs = [], ...other }: Props)
 					key={name}
 					name={`${keyName}${index + 1}`}
 					control={control}
-					render={({ field, fieldState: { error }}) => (
+					render={({ field, fieldState: { error } }) => (
 						<TextField
 							{...field}
 							error={!!error}
@@ -100,9 +100,9 @@ export default function RHFCodes({ keyName = '', inputs = [], ...other }: Props)
 							}}
 							onKeyDown={(event: React.KeyboardEvent<HTMLInputElement>) => {
 								if (event.key === 'Backspace') {
-								  handleBackspace(event, field.name);
+									handleBackspace(event, field.name);
 								}
-							  }}
+							}}
 							inputProps={{
 								maxLength: 1,
 								type: 'number',

@@ -32,14 +32,14 @@ import FileInvitedItem from '../FileInvitedItem';
 // ----------------------------------------------------------------------
 
 interface Props extends DrawerProps {
-  item: IFile;
-  favorited?: boolean;
-  //
-  onFavorite?: VoidFunction;
-  onCopyLink: VoidFunction;
-  //
-  onClose: VoidFunction;
-  onDelete: VoidFunction;
+	item: IFile;
+	favorited?: boolean;
+	//
+	onFavorite?: VoidFunction;
+	onCopyLink: VoidFunction;
+	//
+	onClose: VoidFunction;
+	onDelete: VoidFunction;
 }
 
 export default function FileDetailsDrawer({
@@ -143,7 +143,7 @@ export default function FileDetailsDrawer({
 									limitTags={2}
 									options={item.tags.map((option) => option)}
 									value={tags}
-									onChange={(event, newValue) => {
+									onChange={(_event, newValue) => {
 										setTags([...tags, ...newValue.filter((option) => tags.indexOf(option) === -1)]);
 									}}
 									renderTags={(value: readonly string[], getTagProps) =>
@@ -221,7 +221,7 @@ export default function FileDetailsDrawer({
 						startIcon={<Iconify icon="eva:trash-2-outline" />}
 						onClick={onDelete}
 					>
-            Delete
+						Delete
 					</Button>
 				</Box>
 			</Drawer>
@@ -244,9 +244,9 @@ export default function FileDetailsDrawer({
 // ----------------------------------------------------------------------
 
 interface PanelProps extends StackProps {
-  label: string;
-  toggle: boolean;
-  onToggle: VoidFunction;
+	label: string;
+	toggle: boolean;
+	onToggle: VoidFunction;
 }
 
 function Panel({ label, toggle, onToggle, ...other }: PanelProps) {
@@ -264,8 +264,8 @@ function Panel({ label, toggle, onToggle, ...other }: PanelProps) {
 // ----------------------------------------------------------------------
 
 type RowProps = {
-  label: string;
-  value: string;
+	label: string;
+	value: string;
 };
 
 function Row({ label, value = '' }: RowProps) {

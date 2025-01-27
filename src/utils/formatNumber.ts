@@ -39,7 +39,9 @@ function result(format: string, key = '.00') {
 }
 
 export function formatBytes(bytes: number): string {
-	if (bytes === 0) return '0 Bytes';
+	if (bytes === 0) {
+		return '0 Bytes';
+	}
 
 	const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
 	const i = Math.floor(Math.log(bytes) / Math.log(1024));

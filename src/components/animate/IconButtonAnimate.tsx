@@ -20,8 +20,8 @@ export default IconButtonAnimate;
 // ----------------------------------------------------------------------
 
 type AnimateWrapProp = {
-  children: React.ReactNode;
-  size: 'small' | 'medium' | 'large';
+	children: React.ReactNode;
+	size: 'small' | 'medium' | 'large';
 };
 
 const varSmall = {

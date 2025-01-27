@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from '../../redux/store';
 import { FolderType } from '../../@types/user';
 import { PATH_DASHBOARD } from '../../routes/paths';
 import { uuidv4V2 } from '../../utils/uuidv4';
-import {  userModel } from '../../utils/firebase';
+import { userModel } from '../../utils/firebase';
 import { updateUser } from '../../redux/slices/user';
 
 // ----------------------------------------------------------------------
@@ -55,14 +55,13 @@ export default function FileManagerPage() {
 		setOpenNewFolder(false);
 	};
 
-
-	const handleCreateNewFolder = async() => {
+	const handleCreateNewFolder = async () => {
 		handleCloseNewFolder();
 		setFolderName('');
 		const newFolder: FolderType = {
 			name: folderName,
 			id: uuidv4V2(),
-			createdAt: new Date().toISOString()
+			createdAt: new Date().toISOString(),
 		};
 		if (user) {
 			const newUser = await userModel.findByIdAndUpdate(user.id, {

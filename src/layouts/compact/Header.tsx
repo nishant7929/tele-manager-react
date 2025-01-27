@@ -1,6 +1,6 @@
 // @mui
 import { useTheme } from '@mui/material/styles';
-import { AppBar, Toolbar, Box, BoxProps, Link } from '@mui/material';
+import { AppBar, Toolbar, Box, BoxProps } from '@mui/material';
 // config
 import { HEADER } from '../../config-global';
 // utils
@@ -11,7 +11,7 @@ import Logo from '../../components/logo';
 // ----------------------------------------------------------------------
 
 type Props = {
-  isOffset: boolean;
+	isOffset: boolean;
 };
 
 export default function Header({ isOffset }: Props) {

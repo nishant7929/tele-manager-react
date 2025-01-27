@@ -43,7 +43,7 @@ export default function VerifyCodePage({ phoneNumber, setPhoneNumber }: Props) {
 					mx: 'auto',
 					alignItems: 'center',
 					display: 'inline-flex',
-					cursor: 'pointer'
+					cursor: 'pointer',
 				}}
 			>
 				<Iconify icon="eva:chevron-left-fill" width={16} />

@@ -98,13 +98,13 @@ export default function FileFolderCard({ folder, selected, sx, ...other }: Props
 		// copy(folder.url);
 	};
 
-	const handleDeleteItem = async() => {
+	const handleDeleteItem = async () => {
 		const folderIds = getAllFolderIds(user?.folders || [], folder.id);
 		const ids = tgMessages.filter((message) => {
 			return folderIds.some((id) => message.message.includes(id));
 		});
 
-		const isDeleted = await deleteSavedMessages(ids.map(item => item.id));
+		const isDeleted = await deleteSavedMessages(ids.map((item) => item.id));
 		if (user && isDeleted) {
 			const newUser = await userModel.findByIdAndUpdate(user.id, {
 				...user,
@@ -112,9 +112,7 @@ export default function FileFolderCard({ folder, selected, sx, ...other }: Props
 			});
 			dispatch(updateUser(newUser));
 		}
-
 	};
-
 
 	const updatedFolders = (
 		folders: FolderType[],
@@ -138,7 +136,7 @@ export default function FileFolderCard({ folder, selected, sx, ...other }: Props
 		});
 	};
 
-	const handleUpdateFolder = async() => {
+	const handleUpdateFolder = async () => {
 		handleCloseEditFolder();
 		setFolderName(folderName);
 		if (user) {

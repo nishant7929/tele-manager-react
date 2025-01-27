@@ -6,8 +6,8 @@ import Iconify from '../../../components/iconify';
 // ----------------------------------------------------------------------
 
 interface Props extends ToggleButtonGroupProps {
-  value: string;
-  onChange: (event: React.MouseEvent<HTMLElement>, newView: string | null) => void;
+	value: string;
+	onChange: (_event: React.MouseEvent<HTMLElement>, _newView: string | null) => void;
 }
 
 export default function FileChangeViewButton({ value, onChange, ...other }: Props) {

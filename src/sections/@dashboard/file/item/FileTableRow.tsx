@@ -34,10 +34,10 @@ import FileDetailsDrawer from '../portal/FileDetailsDrawer';
 // ----------------------------------------------------------------------
 
 type Props = {
-  row: IFileManager;
-  selected: boolean;
-  onSelectRow: VoidFunction;
-  onDeleteRow: VoidFunction;
+	row: IFileManager;
+	selected: boolean;
+	onSelectRow: VoidFunction;
+	onDeleteRow: VoidFunction;
 };
 
 export default function FileTableRow({ row, selected, onSelectRow, onDeleteRow }: Props) {
@@ -190,9 +190,9 @@ export default function FileTableRow({ row, selected, onSelectRow, onDeleteRow }
 						}}
 					>
 						{shared &&
-              shared.map((person) => (
-              	<Avatar key={person.id} alt={person.name} src={person.avatar} />
-              ))}
+							shared.map((person) => (
+								<Avatar key={person.id} alt={person.name} src={person.avatar} />
+							))}
 					</AvatarGroup>
 				</TableCell>
 
@@ -232,7 +232,7 @@ export default function FileTableRow({ row, selected, onSelectRow, onDeleteRow }
 					}}
 				>
 					<Iconify icon="eva:link-2-fill" />
-          Copy Link
+					Copy Link
 				</MenuItem>
 
 				<MenuItem
@@ -242,7 +242,7 @@ export default function FileTableRow({ row, selected, onSelectRow, onDeleteRow }
 					}}
 				>
 					<Iconify icon="eva:share-fill" />
-          Share
+					Share
 				</MenuItem>
 
 				<Divider sx={{ borderStyle: 'dashed' }} />
@@ -255,7 +255,7 @@ export default function FileTableRow({ row, selected, onSelectRow, onDeleteRow }
 					sx={{ color: 'error.main' }}
 				>
 					<Iconify icon="eva:trash-2-outline" />
-          Delete
+					Delete
 				</MenuItem>
 			</MenuPopover>
 
@@ -288,7 +288,7 @@ export default function FileTableRow({ row, selected, onSelectRow, onDeleteRow }
 				content="Are you sure want to delete?"
 				action={
 					<Button variant="contained" color="error" onClick={onDeleteRow}>
-            Delete
+						Delete
 					</Button>
 				}
 			/>

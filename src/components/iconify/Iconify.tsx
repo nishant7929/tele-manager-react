@@ -9,7 +9,7 @@ import { IconifyProps } from './types';
 // ----------------------------------------------------------------------
 
 interface Props extends BoxProps {
-  icon: IconifyProps;
+	icon: IconifyProps;
 }
 
 const Iconify = forwardRef<SVGElement, Props>(({ icon, width = 20, sx, ...other }, ref) => (

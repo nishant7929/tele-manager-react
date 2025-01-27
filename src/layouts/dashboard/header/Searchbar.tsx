@@ -90,7 +90,7 @@ const StyledPopper = styled((props: PopperProps) => <Popper {...props} />)(({ th
 // ----------------------------------------------------------------------
 
 interface Option extends NavListProps {
-  subheader: string;
+	subheader: string;
 }
 
 function Searchbar() {
@@ -102,9 +102,9 @@ function Searchbar() {
 
 	const [searchQuery, setSearchQuery] = useState('');
 
-	const reduceItems = NavConfig().map((list) =>
-		handleLoop(list.items, (list as any).subheader)
-	).flat();
+	const reduceItems = NavConfig()
+		.map((list) => handleLoop(list.items, (list as any).subheader))
+		.flat();
 
 	const allItems = flattenArray(reduceItems).map((option) => {
 		const group = splitPath(reduceItems, option.path);
@@ -121,7 +121,6 @@ function Searchbar() {
 		if (open) {
 			handleClose();
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [pathname]);
 
 	const handleOpen = () => {
@@ -165,7 +164,7 @@ function Searchbar() {
 							disableClearable
 							popupIcon={null}
 							PopperComponent={StyledPopper}
-							onInputChange={(event, value) => setSearchQuery(value)}
+							onInputChange={(_event, value) => setSearchQuery(value)}
 							noOptionsText={<SearchNotFound query={searchQuery} sx={{ py: 10 }} />}
 							options={allItems.sort((a, b) => -b.group.localeCompare(a.group))}
 							groupBy={(option) => option.group}
@@ -241,8 +240,8 @@ export default memo(Searchbar);
 // ----------------------------------------------------------------------
 
 type ItemProps = {
-  path: string[];
-  currItem: NavListProps;
+	path: string[];
+	currItem: NavListProps;
 };
 
 function splitPath(array: NavListProps[], key: string) {

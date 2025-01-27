@@ -9,7 +9,7 @@ import { PATH_AUTH } from '../routes/paths';
 // ----------------------------------------------------------------------
 
 type AuthGuardProps = {
-  children: ReactNode;
+	children: ReactNode;
 };
 
 export default function AuthGuard({ children }: AuthGuardProps) {

@@ -8,8 +8,8 @@ import Iconify from '../../iconify';
 const SPACING = 2.5;
 
 interface Props extends StackProps {
-  title: string;
-  tooltip?: string;
+	title: string;
+	tooltip?: string;
 }
 
 export default function Block({ title, tooltip, children, sx, ...other }: Props) {

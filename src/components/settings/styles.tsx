@@ -13,7 +13,7 @@ export const StyledWrap = styled(Box)(() => ({
 // ----------------------------------------------------------------------
 
 type StyledCardProps = {
-  selected: boolean;
+	selected: boolean;
 };
 
 export const StyledCard = styled(CardActionArea, {
@@ -40,8 +40,8 @@ export const StyledCard = styled(CardActionArea, {
 // ----------------------------------------------------------------------
 
 type StyledCircleColorProps = {
-  selected: boolean;
-  color: string;
+	selected: boolean;
+	color: string;
 };
 
 export const StyledCircleColor = styled('div', {
@@ -65,7 +65,7 @@ export const StyledCircleColor = styled('div', {
 // ----------------------------------------------------------------------
 
 type MaskControlProps = {
-  value: string;
+	value: string;
 };
 
 export function MaskControl({ value }: MaskControlProps) {
@@ -89,7 +89,7 @@ export function MaskControl({ value }: MaskControlProps) {
 // ----------------------------------------------------------------------
 
 type LayoutIconValue = {
-  layout: 'vertical' | 'horizontal' | 'mini';
+	layout: 'vertical' | 'horizontal' | 'mini';
 };
 
 export function LayoutIcon({ layout }: LayoutIconValue) {

@@ -7,12 +7,12 @@ import Iconify from '../../../components/iconify';
 // ----------------------------------------------------------------------
 
 interface Props extends StackProps {
-  title: string;
-  subTitle?: string;
-  link?: string;
-  onOpen?: VoidFunction;
-  collapse?: boolean;
-  onCollapse?: VoidFunction;
+	title: string;
+	subTitle?: string;
+	link?: string;
+	onOpen?: VoidFunction;
+	collapse?: boolean;
+	onCollapse?: VoidFunction;
 }
 
 export default function FilePanel({
@@ -63,7 +63,7 @@ export default function FilePanel({
 					color="inherit"
 					endIcon={<Iconify icon="eva:chevron-right-fill" />}
 				>
-          View All
+					View All
 				</Button>
 			)}
 

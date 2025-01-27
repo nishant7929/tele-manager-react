@@ -6,7 +6,7 @@ import { TextField, TextFieldProps } from '@mui/material';
 // ----------------------------------------------------------------------
 
 type Props = TextFieldProps & {
-  name: string;
+	name: string;
 };
 
 export default function RHFTextField({ name, helperText, ...other }: Props) {
@@ -16,7 +16,7 @@ export default function RHFTextField({ name, helperText, ...other }: Props) {
 		<Controller
 			name={name}
 			control={control}
-			render={({ field, fieldState: { error }}) => (
+			render={({ field, fieldState: { error } }) => (
 				<TextField
 					{...field}
 					fullWidth

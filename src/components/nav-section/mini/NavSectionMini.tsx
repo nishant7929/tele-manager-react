@@ -29,8 +29,8 @@ export default memo(NavSectionMini);
 // ----------------------------------------------------------------------
 
 type ItemsProps = {
-  items: NavListProps[];
-  isLastGroup: boolean;
+	items: NavListProps[];
+	isLastGroup: boolean;
 };
 
 function Items({ items, isLastGroup }: ItemsProps) {

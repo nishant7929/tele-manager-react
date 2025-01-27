@@ -39,7 +39,7 @@ export default function RoleBasedGuard({ hasContent, roles, children }: RoleBase
 				</m.div>
 
 				<m.div variants={varBounce().in}>
-					<ForbiddenIllustration sx={{ height: 260, my: { xs: 5, sm: 10 }}} />
+					<ForbiddenIllustration sx={{ height: 260, my: { xs: 5, sm: 10 } }} />
 				</m.div>
 			</Container>
 		) : null;

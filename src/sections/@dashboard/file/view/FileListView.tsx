@@ -28,12 +28,12 @@ const TABLE_HEAD = [
 ];
 
 type Props = {
-  table: TableProps;
-  tableData: IFile[];
-  isNotFound: boolean;
-  dataFiltered: IFile[];
-  onOpenConfirm: VoidFunction;
-  onDeleteRow: (id: string) => void;
+	table: TableProps;
+	tableData: IFile[];
+	isNotFound: boolean;
+	dataFiltered: IFile[];
+	onOpenConfirm: VoidFunction;
+	onDeleteRow: (_id: string) => void;
 };
 
 export default function FileListView({

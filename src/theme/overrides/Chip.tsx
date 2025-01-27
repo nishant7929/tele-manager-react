@@ -9,9 +9,9 @@ const COLORS = ['primary', 'secondary', 'info', 'success', 'warning', 'error'] a
 
 // NEW VARIANT
 declare module '@mui/material/Chip' {
-  interface ChipPropsVariantOverrides {
-    soft: true;
-  }
+	interface ChipPropsVariantOverrides {
+		soft: true;
+	}
 }
 
 export default function Chip(theme: Theme) {

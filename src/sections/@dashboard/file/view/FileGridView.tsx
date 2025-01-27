@@ -22,11 +22,9 @@ type Props = {
 };
 
 export default function FileGridView({ loading, table, data }: Props) {
-
 	const { selected, onSelectRow: onSelectItem } = table;
 
 	const containerRef = useRef(null);
-
 
 	const [inviteEmail, setInviteEmail] = useState('');
 
@@ -49,7 +47,6 @@ export default function FileGridView({ loading, table, data }: Props) {
 	return (
 		<>
 			<Box ref={containerRef}>
-
 				<Box
 					gap={3}
 					display="grid"
@@ -62,17 +59,17 @@ export default function FileGridView({ loading, table, data }: Props) {
 				>
 					{loading
 						? [...Array(4)].map((_, index) => (
-							<SkeletonProductItem sx={{ height: '140px' }} key={index} />
-							  ))
+								<SkeletonProductItem sx={{ height: '140px' }} key={index} />
+						  ))
 						: data?.map((folder) => (
-							<FileFolderCard
-								key={folder.id}
-								folder={folder}
-								selected={selected.includes(folder.id)}
-								onSelect={() => onSelectItem(folder.id)}
-								sx={{ maxWidth: 'auto' }}
-							/>
-							  ))}
+								<FileFolderCard
+									key={folder.id}
+									folder={folder}
+									selected={selected.includes(folder.id)}
+									onSelect={() => onSelectItem(folder.id)}
+									sx={{ maxWidth: 'auto' }}
+								/>
+						  ))}
 				</Box>
 			</Box>
 
@@ -87,7 +84,6 @@ export default function FileGridView({ loading, table, data }: Props) {
 			/>
 
 			<FileNewFolderDialog open={openUploadFile} onClose={handleCloseUploadFile} />
-
 		</>
 	);
 }

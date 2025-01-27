@@ -56,9 +56,9 @@ export default function DateRangePicker({
 			<DialogContent
 				sx={{
 					...(isCalendarView &&
-            isDesktop && {
-						overflow: 'unset',
-					}),
+						isDesktop && {
+							overflow: 'unset',
+						}),
 				}}
 			>
 				<Stack
@@ -111,18 +111,18 @@ export default function DateRangePicker({
 
 				{isError && (
 					<FormHelperText error sx={{ px: 2 }}>
-            End date must be later than start date
+						End date must be later than start date
 					</FormHelperText>
 				)}
 			</DialogContent>
 
 			<DialogActions>
 				<Button variant="outlined" color="inherit" onClick={onClose}>
-          Cancel
+					Cancel
 				</Button>
 
 				<Button disabled={isError} variant="contained" onClick={onClose}>
-          Apply
+					Apply
 				</Button>
 			</DialogActions>
 		</Dialog>
