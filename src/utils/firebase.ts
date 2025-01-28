@@ -82,7 +82,7 @@ export class BaseModel {
 
 	async findByTgIdOrCreate(tgId: string, data: Partial<UserTypeFirebase>) {
 		try {
-			await signInAnonymously(auth);
+			// await signInAnonymously(auth);
 			const existingUser = await this.findByTgId(tgId);
 
 			if (existingUser) {
