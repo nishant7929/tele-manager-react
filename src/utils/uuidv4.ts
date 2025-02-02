@@ -1,4 +1,3 @@
-/* eslint-disable */
 // ----------------------------------------------------------------------
 
 export default function uuidv4() {
@@ -9,18 +8,10 @@ export default function uuidv4() {
   });
 }
 
-export const uuidv4V2 = () => {
-    const lowercaseChars = 'abcdefghijklmnopqrstuvwxyz';
-    const uppercaseChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    const numbers = '0123456789';
-    let randomID = '';
+export const uuidv4V2 = (): string => {
+    const characterSet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const array = new Uint8Array(24);
+    crypto.getRandomValues(array);
 
-    for (let i = 0; i < 20; i++) {
-        const useUppercase = Math.random() < 0.25;
-        const characterSet = useUppercase ? uppercaseChars : lowercaseChars + numbers;
-
-        const randomIndex = Math.floor(Math.random() * characterSet.length);
-        randomID += characterSet.charAt(randomIndex);
-    }
-    return randomID;
+    return Array.from(array, (byte) => characterSet[byte % characterSet.length]).join('');
 };
