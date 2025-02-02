@@ -1,7 +1,17 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 // @mui
-import { Box, Card, Stack, Button, Divider, MenuItem, CardProps, IconButton } from '@mui/material';
+import {
+	Box,
+	Card,
+	Stack,
+	Button,
+	Divider,
+	MenuItem,
+	CardProps,
+	IconButton,
+	Skeleton,
+} from '@mui/material';
 import { PATH_DASHBOARD } from '../../../../routes/paths';
 // @types
 import { FolderType } from '../../../../@types/user';
@@ -30,7 +40,7 @@ interface Props extends CardProps {
 }
 
 export default function FileFolderCard({ folder, selected, sx, ...other }: Props) {
-	const { tgMessages } = useUserContext();
+	const { tgMessages, isTgLoading } = useUserContext();
 
 	const { user } = useSelector((state) => state.user);
 	const dispatch = useDispatch();
@@ -191,19 +201,22 @@ export default function FileFolderCard({ folder, selected, sx, ...other }: Props
 				<TextMaxLine variant="h6" sx={{ mt: 1, mb: 0.5 }}>
 					{folder.name}
 				</TextMaxLine>
+				{isTgLoading ? (
+					<Skeleton variant="rounded" sx={{ width: 1 }} />
+				) : (
+					<Stack
+						direction="row"
+						alignItems="center"
+						spacing={0.75}
+						sx={{ typography: 'caption', color: 'text.disabled' }}
+					>
+						<Box> {items?.length} files </Box>
 
-				<Stack
-					direction="row"
-					alignItems="center"
-					spacing={0.75}
-					sx={{ typography: 'caption', color: 'text.disabled' }}
-				>
-					<Box> {items?.length} files </Box>
+						<Box sx={{ width: 2, height: 2, borderRadius: '50%', bgcolor: 'currentColor' }} />
 
-					<Box sx={{ width: 2, height: 2, borderRadius: '50%', bgcolor: 'currentColor' }} />
-
-					<Box> {formatBytes(totalSize)} </Box>
-				</Stack>
+						<Box> {formatBytes(totalSize)} </Box>
+					</Stack>
+				)}
 			</Card>
 
 			<MenuPopover

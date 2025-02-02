@@ -11,6 +11,8 @@ type Payload = {
 	[ActionTypes.INITIAL]: {
 		isAuthenticated: boolean;
 		user: AuthUserType;
+	};
+	[ActionTypes.TG_MESSAGES]: {
 		messages: Api.Message[];
 	};
 	[ActionTypes.LOGIN]: {
@@ -37,6 +39,7 @@ const initialState: AuthStateType = {
 	isInitialized: false,
 	isAuthenticated: false,
 	user: null,
+	isTgLoading: true,
 	tgMessages: [],
 };
 
@@ -47,7 +50,15 @@ const reducer = (state: AuthStateType, action: ActionsType): AuthStateType => {
 				isInitialized: true,
 				isAuthenticated: action.payload.isAuthenticated,
 				user: action.payload.user,
+				tgMessages: [],
+				isTgLoading: true,
+			};
+
+		case ActionTypes.TG_MESSAGES:
+			return {
+				...state,
 				tgMessages: action.payload.messages,
+				isTgLoading: false,
 			};
 
 		case ActionTypes.LOGIN:
@@ -115,11 +126,18 @@ export function UserProvider({ children }: AuthProviderProps) {
 			if (savedSession) {
 				const client = await getTelegramClient();
 				const savedMessagesPeer = await client.getInputEntity('me');
-				const messages = await client.getMessages(savedMessagesPeer, {
-					search: FOLDER_PREFIX,
-				});
 				const me = await client.getMe();
-
+				dispatch({
+					type: ActionTypes.INITIAL,
+					payload: {
+						isAuthenticated: true,
+						user: {
+							tgId: me.id.toString(),
+							phoneNumber: me.phone,
+							displayName: `${me.firstName || ''} ${me.lastName || ''}`,
+						},
+					},
+				});
 				client.addEventHandler((update) => {
 					if (update instanceof Api.UpdateNewMessage) {
 						const message = update.message as Api.Message;
@@ -153,15 +171,12 @@ export function UserProvider({ children }: AuthProviderProps) {
 						});
 					}
 				});
+				const messages = await client.getMessages(savedMessagesPeer, {
+					search: FOLDER_PREFIX,
+				});
 				dispatch({
-					type: ActionTypes.INITIAL,
+					type: ActionTypes.TG_MESSAGES,
 					payload: {
-						isAuthenticated: true,
-						user: {
-							tgId: me.id.toString(),
-							phoneNumber: me.phone,
-							displayName: `${me.firstName || ''} ${me.lastName || ''}`,
-						},
 						messages: messages,
 					},
 				});
@@ -171,7 +186,6 @@ export function UserProvider({ children }: AuthProviderProps) {
 					payload: {
 						isAuthenticated: false,
 						user: null,
-						messages: [],
 					},
 				});
 			}
@@ -186,7 +200,6 @@ export function UserProvider({ children }: AuthProviderProps) {
 				payload: {
 					isAuthenticated: false,
 					user: null,
-					messages: [],
 				},
 			});
 		}
@@ -254,11 +267,13 @@ export function UserProvider({ children }: AuthProviderProps) {
 			addMessage,
 			editMessage,
 			deleteMessages,
+			isTgLoading: state.isTgLoading
 		}),
 		[
 			state.isAuthenticated,
 			state.isInitialized,
 			state.user,
+			state.isTgLoading,
 			login,
 			logout,
 			state.tgMessages,

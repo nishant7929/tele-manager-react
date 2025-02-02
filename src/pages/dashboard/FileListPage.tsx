@@ -42,7 +42,7 @@ const ITEM_PER_VIEW = 20;
 export default function FileListPage() {
 	const { id } = useParams<{ id: string }>();
 	const dispatch = useDispatch();
-	const { tgMessages, deleteMessages } = useUserContext();
+	const { tgMessages, deleteMessages, isTgLoading } = useUserContext();
 	const { user } = useSelector((state) => state.user);
 	const { themeStretch } = useSettingsContext();
 	const table = useTable({ defaultRowsPerPage: 10 });
@@ -314,7 +314,7 @@ export default function FileListPage() {
 					<FileList
 						table={table}
 						files={filesData}
-						loading={loading}
+						loading={loading || isTgLoading}
 						onOpenConfirm={handleOpenConfirm}
 					/>
 				</InfiniteScroll>

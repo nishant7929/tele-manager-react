@@ -20,6 +20,7 @@ export type AuthStateType = {
 	isInitialized: boolean;
 	user: AuthUserType;
 	tgMessages: Api.Message[];
+	isTgLoading: boolean;
 };
 
 // ----------------------------------------------------------------------
@@ -34,10 +35,12 @@ export type UserContextType = {
 	addMessage: (__message: Api.Message) => void;
 	editMessage: (__messageId: number, __newContent: Api.Message) => void;
 	deleteMessages: (__messageIds: number[]) => void;
+	isTgLoading: boolean;
 };
 
 export enum ActionTypes {
 	INITIAL = 'INITIAL',
+	TG_MESSAGES = 'TG_MESSAGES',
 	LOGIN = 'LOGIN',
 	REGISTER = 'REGISTER',
 	LOGOUT = 'LOGOUT',
