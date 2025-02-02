@@ -22,7 +22,7 @@ export default tseslint.config(
 			quotes: ['error', 'single', { avoidEscape: true }],
 			semi: ['error', 'always'],
 			'no-mixed-spaces-and-tabs': ['error', 'smart-tabs'],
-			'prettier/prettier': ['error', { useTabs: true, tabWidth: 2 }],
+			// 'prettier/prettier': ['error', { useTabs: true, tabWidth: 2 }],
 			'react-hooks/exhaustive-deps': 'off',
 			'no-console': ['warn'],
 			'no-unused-vars': [

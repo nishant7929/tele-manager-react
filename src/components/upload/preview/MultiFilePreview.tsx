@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { m, AnimatePresence } from 'framer-motion';
 // @mui
 import { alpha } from '@mui/material/styles';
@@ -13,7 +14,7 @@ import { UploadProps } from '../types';
 
 // ----------------------------------------------------------------------
 
-export default function MultiFilePreview({ thumbnail, files, onRemove, sx }: UploadProps) {
+function MultiFilePreview({ thumbnail, files, onRemove, sx }: UploadProps) {
 	if (!files?.length) {
 		return null;
 	}
@@ -100,15 +101,15 @@ export default function MultiFilePreview({ thumbnail, files, onRemove, sx }: Upl
 								{isNotFormatFile ? file : path}
 							</Typography>
 
-							<Typography variant="caption" sx={{ color: 'text.secondary' }}>
+							<Typography
+								variant="caption"
+								sx={{ color: 'text.secondary', display: 'flex', justifyContent: 'space-between' }}
+							>
 								{isNotFormatFile ? '' : fData(size)}
+								<span>{file.progress === 100 ? 'Completed' : `${file.progress}/100%`}</span>
 							</Typography>
 
-							{file.progress === 100 ? (
-								<Typography variant="subtitle2" noWrap>
-									Uploaded
-								</Typography>
-							) : (
+							{file.progress !== 100 && (
 								<LinearProgress
 									color={file.progress === 0 ? 'warning' : 'primary'}
 									variant="determinate"
@@ -128,3 +129,5 @@ export default function MultiFilePreview({ thumbnail, files, onRemove, sx }: Upl
 		</AnimatePresence>
 	);
 }
+
+export default memo(MultiFilePreview);
