@@ -4,8 +4,7 @@ import {
 	useDispatch as useAppDispatch,
 	useSelector as useAppSelector,
 } from 'react-redux';
-import { persistStore, persistReducer } from 'redux-persist';
-import rootReducer, { rootPersistConfig } from './rootReducer';
+import rootReducer from './rootReducer';
 
 // ----------------------------------------------------------------------
 
@@ -14,7 +13,7 @@ export type RootState = ReturnType<typeof rootReducer>;
 export type AppDispatch = typeof store.dispatch;
 
 const store = configureStore({
-	reducer: persistReducer(rootPersistConfig, rootReducer),
+	reducer: rootReducer,
 	middleware: (getDefaultMiddleware) =>
 		getDefaultMiddleware({
 			serializableCheck: false,
@@ -22,12 +21,10 @@ const store = configureStore({
 		}),
 });
 
-const persistor = persistStore(store);
-
 const { dispatch } = store;
 
 const useSelector: TypedUseSelectorHook<RootState> = useAppSelector;
 
 const useDispatch = () => useAppDispatch<AppDispatch>();
 
-export { store, persistor, dispatch, useSelector, useDispatch };
+export { store, dispatch, useSelector, useDispatch };

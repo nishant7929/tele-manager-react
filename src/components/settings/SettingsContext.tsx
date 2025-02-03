@@ -1,11 +1,11 @@
-import { ReactNode, createContext, useEffect, useContext, useMemo, useCallback } from 'react';
+import { ReactNode, createContext, useEffect, useContext, useMemo, useCallback, useState } from 'react';
 // hooks
-import useLocalStorage from '../../hooks/useLocalStorage';
+// import useLocalStorage from '../../hooks/useLocalStorage';
 // utils
 import localStorageAvailable from '../../utils/localStorageAvailable';
 //
 import { defaultSettings } from './config-setting';
-import { SettingsContextProps } from './types';
+import { SettingsContextProps, ThemeColorPresetsValue, ThemeContrastValue, ThemeDirectionValue, ThemeLayoutValue, ThemeModeValue } from './types';
 import { defaultPreset, getPresets, presetsOption } from './presets';
 
 // ----------------------------------------------------------------------
@@ -56,7 +56,7 @@ type SettingsProviderProps = {
 };
 
 export function SettingsProvider({ children }: SettingsProviderProps) {
-	const [settings, setSettings] = useLocalStorage('settings', defaultSettings);
+	const [settings, setSettings] = useState(defaultSettings);
 
 	const storageAvailable = localStorageAvailable();
 
@@ -79,7 +79,7 @@ export function SettingsProvider({ children }: SettingsProviderProps) {
 	const onChangeMode = useCallback(
 		(event: React.ChangeEvent<HTMLInputElement>) => {
 			const themeMode = event.target.value;
-			setSettings({ ...settings, themeMode });
+			setSettings({ ...settings, themeMode: themeMode as ThemeModeValue });
 		},
 		[setSettings, settings]
 	);
@@ -87,13 +87,13 @@ export function SettingsProvider({ children }: SettingsProviderProps) {
 	// Direction
 	const onToggleDirection = useCallback(() => {
 		const themeDirection = settings.themeDirection === 'rtl' ? 'ltr' : 'rtl';
-		setSettings({ ...settings, themeDirection });
+		setSettings({ ...settings, themeDirection: themeDirection as ThemeDirectionValue });
 	}, [setSettings, settings]);
 
 	const onChangeDirection = useCallback(
 		(event: React.ChangeEvent<HTMLInputElement>) => {
 			const themeDirection = event.target.value;
-			setSettings({ ...settings, themeDirection });
+			setSettings({ ...settings, themeDirection: themeDirection as ThemeDirectionValue });
 		},
 		[setSettings, settings]
 	);
@@ -115,7 +115,7 @@ export function SettingsProvider({ children }: SettingsProviderProps) {
 	const onChangeLayout = useCallback(
 		(event: React.ChangeEvent<HTMLInputElement>) => {
 			const themeLayout = event.target.value;
-			setSettings({ ...settings, themeLayout });
+			setSettings({ ...settings, themeLayout: themeLayout as ThemeLayoutValue });
 		},
 		[setSettings, settings]
 	);
@@ -129,7 +129,7 @@ export function SettingsProvider({ children }: SettingsProviderProps) {
 	const onChangeContrast = useCallback(
 		(event: React.ChangeEvent<HTMLInputElement>) => {
 			const themeContrast = event.target.value;
-			setSettings({ ...settings, themeContrast });
+			setSettings({ ...settings, themeContrast: themeContrast as ThemeContrastValue });
 		},
 		[setSettings, settings]
 	);
@@ -138,7 +138,7 @@ export function SettingsProvider({ children }: SettingsProviderProps) {
 	const onChangeColorPresets = useCallback(
 		(event: React.ChangeEvent<HTMLInputElement>) => {
 			const themeColorPresets = event.target.value;
-			setSettings({ ...settings, themeColorPresets });
+			setSettings({ ...settings, themeColorPresets: themeColorPresets as ThemeColorPresetsValue });
 		},
 		[setSettings, settings]
 	);

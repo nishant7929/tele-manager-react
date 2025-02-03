@@ -9,7 +9,7 @@ import { Box, Typography, Portal } from '@mui/material';
 const StyledRoot = styled('div')(({ theme }) => ({
 	right: 24,
 	zIndex: 9,
-	bottom: 80,
+	bottom: 40,
 	display: 'flex',
 	position: 'fixed',
 	alignItems: 'center',

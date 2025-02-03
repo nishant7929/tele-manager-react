@@ -7,3 +7,6 @@
 - Video player
 - Folder and file sharing
 - Google analytics - [Released]
+- Encrypt production - [Done]
+- Download multiple files
+- Privacy policy and terms & conditions

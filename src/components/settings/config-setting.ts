@@ -8,6 +8,6 @@ export const defaultSettings: SettingsValueProps = {
 	themeDirection: 'ltr',
 	themeContrast: 'default',
 	themeLayout: 'vertical',
-	themeColorPresets: 'default',
+	themeColorPresets: 'blue',
 	themeStretch: true,
 };

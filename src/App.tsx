@@ -1,6 +1,3 @@
-// i18n
-import './locales/i18n';
-
 // scroll bar
 import 'simplebar/src/simplebar.css';
 
@@ -12,7 +9,6 @@ import 'react-lazy-load-image-component/src/effects/blur.css';
 import { BrowserRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { Provider as ReduxProvider } from 'react-redux';
-import { PersistGate } from 'redux-persist/integration/react';
 // routes
 import Router from './routes';
 // theme
@@ -29,7 +25,7 @@ import { ThemeSettings, SettingsProvider } from './components/settings';
 // https://docs.minimals.cc/authentication/ts-version
 
 import { UserProvider } from './auth/UserContext';
-import { persistor, store } from './redux/store';
+import { store } from './redux/store';
 
 // ----------------------------------------------------------------------
 
@@ -38,7 +34,6 @@ export default function App() {
 		<UserProvider>
 			<HelmetProvider>
 				<ReduxProvider store={store}>
-					<PersistGate loading={null} persistor={persistor}>
 						<SettingsProvider>
 							<BrowserRouter>
 								<ScrollToTop />
@@ -55,7 +50,6 @@ export default function App() {
 								</MotionLazyContainer>
 							</BrowserRouter>
 						</SettingsProvider>
-					</PersistGate>
 				</ReduxProvider>
 			</HelmetProvider>
 		</UserProvider>
