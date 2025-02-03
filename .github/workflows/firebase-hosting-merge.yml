@@ -16,10 +16,10 @@ jobs:
       - name: Install dependencies and build
         run: yarn install && yarn run build
 
-	  - name: Install JavaScript Obfuscator
+      - name: Install JavaScript Obfuscator
         run: npm install -g javascript-obfuscator
 
-	  - name: Obfuscate JS files
+      - name: Obfuscate JS files
         run: javascript-obfuscator dist/assets --output dist/assets
 
         env:
