@@ -15,13 +15,6 @@ jobs:
       # Install dependencies and build the project
       - name: Install dependencies and build
         run: yarn install && yarn run build
-
-      - name: Install JavaScript Obfuscator
-        run: npm install -g javascript-obfuscator
-
-      - name: Obfuscate JS files
-        run: javascript-obfuscator dist/assets --output dist/assets
-
         env:
           VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
           VITE_FIREBASE_AUTH_DOMAIN: ${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }}
@@ -34,6 +27,12 @@ jobs:
           VITE_API_HASH: ${{ secrets.VITE_API_HASH }}
           VITE_NODE_ENV: ${{ secrets.VITE_NODE_ENV }}
           VITE_HOST_API_KEY: ${{ secrets.VITE_HOST_API_KEY }}
+
+      - name: Install JavaScript Obfuscator
+        run: npm install -g javascript-obfuscator
+
+      - name: Obfuscate JS files
+        run: javascript-obfuscator dist/assets --output dist/assets
 
       # Deploy to Firebase Hosting
       - uses: FirebaseExtended/action-hosting-deploy@v0
