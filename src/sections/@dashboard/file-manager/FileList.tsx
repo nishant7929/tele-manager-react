@@ -17,9 +17,10 @@ interface Props extends BoxProps {
 	files: IImageData[];
 	loading: boolean;
 	onOpenConfirm?: VoidFunction;
+	onFileClick: (__id: number) => void;
 }
 
-export default function FileList({ files, loading, onOpenConfirm, table, ...other }: Props) {
+export default function FileList({ files, loading, onOpenConfirm, table, onFileClick, ...other }: Props) {
 	const { selected, onSelectRow: onSelectItem } = table;
 	return (
 		<React.Fragment>
@@ -41,6 +42,7 @@ export default function FileList({ files, loading, onOpenConfirm, table, ...othe
 							file={file}
 							selected={selected.includes(file.id)}
 							onSelect={() => onSelectItem(file.id)}
+							onClick={() => onFileClick(file.id)}
 						/>
 					) : (
 						<SkeletonProductItem key={index} />

@@ -12,13 +12,14 @@ type Props = {
 	file: IImageData;
 	selected?: boolean;
 	onSelect?: VoidFunction;
+	onClick: VoidFunction;
 };
 
-export default function FileCard({ file, selected, onSelect }: Props) {
+export default function FileCard({ file, selected, onSelect, onClick }: Props) {
 	const { thumbnail, name, type } = file;
 
 	return (
-		<Card>
+		<Card sx={{ borderRadius: '10px' }}>
 			<Box sx={{ position: 'relative' }}>
 				<Checkbox
 					checked={selected}
@@ -47,7 +48,7 @@ export default function FileCard({ file, selected, onSelect }: Props) {
 						<Iconify icon="ph:play-circle-bold" />
 					</Label>
 				)}
-				<Image alt={name} src={thumbnail || ''} ratio="1/1" sx={{ borderRadius: 1.5 }} />
+				<Image onClick={onClick} alt={name} src={thumbnail || ''} ratio="1/1" sx={{ borderRadius: 0 }} />
 			</Box>
 		</Card>
 	);

@@ -25,6 +25,7 @@ import { FileGridView, FileNewFolderDialog } from '../../sections/@dashboard/fil
 import { updateUser } from '../../redux/slices/user';
 import { uuidv4V2 } from '../../utils/uuidv4';
 import { userModel } from '../../utils/firebase';
+import FilePreview from './FilePreview';
 
 // ----------------------------------------------------------------------
 
@@ -54,6 +55,7 @@ export default function FileListPage() {
 	const [openNewFolder, setOpenNewFolder] = useState(false);
 	const [folderName, setFolderName] = useState('');
 	const [openConfirm, setOpenConfirm] = useState(false);
+	const [fileId, setFileId] = useState<number | null>(null);
 
 	const processedMessages = useMemo(() => {
 		setFilesData([]);
@@ -94,6 +96,10 @@ export default function FileListPage() {
 		deleteSavedMessages(selected.map(Number));
 		deleteMessages(selected.map(Number));
 		setSelected([]);
+	};
+
+	const handleFileClick = (id: number) => {
+		setFileId(id);
 	};
 
 	const processMessage = (msg: Api.Message): IImageData => {
@@ -316,6 +322,7 @@ export default function FileListPage() {
 						files={filesData}
 						loading={loading || isTgLoading}
 						onOpenConfirm={handleOpenConfirm}
+						onFileClick={handleFileClick}
 					/>
 				</InfiniteScroll>
 
@@ -353,6 +360,7 @@ export default function FileListPage() {
 					}
 				/>
 			</Container>
+			{!!fileId && <FilePreview onClose={() => setFileId(null)} fileId={fileId} />}
 		</>
 	);
 }

@@ -21,9 +21,6 @@ import ScrollToTop from './components/scroll-to-top';
 import { MotionLazyContainer } from './components/animate';
 import { ThemeSettings, SettingsProvider } from './components/settings';
 
-// Check our docs
-// https://docs.minimals.cc/authentication/ts-version
-
 import { UserProvider } from './auth/UserContext';
 import { store } from './redux/store';
 
