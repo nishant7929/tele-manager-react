@@ -48,7 +48,7 @@ export default function FileCard({ file, selected, onSelect, onClick }: Props) {
 						<Iconify icon="ph:play-circle-bold" />
 					</Label>
 				)}
-				<Image onClick={onClick} alt={name} src={thumbnail || ''} ratio="1/1" sx={{ borderRadius: 0 }} />
+				<Image onClick={onClick} alt={name} src={thumbnail || ''} ratio="1/1" sx={{ borderRadius: 0, cursor: 'pointer' }} />
 			</Box>
 		</Card>
 	);

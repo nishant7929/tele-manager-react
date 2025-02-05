@@ -2,39 +2,55 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from 'react';
 import { Api } from 'telegram';
-import { Link } from 'react-router-dom';
 import { getTelegramClient } from '../../utils/telegram';
+import Loader from '../../components/loader';
+import { Box } from '@mui/material';
+import { useUserContext } from '../../auth/useUserContext';
 
 interface Props {
 	fileId: number;
 }
 
 const ImageView: React.FC<Props> = ({ fileId }) => {
-	// const { id } = useParams<{ id: string }>();
+	const { tgMessages } = useUserContext();
 	const [imageData, setImageData] = useState<string | null>(null);
 	const [thumbnail, setThumbnail] = useState<string | null>(null);
 	const [loading, setLoading] = useState<boolean>(true);
 	const [originalImageBlob, setOriginalImageBlob] = useState<Blob | null>(null);
 	const [downloadProgress, setDownloadProgress] = useState<number>(0);
 	const [imageHeight, setImageHeight] = useState('auto');
+	const [imageWidth, setImageWidth] = useState('auto');
 
 	useEffect(() => {
 		const fetchImageData = async () => {
 			try {
 				const client = await getTelegramClient();
-				const savedMessagesPeer = await client.getInputEntity('me');
-				const messages: any = await client.getMessages(savedMessagesPeer, {
-					ids: [fileId],
-				});
-
+				// const savedMessagesPeer = await client.getInputEntity('me');
+				// const messages: any = await client.getMessages(savedMessagesPeer, {
+				// 	ids: [fileId],
+				// });
+				const messages: any = tgMessages.filter((item) => item.id === fileId);
+				let width = null;
+				let height = null;
 				if (messages.length > 0) {
 					// Use thumbnail while loading
 					if (messages[0].media?.document?.thumbs) {
-						const imageAttr = messages[0].media.document.attributes.find((attr: any) => attr instanceof Api.DocumentAttributeImageSize);
+						const imageAttr = messages[0].media.document.attributes.find(
+							(attr: any) => attr instanceof Api.DocumentAttributeImageSize
+						);
 						if (imageAttr) {
-							const heightFromTelegram = imageAttr.h;
-							const maxHeight = Math.min(heightFromTelegram, window.innerHeight * 0.8);
-							setImageHeight(`${maxHeight}px`);
+							height = imageAttr.h;
+							width = imageAttr.w;
+							const maxScreenHeight = window.innerHeight * 0.8;
+							const scaleFactor = (maxScreenHeight / height) * 0.8;
+
+							if (height > maxScreenHeight) {
+								height = maxScreenHeight;
+								width = Math.round(width * scaleFactor);
+							}
+
+							setImageWidth(width);
+							setImageHeight(height);
 						}
 						const thumbs = messages[0].media.document.thumbs;
 						const smallestThumb = thumbs[1] || thumbs[0];
@@ -50,7 +66,6 @@ const ImageView: React.FC<Props> = ({ fileId }) => {
 					// Fetch the original image
 					if (messages[0].media?.document) {
 						const document = messages[0].media.document;
-						console.log({ document });
 						const inputFileLocation = new Api.InputDocumentFileLocation({
 							id: document.id,
 							accessHash: document.accessHash,
@@ -92,20 +107,25 @@ const ImageView: React.FC<Props> = ({ fileId }) => {
 	}, [fileId]);
 
 	return (
-		<div style={{ height: '100%' }}>
-			{(imageData || thumbnail) && (
-				<img
-				style={{
-					display: 'block',
-					margin: 'auto',
-					overflowClipMargin: 'content-box',
-					height: imageHeight
-				  }}
-					src={imageData || thumbnail || ''}
-					alt="Centered"
-				/>
-			)}
-		</div>
+		<>
+			{loading && <Loader />}
+			<Box>
+				{(imageData || thumbnail) && (
+					<img
+						style={{
+							display: 'block',
+							margin: 'auto',
+							overflowClipMargin: 'content-box',
+							objectFit: 'contain',
+							height: imageHeight,
+							width: imageWidth,
+						}}
+						src={imageData || thumbnail || ''}
+						alt="Alt image"
+					/>
+				)}
+			</Box>
+		</>
 	);
 };
 
