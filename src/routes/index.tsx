@@ -14,7 +14,7 @@ import { Page404, LoginPage } from './elements';
 import FileManagerPage from '../pages/dashboard/FileManagerPage';
 import FileListPage from '../pages/dashboard/FileListPage';
 import Home from '../pages/dashboard/Home';
-import ImageView from '../pages/dashboard/ImageView';
+// import ImageView from '../pages/dashboard/ImageView';
 import { getUserData } from '../redux/slices/user';
 import { useDispatch } from '../redux/store';
 import ReactGA from 'react-ga4';
@@ -71,7 +71,7 @@ export default function Router() {
 				{ path: '/folders', element: <FileManagerPage /> },
 				{ path: '/folder/:id', element: <FileListPage /> },
 				{ path: '/telegram', element: <Home /> },
-				{ path: '/image/:id', element: <ImageView /> },
+				// { path: '/image/:id', element: <ImageView /> },
 			],
 		},
 		{
