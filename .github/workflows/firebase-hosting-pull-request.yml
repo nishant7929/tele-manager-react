@@ -30,8 +30,14 @@ jobs:
           VITE_NODE_ENV: ${{ secrets.VITE_NODE_ENV }}
           VITE_HOST_API_KEY: ${{ secrets.VITE_HOST_API_KEY }}
 
+      - name: Install JavaScript Obfuscator
+        run: npm install -g javascript-obfuscator
+
+      - name: Obfuscate JS files
+        run: javascript-obfuscator dist/assets --output dist/assets --compact true
+
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_TELE_CLOUD }}
-          projectId: tele-cloud
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_TELE_MANAGER }}
+          projectId: tele-manager
