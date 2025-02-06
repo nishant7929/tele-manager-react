@@ -16,6 +16,8 @@ import { verifyOtp } from '../../utils/telegram';
 import { userModel } from '../../utils/firebase';
 import { UserTypeFirebase } from '../../@types/user';
 import { FirebaseError } from 'firebase/app';
+import { updateUser } from '../../redux/slices/user';
+import { useDispatch } from '../../redux/store';
 
 // ----------------------------------------------------------------------
 
@@ -34,6 +36,7 @@ interface Props {
 export default function AuthVerifyCodeForm({ phoneNumber }: Props) {
 	const navigate = useNavigate();
 	const { login } = useUserContext();
+	const dispatch = useDispatch();
 
 	const { enqueueSnackbar } = useSnackbar();
 
@@ -76,7 +79,8 @@ export default function AuthVerifyCodeForm({ phoneNumber }: Props) {
 					fullName: userInfo?.displayName,
 					createdAt: new Date().toISOString(),
 				};
-				await userModel.findByTgIdOrCreate(userInfo?.tgId || '', initData);
+				const user = await userModel.findByTgIdOrCreate(userInfo?.tgId || '', initData);
+				dispatch(updateUser(user));
 				navigate(PATH_DASHBOARD.root);
 			}
 			enqueueSnackbar(message, { variant: success ? 'success' : 'error' });
