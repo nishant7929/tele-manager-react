@@ -17,7 +17,7 @@ export default function VerifyCodePage({ phoneNumber, setPhoneNumber }: Props) {
 	return (
 		<>
 			<Helmet>
-				<title> Verify Code | Tele Cloud</title>
+				<title> Verify Code | Tele Manager</title>
 			</Helmet>
 
 			<Typography variant="h3" paragraph>

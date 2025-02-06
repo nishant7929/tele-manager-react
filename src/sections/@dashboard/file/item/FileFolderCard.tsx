@@ -19,7 +19,6 @@ import { FolderType } from '../../../../@types/user';
 import Iconify from '../../../../components/iconify';
 import MenuPopover from '../../../../components/menu-popover';
 import TextMaxLine from '../../../../components/text-max-line';
-import { useSnackbar } from '../../../../components/snackbar';
 import ConfirmDialog from '../../../../components/confirm-dialog';
 //
 import FileNewFolderDialog from '../portal/FileNewFolderDialog';
@@ -45,7 +44,6 @@ export default function FileFolderCard({ folder, selected, sx, ...other }: Props
 	const { user } = useSelector((state) => state.user);
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
-	const { enqueueSnackbar } = useSnackbar();
 
 	const [showCheckbox, setShowCheckbox] = useState(false);
 
@@ -101,11 +99,6 @@ export default function FileFolderCard({ folder, selected, sx, ...other }: Props
 
 	const handleClosePopover = () => {
 		setOpenPopover(null);
-	};
-
-	const handleCopy = () => {
-		enqueueSnackbar('Copied!');
-		// copy(folder.url);
 	};
 
 	const handleDeleteItem = async () => {
@@ -225,15 +218,6 @@ export default function FileFolderCard({ folder, selected, sx, ...other }: Props
 				arrow="right-top"
 				sx={{ width: 160 }}
 			>
-				<MenuItem
-					onClick={() => {
-						handleClosePopover();
-						handleCopy();
-					}}
-				>
-					<Iconify icon="eva:link-2-fill" />
-					Copy Link
-				</MenuItem>
 
 				<MenuItem
 					onClick={() => {

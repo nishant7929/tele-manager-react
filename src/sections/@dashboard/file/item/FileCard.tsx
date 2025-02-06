@@ -186,15 +186,6 @@ export default function FileCard({ file, selected, onSelect, onDelete, sx, ...ot
 				arrow="right-top"
 				sx={{ width: 160 }}
 			>
-				<MenuItem
-					onClick={() => {
-						handleClosePopover();
-						handleCopy();
-					}}
-				>
-					<Iconify icon="eva:link-2-fill" />
-					Copy Link
-				</MenuItem>
 
 				<MenuItem
 					onClick={() => {

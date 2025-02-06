@@ -225,15 +225,6 @@ export default function FileTableRow({ row, selected, onSelectRow, onDeleteRow }
 				arrow="right-top"
 				sx={{ width: 160 }}
 			>
-				<MenuItem
-					onClick={() => {
-						handleClosePopover();
-						handleCopy();
-					}}
-				>
-					<Iconify icon="eva:link-2-fill" />
-					Copy Link
-				</MenuItem>
 
 				<MenuItem
 					onClick={() => {

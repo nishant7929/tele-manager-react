@@ -253,7 +253,7 @@ export default function FileListPage() {
 	return (
 		<>
 			<Helmet>
-				<title> Files | Tele Cloud</title>
+				<title> Files | Tele Manager</title>
 			</Helmet>
 
 			<Container maxWidth={themeStretch ? false : 'lg'}>

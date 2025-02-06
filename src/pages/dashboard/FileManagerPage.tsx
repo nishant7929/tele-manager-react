@@ -80,7 +80,7 @@ export default function FileManagerPage() {
 	return (
 		<>
 			<Helmet>
-				<title> Folders | Tele Cloud</title>
+				<title> Folders | Tele Manager</title>
 			</Helmet>
 
 			<Container maxWidth={themeStretch ? false : 'lg'}>

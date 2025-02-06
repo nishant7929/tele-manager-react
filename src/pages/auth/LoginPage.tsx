@@ -14,11 +14,11 @@ export default function LoginPage() {
 	const renderLogin = () => (
 		<>
 			<Helmet>
-				<title> Sign in | Tele Cloud</title>
+				<title> Sign in | Tele Manager</title>
 			</Helmet>
 
 			<Typography variant="h3" paragraph>
-				Sign in to Tele Cloud
+				Sign in to Tele Manager
 			</Typography>
 
 			<AuthLoginForm handleCodeSend={(phoneNumber: string) => setPhoneNumber(phoneNumber)} />

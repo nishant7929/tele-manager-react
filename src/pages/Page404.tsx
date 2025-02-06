@@ -15,7 +15,7 @@ export default function Page404() {
 	return (
 		<>
 			<Helmet>
-				<title> 404 Page Not Found | Tele Cloud</title>
+				<title> 404 Page Not Found | Tele Manager</title>
 			</Helmet>
 
 			<MotionContainer>
