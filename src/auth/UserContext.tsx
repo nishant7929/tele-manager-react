@@ -209,16 +209,16 @@ export function UserProvider({ children }: AuthProviderProps) {
 
 	// LOGIN
 	const login = useCallback(async (userInfo: AuthUserType) => {
+		const client = await getTelegramClient();
+		const savedMessagesPeer = await client.getInputEntity('me');
+		const messages = await client.getMessages(savedMessagesPeer, {
+			search: FOLDER_PREFIX,
+		});
 		dispatch({
 			type: ActionTypes.LOGIN,
 			payload: {
 				user: userInfo,
 			},
-		});
-		const client = await getTelegramClient();
-		const savedMessagesPeer = await client.getInputEntity('me');
-		const messages = await client.getMessages(savedMessagesPeer, {
-			search: FOLDER_PREFIX,
 		});
 		dispatch({
 			type: ActionTypes.TG_MESSAGES,

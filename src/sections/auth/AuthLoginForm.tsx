@@ -7,7 +7,7 @@ import { Autocomplete, LoadingButton } from '@mui/lab';
 // components
 import FormProvider, { RHFTextField } from '../../components/hook-form';
 import { countries } from '../../assets/data';
-import { Box, Stack, TextField } from '@mui/material';
+import { Box, Popper, Stack, styled, TextField } from '@mui/material';
 import { sendCodeHandler } from '../../utils/telegram';
 import { useSnackbar } from 'notistack';
 
@@ -17,12 +17,10 @@ type FormValuesProps = {
 	phoneNumber: number;
 };
 
-function countryToFlag(isoCode: string) {
-	return typeof String.fromCodePoint !== 'undefined'
-		? isoCode
-				.toUpperCase()
-				.replace(/./g, (char) => String.fromCodePoint(char.charCodeAt(0) + 127397))
-		: isoCode;
+interface CountryOption {
+	code: string;
+	label: string;
+	phone: string;
 }
 
 interface Props {
@@ -59,25 +57,52 @@ export default function AuthLoginForm({ handleCodeSend }: Props) {
 		}
 	};
 
+	const CustomPopper = styled(Popper)({
+		width: '20% !important',
+		minWidth: '300px',
+	});
+
+	const filterOptions = (options: CountryOption[], { inputValue }: { inputValue: string }) => {
+		const query = inputValue.trim().toLowerCase();
+		if (!query) {return options;}
+
+		return (
+			options
+				.filter(({ label, code, phone }) => {
+					return (
+						label.toLowerCase().includes(query) ||
+						code.toLowerCase().includes(query) ||
+						phone.includes(query)
+					);
+				})
+				.sort((a, b) => {
+					const aExact =
+						a.label.toLowerCase() === query || a.code.toLowerCase() === query || a.phone === query;
+					const bExact =
+						b.label.toLowerCase() === query || b.code.toLowerCase() === query || b.phone === query;
+					return bExact ? 1 : aExact ? -1 : 0;
+				})
+		);
+	};
+
 	return (
 		<FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
 			<Stack direction={'row'} spacing={1}>
 				<Autocomplete
-					disableClearable
 					disabled
+					disableClearable
 					defaultValue={{ code: 'IN', label: 'India', phone: '91' }}
 					autoHighlight
 					options={countries}
 					getOptionLabel={(option) => option.phone}
+					filterOptions={filterOptions}
 					renderOption={(props, option) => (
 						<Box component="li" {...props} sx={{ px: '8px !important' }}>
-							<Box component="span" sx={{ flexShrink: 0, mr: 2, fontSize: 22 }}>
-								{countryToFlag(option.code)}
-							</Box>
 							{option.label} ({option.code}) +{option.phone}
 						</Box>
 					)}
 					renderInput={(params) => <TextField {...params} label="Code" />}
+					PopperComponent={(props) => <CustomPopper {...props} placement="bottom-start" />}
 				/>
 				<RHFTextField name="phoneNumber" type="number" label="Phone Number" />
 			</Stack>

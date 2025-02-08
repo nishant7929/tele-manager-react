@@ -32,12 +32,12 @@ export class BaseModel {
 		this.collection = collection;
 	}
 
-	async findOne(id: string) {
+	async findOne(uid: string): Promise<any> {
 		try {
-			const docRef = doc(this.db, this.collection, id);
+			const docRef = doc(this.db, this.collection, uid);
 			const docSnap = await getDoc(docRef);
 			if (docSnap.exists()) {
-				return docSnap.data();
+				return { uid: uid, ...docSnap.data()};
 			} else {
 				return null;
 			}
@@ -46,16 +46,16 @@ export class BaseModel {
 		}
 	}
 
-	async create(data: object, id?: string) {
+	async create(data: object, uid?: string) {
 		try {
-			if (id) {
-				const docRef = doc(this.db, this.collection, id);
+			if (uid) {
+				const docRef = doc(this.db, this.collection, uid);
 				await setDoc(docRef, data);
-				return { id, ...data };
+				return { uid: uid, ...data };
 			} else {
 				const colRef = collection(this.db, this.collection);
 				const docRef = await addDoc(colRef, data);
-				return { id: docRef.id, ...data };
+				return { uid: docRef.id, ...data };
 			}
 		} catch (error: any) {
 			throw error;
@@ -80,11 +80,10 @@ export class BaseModel {
 		}
 	}
 
-	async findByTgIdOrCreate(tgId: string, data: Partial<UserTypeFirebase>) {
+	async findByIdOrCreate(uid: string, data: Partial<UserTypeFirebase>) {
 		try {
 			// await signInAnonymously(auth);
-			const existingUser = await this.findByTgId(tgId);
-
+			const existingUser = await this.findOne(uid);
 			if (existingUser) {
 				let needsUpdate = false;
 				const updatedUser = { ...existingUser };
@@ -96,15 +95,14 @@ export class BaseModel {
 					}
 				}
 				if (needsUpdate) {
-					await this.findByIdAndUpdate(existingUser.id, updatedUser);
+					await this.findByIdAndUpdate(existingUser.uid, updatedUser);
 				}
 				return existingUser;
 			} else {
 				const newUser = await this.create({
-					tgId,
 					...data,
 					folders: data.folders || [],
-				});
+				}, uid);
 				return newUser;
 			}
 		} catch (error: any) {
@@ -112,12 +110,12 @@ export class BaseModel {
 		}
 	}
 
-	async findByIdAndUpdate(id: string, data: Partial<UserTypeFirebase>) {
+	async findByIdAndUpdate(uid: string, data: Partial<UserTypeFirebase>) {
 		try {
 			await signInAnonymously(auth);
-			const docRef = doc(this.db, this.collection, id);
+			const docRef = doc(this.db, this.collection, uid);
 			await updateDoc(docRef, data);
-			return { id: id, ...data };
+			return { uid: uid, ...data };
 		} catch (error: any) {
 			throw error;
 		}

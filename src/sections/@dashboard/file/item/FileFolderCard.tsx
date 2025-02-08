@@ -109,7 +109,7 @@ export default function FileFolderCard({ folder, selected, sx, ...other }: Props
 
 		const isDeleted = await deleteSavedMessages(ids.map((item) => item.id));
 		if (user && isDeleted) {
-			const newUser = await userModel.findByIdAndUpdate(user.id, {
+			const newUser = await userModel.findByIdAndUpdate(user.uid, {
 				...user,
 				folders: deleteFoldersById(user.folders, folderIds),
 			});
@@ -143,7 +143,7 @@ export default function FileFolderCard({ folder, selected, sx, ...other }: Props
 		handleCloseEditFolder();
 		setFolderName(folderName);
 		if (user) {
-			const newUser = await userModel.findByIdAndUpdate(user.id, {
+			const newUser = await userModel.findByIdAndUpdate(user.uid, {
 				...user,
 				folders: updatedFolders(user.folders, folder.id, folderName),
 			});

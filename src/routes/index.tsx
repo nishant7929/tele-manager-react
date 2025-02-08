@@ -32,7 +32,7 @@ export default function Router() {
 	const location = useLocation();
 	useEffect(() => {
 		if (user) {
-			dispatch(getUserData(user.tgId));
+			dispatch(getUserData(`${user.tgId}${user.phoneNumber.slice(-5)}`));
 		}
 	}, [user, dispatch]);
 

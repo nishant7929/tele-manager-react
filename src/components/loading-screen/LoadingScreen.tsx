@@ -67,16 +67,6 @@ export default function LoadingScreen() {
 				) : (
 					<>
 						<m.div
-							animate={{
-								scale: [1, 0.9, 0.9, 1, 1],
-								opacity: [1, 0.48, 0.48, 1, 1],
-							}}
-							transition={{
-								duration: 2,
-								ease: 'easeInOut',
-								repeatDelay: 1,
-								repeat: Infinity,
-							}}
 						>
 							<Logo disabledLink sx={{ width: 64, height: 64 }} />
 						</m.div>
@@ -84,12 +74,12 @@ export default function LoadingScreen() {
 						<Box
 							component={m.div}
 							animate={{
-								scale: [1.6, 1, 1, 1.6, 1.6],
-								rotate: [270, 0, 0, 270, 270],
-								opacity: [0.25, 1, 1, 1, 0.25],
-								borderRadius: ['25%', '25%', '50%', '50%', '25%'],
+								scale: [1.2, 1.2, 1.2, 1.2, 1.2],
+								rotate: [0, 360],
+								opacity: [1, 1, 1, 1, 1],
+								borderRadius: ['25%', '25%', '25%', '25%', '25%'],
 							}}
-							transition={{ ease: 'linear', duration: 3.2, repeat: Infinity }}
+							transition={{ ease: 'linear', duration: 1.4, repeat: Infinity }}
 							sx={{
 								width: 100,
 								height: 100,
@@ -101,14 +91,14 @@ export default function LoadingScreen() {
 						<Box
 							component={m.div}
 							animate={{
-								scale: [1, 1.2, 1.2, 1, 1],
-								rotate: [0, 270, 270, 0, 0],
-								opacity: [1, 0.25, 0.25, 0.25, 1],
-								borderRadius: ['25%', '25%', '50%', '50%', '25%'],
+								scale: [1, 1, 1, 1, 1],
+								rotate: [0, -360],
+								opacity: [0.25, 0.25, 0.25, 0.25, 0.25],
+								borderRadius: ['25%', '25%', '25%', '25%', '25%'],
 							}}
 							transition={{
 								ease: 'linear',
-								duration: 3.2,
+								duration: 1.5,
 								repeat: Infinity,
 							}}
 							sx={{
