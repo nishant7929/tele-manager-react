@@ -14,7 +14,8 @@ import { useSnackbar } from 'notistack';
 // ----------------------------------------------------------------------
 
 type FormValuesProps = {
-	phoneNumber: number;
+	phoneNumber: string;
+	country: CountryOption;
 };
 
 interface CountryOption {
@@ -33,26 +34,34 @@ export default function AuthLoginForm({ handleCodeSend }: Props) {
 		phoneNumber: Yup.string()
 			.required('Phone number is required')
 			.length(10, 'Phone number must be exactly 10 digits'),
+		country: Yup.object().required('Country selection is required'),
 	});
 
 	const methods = useForm<FormValuesProps>({
 		resolver: yupResolver(LoginSchema),
+		defaultValues: {
+			phoneNumber: '',
+			country: countries.find((c) => c.code === 'IN'),
+		},
 	});
 
 	const {
 		handleSubmit,
+		watch,
+		setValue,
 		formState: { isSubmitting },
 	} = methods;
+	const selectedCountry = watch('country');
 
 	const onSubmit = async (data: FormValuesProps) => {
 		try {
-			const { message, success } = await sendCodeHandler(`+91 ${data.phoneNumber}`);
+			const fullPhoneNumber = `+${data.country.phone} ${data.phoneNumber}`;
+			const { message, success } = await sendCodeHandler(fullPhoneNumber);
 			if (success) {
-				handleCodeSend(`+91 ${data.phoneNumber}`);
+				handleCodeSend(fullPhoneNumber);
 			}
 			enqueueSnackbar(message, { variant: success ? 'success' : 'error' });
 		} catch (error) {
-			console.error(error);
 			enqueueSnackbar(error, { variant: 'error' });
 		}
 	};
@@ -64,36 +73,36 @@ export default function AuthLoginForm({ handleCodeSend }: Props) {
 
 	const filterOptions = (options: CountryOption[], { inputValue }: { inputValue: string }) => {
 		const query = inputValue.trim().toLowerCase();
-		if (!query) {return options;}
+		if (!query) {
+			return options;
+		}
 
-		return (
-			options
-				.filter(({ label, code, phone }) => {
-					return (
-						label.toLowerCase().includes(query) ||
-						code.toLowerCase().includes(query) ||
-						phone.includes(query)
-					);
-				})
-				.sort((a, b) => {
-					const aExact =
-						a.label.toLowerCase() === query || a.code.toLowerCase() === query || a.phone === query;
-					const bExact =
-						b.label.toLowerCase() === query || b.code.toLowerCase() === query || b.phone === query;
-					return bExact ? 1 : aExact ? -1 : 0;
-				})
-		);
+		return options
+			.filter(({ label, code, phone }) => {
+				return (
+					label.toLowerCase().includes(query) ||
+					code.toLowerCase().includes(query) ||
+					phone.includes(query)
+				);
+			})
+			.sort((a, b) => {
+				const aExact =
+					a.label.toLowerCase() === query || a.code.toLowerCase() === query || a.phone === query;
+				const bExact =
+					b.label.toLowerCase() === query || b.code.toLowerCase() === query || b.phone === query;
+				return bExact ? 1 : aExact ? -1 : 0;
+			});
 	};
 
 	return (
 		<FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
 			<Stack direction={'row'} spacing={1}>
 				<Autocomplete
-					disabled
 					disableClearable
-					defaultValue={{ code: 'IN', label: 'India', phone: '91' }}
 					autoHighlight
 					options={countries}
+					value={selectedCountry}
+					onChange={(_, newValue) => setValue('country', newValue)}
 					getOptionLabel={(option) => option.phone}
 					filterOptions={filterOptions}
 					renderOption={(props, option) => (
