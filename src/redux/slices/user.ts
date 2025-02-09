@@ -51,7 +51,7 @@ export function getUserData(tgId: string) {
 	return async (dispatch: Dispatch) => {
 		dispatch(slice.actions.startLoading());
 		try {
-			const user = await userModel.findByTgId(tgId);
+			const user = await userModel.findOne(tgId);
 			dispatch(slice.actions.getUserSuccess(user));
 		} catch (error) {
 			dispatch(slice.actions.hasError(error));

@@ -71,15 +71,17 @@ export default function AuthVerifyCodeForm({ phoneNumber }: Props) {
 		try {
 			const otp = Object.values(data).join('');
 			const { message, success, userInfo } = await verifyOtp(phoneNumber, otp);
+			const uid = `${userInfo?.tgId}${userInfo?.phoneNumber.slice(-5)}`;
 			if (success) {
-				await login(userInfo || {});
 				const initData: Partial<UserTypeFirebase> = {
+					uid,
 					tgId: userInfo?.tgId,
 					phoneNumber: userInfo?.phoneNumber,
 					fullName: userInfo?.displayName,
 					createdAt: new Date().toISOString(),
 				};
-				const user = await userModel.findByTgIdOrCreate(userInfo?.tgId || '', initData);
+				const user = await userModel.findByIdOrCreate(uid || '', initData);
+				await login(userInfo || {});
 				dispatch(updateUser(user));
 				navigate(PATH_DASHBOARD.root);
 			}

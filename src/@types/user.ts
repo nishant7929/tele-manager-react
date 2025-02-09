@@ -2,7 +2,7 @@ export interface UserTypeFirebase {
 	phoneNumber: string;
 	fullName: string;
 	folders: FolderType[];
-	id: string;
+	uid: string;
 	tgId: string;
 	createdAt?: string;
 	updatedAt?: string;

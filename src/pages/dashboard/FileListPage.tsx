@@ -242,7 +242,7 @@ export default function FileListPage() {
 			createdAt: new Date().toISOString(),
 		};
 		if (user) {
-			const newUser = await userModel.findByIdAndUpdate(user.id, {
+			const newUser = await userModel.findByIdAndUpdate(user.uid, {
 				...user,
 				folders: addSubFolder(user?.folders, id, newFolder),
 			});
