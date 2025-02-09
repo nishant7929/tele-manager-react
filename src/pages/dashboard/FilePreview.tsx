@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { getTelegramClient } from '../../utils/telegram';
 import { Api } from 'telegram';
 import Loader from '../../components/loader';
+import { cachedDownloadedFiles, cachedThumbnails } from '../../utils/cachedFilesStore';
 
 interface Props {
 	fileId: number;
@@ -16,7 +17,6 @@ const FilePreview: React.FC<Props> = ({ fileId, onClose }) => {
 	const [imageData, setImageData] = useState<string | null>(null);
 	const [thumbnail, setThumbnail] = useState<string | null>(null);
 	const [loading, setLoading] = useState<boolean>(true);
-	const [originalImageBlob, setOriginalImageBlob] = useState<Blob | null>(null);
 	const [imageHeight, setImageHeight] = useState('auto');
 	const [imageWidth, setImageWidth] = useState('auto');
 
@@ -25,12 +25,17 @@ const FilePreview: React.FC<Props> = ({ fileId, onClose }) => {
 			try {
 				const client = await getTelegramClient();
 				const messages: any = tgMessages.filter((item) => item.id === fileId);
+				const message = messages[0];
 				let width = null;
 				let height = null;
+				if (cachedDownloadedFiles.has(message.id)) {
+					setImageData(cachedDownloadedFiles.get(message.id) || '');
+					return;
+				}
 				if (messages.length > 0) {
 					// Use thumbnail while loading
-					if (messages[0].media?.document?.thumbs) {
-						const imageAttr = messages[0].media.document.attributes.find(
+					if (message.media?.document?.thumbs) {
+						const imageAttr = message.media.document.attributes.find(
 							(attr: any) => attr instanceof Api.DocumentAttributeImageSize
 						);
 						if (imageAttr) {
@@ -47,19 +52,23 @@ const FilePreview: React.FC<Props> = ({ fileId, onClose }) => {
 							setImageWidth(width);
 							setImageHeight(height);
 						}
-						const thumbs = messages[0].media.document.thumbs;
-						const smallestThumb = thumbs[1] || thumbs[0];
-						const thumbFile = await client.downloadMedia(messages[0].media, {
-							thumb: smallestThumb,
-						});
-						if (thumbFile) {
-							const thumbUrl = URL.createObjectURL(new Blob([thumbFile], { type: 'image/jpeg' }));
-							setThumbnail(thumbUrl);
+						if (cachedThumbnails.has(message.id)) {
+							setThumbnail(cachedThumbnails.get(message.id) || '');
+						} else {
+							const thumbs = message.media.document.thumbs;
+							const smallestThumb = thumbs[1] || thumbs[0];
+							const thumbFile = await client.downloadMedia(message.media, {
+								thumb: smallestThumb,
+							});
+							if (thumbFile) {
+								const thumbUrl = URL.createObjectURL(new Blob([thumbFile], { type: 'image/jpeg' }));
+								setThumbnail(thumbUrl);
+							}
 						}
 					}
 					// Fetch the original image
-					if (messages[0].media?.document) {
-						const document = messages[0].media.document;
+					if (message.media?.document) {
+						const document = message.media.document;
 						const inputFileLocation = new Api.InputDocumentFileLocation({
 							id: document.id,
 							accessHash: document.accessHash,
@@ -80,8 +89,8 @@ const FilePreview: React.FC<Props> = ({ fileId, onClose }) => {
 
 						const originalBlob = new Blob(chunks, { type: 'image/jpeg' });
 						const fileUrl = URL.createObjectURL(originalBlob);
+						cachedDownloadedFiles.set(message?.id, fileUrl);
 						setImageData(fileUrl);
-						setOriginalImageBlob(originalBlob);
 					}
 				}
 			} catch (error) {
@@ -95,13 +104,12 @@ const FilePreview: React.FC<Props> = ({ fileId, onClose }) => {
 	}, [fileId]);
 
 	const handleDownload = () => {
-		if (originalImageBlob) {
-			const downloadUrl = URL.createObjectURL(originalImageBlob);
+		if (imageData) {
 			const link = document.createElement('a');
-			link.href = downloadUrl;
+			link.href = imageData;
 			link.download = `image_${fileId}.jpg`;
 			link.click();
-			URL.revokeObjectURL(downloadUrl);
+			URL.revokeObjectURL(imageData);
 		}
 	};
 	return (
@@ -142,7 +150,7 @@ const FilePreview: React.FC<Props> = ({ fileId, onClose }) => {
 			>
 				<Iconify icon="material-symbols:close-small-rounded" />
 			</IconButton>
-			{originalImageBlob && (
+			{imageData && (
 				<IconButton
 					onClick={handleDownload}
 					sx={{
