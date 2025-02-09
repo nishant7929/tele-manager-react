@@ -49,6 +49,7 @@ export default function Upload({
 	const { getRootProps, getInputProps, isDragActive, isDragReject, fileRejections } = useDropzone({
 		multiple,
 		disabled,
+		maxSize: 2147483648,
 		...other,
 	});
 
