@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import { Api } from 'telegram';
 import InfiniteScroll from 'react-infinite-scroll-component';
 // @mui
-import { Container, Button, CircularProgress, Box } from '@mui/material';
+import { Container, Button, CircularProgress, Box, Typography } from '@mui/material';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
 // components
@@ -27,6 +27,7 @@ import { uuidv4V2 } from '../../utils/uuidv4';
 import { userModel } from '../../utils/firebase';
 import FilePreview from './FilePreview';
 import { cachedThumbnails } from '../../utils/cachedFilesStore';
+import useResponsive from '../../hooks/useResponsive';
 
 // ----------------------------------------------------------------------
 
@@ -42,6 +43,7 @@ export interface IImageData {
 const ITEM_PER_VIEW = 20;
 
 export default function FileListPage() {
+	const isMobile = useResponsive('down', 'sm');
 	const { id } = useParams<{ id: string }>();
 	const dispatch = useDispatch();
 	const { tgMessages, deleteMessages, isTgLoading } = useUserContext();
@@ -249,6 +251,41 @@ export default function FileListPage() {
 		}
 	};
 
+	const generateBreadcrumbs = (
+		folders: FolderType[] = [],
+		currentFolderId: string
+	): { name: string; href?: string }[] => {
+		const breadcrumbs: { name: string; href?: string }[] = [
+			{ name: 'Home', href: PATH_DASHBOARD.root },
+		];
+
+		const findPath = (
+			folderList: FolderType[],
+			targetId: string
+		): { name: string; href?: string }[] | null => {
+			for (const folder of folderList) {
+				if (folder.id === targetId) {
+					return [{ name: folder.name }];
+				}
+
+				if (folder.folders) {
+					const subPath = findPath(folder.folders, targetId);
+					if (subPath) {
+						return [{ name: folder.name, href: `/folder/${folder.id}` }, ...subPath];
+					}
+				}
+			}
+			return null;
+		};
+
+		const folderPath = findPath(folders, currentFolderId);
+		if (folderPath) {
+			breadcrumbs.push(...folderPath);
+		}
+
+		return breadcrumbs;
+	};
+	const breadcrumbs = generateBreadcrumbs(user?.folders, id || '');
 	return (
 		<>
 			<Helmet>
@@ -257,8 +294,9 @@ export default function FileListPage() {
 
 			<Container maxWidth={themeStretch ? false : 'lg'}>
 				<CustomBreadcrumbs
-					heading="Files"
-					links={[{ name: 'Home', href: PATH_DASHBOARD.root }, { name: 'Files' }]}
+					isMobileView={isMobile}
+					heading={breadcrumbs.at(-1)?.name}
+					links={breadcrumbs}
 					action={
 						<>
 							<Button
@@ -291,6 +329,11 @@ export default function FileListPage() {
 							}}
 						/>
 					</Box>
+				)}
+				{!isTgLoading && !findSubFoldersById(user?.folders, id)?.length && !filesData.length && (
+					<Typography sx={{ display: 'flex', justifyContent: 'center', color: 'text.secondary' }}>
+						No files here!
+					</Typography>
 				)}
 
 				<InfiniteScroll
