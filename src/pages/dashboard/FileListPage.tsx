@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useParams } from 'react-router-dom';
 import { Api } from 'telegram';
@@ -26,6 +26,7 @@ import { updateUser } from '../../redux/slices/user';
 import { uuidv4V2 } from '../../utils/uuidv4';
 import { userModel } from '../../utils/firebase';
 import FilePreview from './FilePreview';
+import { cachedThumbnails } from '../../utils/cachedFilesStore';
 
 // ----------------------------------------------------------------------
 
@@ -68,8 +69,6 @@ export default function FileListPage() {
 	useEffect(() => {
 		fetchUploadedImages();
 	}, [processedMessages, pagination]);
-
-	const cachedThumbnails = useRef(new Map<number, string>());
 
 	const handleOpenUploadFile = () => {
 		setOpenUploadFile(true);
@@ -117,7 +116,7 @@ export default function FileListPage() {
 
 		return {
 			id: msg.id,
-			thumbnail: cachedThumbnails.current.get(msg.id) || null,
+			thumbnail: cachedThumbnails.get(msg.id) || null,
 			name: msg.message || 'Unknown Name',
 			date: new Date(msg.date * 1000).toLocaleString(),
 			size,
@@ -153,7 +152,7 @@ export default function FileListPage() {
 
 			if (file) {
 				const fileUrl = URL.createObjectURL(new Blob([file], { type: 'image/jpeg' }));
-				cachedThumbnails.current.set(msg?.id, fileUrl);
+				cachedThumbnails.set(msg?.id, fileUrl);
 				setFilesData((prevData) =>
 					prevData.map((data) => (data.id === msg.id ? { ...data, thumbnail: fileUrl } : data))
 				);
@@ -176,13 +175,13 @@ export default function FileListPage() {
 			setLoading(false);
 
 			const firstDownload = processedMessages.find(
-				(msg) => msg.media && !cachedThumbnails.current.has(msg.id)
+				(msg) => msg.media && !cachedThumbnails.has(msg.id)
 			);
 			// Wait for first image download complete
 			await downloadImage(firstDownload, client);
 
 			const downloadPromises = processedMessages.map(async (msg) => {
-				if (msg.media && !cachedThumbnails.current.has(msg.id)) {
+				if (msg.media && !cachedThumbnails.has(msg.id)) {
 					await downloadImage(msg, client);
 				}
 			});
