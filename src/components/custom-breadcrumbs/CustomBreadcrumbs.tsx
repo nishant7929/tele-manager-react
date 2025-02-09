@@ -12,6 +12,7 @@ export default function CustomBreadcrumbs({
 	heading,
 	moreLink,
 	activeLast,
+	isMobileView,
 	sx,
 	...other
 }: CustomBreadcrumbsProps) {
@@ -29,7 +30,7 @@ export default function CustomBreadcrumbs({
 					)}
 
 					{/* BREADCRUMBS */}
-					{!!links.length && (
+					{!isMobileView && !!links.length && (
 						<Breadcrumbs separator={<Separator />} {...other}>
 							{links.map((link) => (
 								<LinkItem

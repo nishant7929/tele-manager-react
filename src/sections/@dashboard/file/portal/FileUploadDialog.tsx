@@ -1,11 +1,6 @@
 import { useState, useCallback } from 'react';
 // @mui
-import {
-	Dialog,
-	DialogProps,
-	DialogTitle,
-	DialogContent,
-} from '@mui/material';
+import { Dialog, DialogProps, DialogTitle, DialogContent, Typography } from '@mui/material';
 import { Upload } from '../../../../components/upload';
 import { uploadFileHandlerV2, UploadFileType } from '../../../../utils/telegram';
 import { useParams } from 'react-router-dom';
@@ -44,9 +39,12 @@ export default function FileUploadDialog({
 
 	return (
 		<Dialog fullWidth maxWidth="sm" open={open} onClose={onClose} {...other}>
-			<DialogTitle sx={{ p: (theme) => theme.spacing(3, 3, 2, 3) }}> {title} </DialogTitle>
+			<DialogTitle sx={{ p: (theme) => theme.spacing(3, 3, 0, 3) }}> {title} </DialogTitle>
 
 			<DialogContent dividers sx={{ border: 'none' }}>
+				<Typography variant="caption" sx={{ color: 'text.secondary' }}>
+					*Your uploads will be stored in your Telegram Saved Messages.
+				</Typography>
 				<Upload multiple files={files} onDrop={handleDrop} onRemove={handleRemoveFile} />
 			</DialogContent>
 		</Dialog>

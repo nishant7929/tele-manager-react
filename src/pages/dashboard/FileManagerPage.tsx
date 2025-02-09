@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { useEffect, useState } from 'react';
 // @mui
-import { Button, Container } from '@mui/material';
+import { Button, Container, Typography } from '@mui/material';
 // components
 import ConfirmDialog from '../../components/confirm-dialog';
 import { useSettingsContext } from '../../components/settings';
@@ -16,10 +16,12 @@ import { PATH_DASHBOARD } from '../../routes/paths';
 import { uuidv4V2 } from '../../utils/uuidv4';
 import { userModel } from '../../utils/firebase';
 import { updateUser } from '../../redux/slices/user';
+import useResponsive from '../../hooks/useResponsive';
 
 // ----------------------------------------------------------------------
 
 export default function FileManagerPage() {
+	const isMobile = useResponsive('down', 'sm');
 	const { user, isLoading } = useSelector((state) => state.user);
 	const dispatch = useDispatch();
 	const table = useTable({ defaultRowsPerPage: 10 });
@@ -85,6 +87,7 @@ export default function FileManagerPage() {
 
 			<Container maxWidth={themeStretch ? false : 'lg'}>
 				<CustomBreadcrumbs
+					isMobileView={isMobile}
 					heading="Folders"
 					links={[
 						{
@@ -103,7 +106,11 @@ export default function FileManagerPage() {
 						</Button>
 					}
 				/>
-
+				{user && !user?.folders.length && (
+					<Typography sx={{ display: 'flex', justifyContent: 'center', color: 'text.secondary' }}>
+						Create your first folder to start uploading files.
+					</Typography>
+				)}
 				<FileGridView
 					loading={isLoading}
 					table={table}
