@@ -38,14 +38,28 @@ export default function FileCard({ file, selected, onSelect, onClick }: Props) {
 				{type?.includes('video') && (
 					<Label
 						sx={{
-							top: 16,
-							right: 16,
+							top: 10,
+							right: 10,
 							zIndex: 9,
 							position: 'absolute',
 							color: 'white',
 						}}
 					>
 						<Iconify icon="ph:play-circle-bold" />
+					</Label>
+				)}
+
+				{type?.includes('pdf') && (
+					<Label
+						sx={{
+							top: 10,
+							right: 10,
+							zIndex: 9,
+							position: 'absolute',
+							color: 'black',
+						}}
+					>
+						<Iconify icon="proicons:pdf-2" />
 					</Label>
 				)}
 				<Image onClick={onClick} alt={name} src={thumbnail || ''} ratio="1/1" sx={{ borderRadius: 0, cursor: 'pointer' }} />

@@ -31,18 +31,23 @@ export default function RejectionFiles({ fileRejections }: Props) {
 		>
 			{fileRejections.map(({ file, errors }) => {
 				const { path, size } = fileData(file);
-
+				const isFileTooLarge = file.size > 2147483648;
 				return (
 					<Box key={path} sx={{ my: 1 }}>
 						<Typography variant="subtitle2" noWrap>
 							{path} - {size ? fData(size) : ''}
 						</Typography>
-
-						{errors.map((error) => (
-							<Box key={error.code} component="span" sx={{ typography: 'caption' }}>
-								- {error.message}
+						{isFileTooLarge ? (
+							<Box component="span" sx={{ typography: 'caption' }}>
+								- File size must not exceed 2GB.
 							</Box>
-						))}
+						) : (
+							errors.map((error) => (
+								<Box key={error.code} component="span" sx={{ typography: 'caption' }}>
+									- {error.message}
+								</Box>
+							))
+						)}
 					</Box>
 				);
 			})}

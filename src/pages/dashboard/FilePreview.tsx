@@ -1,4 +1,4 @@
-import { Box, Dialog, IconButton } from '@mui/material';
+import { Box, Dialog, IconButton, Typography } from '@mui/material';
 import Iconify from '../../components/iconify';
 import { useUserContext } from '../../auth/useUserContext';
 import { useEffect, useState } from 'react';
@@ -14,13 +14,17 @@ interface Props {
 
 const FilePreview: React.FC<Props> = ({ fileId, onClose }) => {
 	const { tgMessages } = useUserContext();
-	const [imageData, setImageData] = useState<string | null>(null);
+	const [fileData, setFileData] = useState<string | null>(null);
 	const [thumbnail, setThumbnail] = useState<string | null>(null);
 	const [loading, setLoading] = useState<boolean>(true);
 	const [imageHeight, setImageHeight] = useState('auto');
 	const [imageWidth, setImageWidth] = useState('auto');
 
+	const [fileType, setFileType] = useState<string | null>(null);
+	const [fileName, setFileName] = useState<string | null>(null);
+
 	useEffect(() => {
+		const abortController = new AbortController();
 		const fetchImageData = async () => {
 			try {
 				const client = await getTelegramClient();
@@ -28,8 +32,18 @@ const FilePreview: React.FC<Props> = ({ fileId, onClose }) => {
 				const message = messages[0];
 				let width = null;
 				let height = null;
+
+				const document = message.media.document;
+				const mimeType = document.mimeType || '';
+				const fileNameAttr = document.attributes.find(
+					(attr: any) => attr instanceof Api.DocumentAttributeFilename
+				);
+				const fileName = fileNameAttr ? fileNameAttr.fileName : `file_${fileId}`;
+				setFileType(mimeType);
+				setFileName(fileName);
+
 				if (cachedDownloadedFiles.has(message.id)) {
-					setImageData(cachedDownloadedFiles.get(message.id) || '');
+					setFileData(cachedDownloadedFiles.get(message.id) || '');
 					return;
 				}
 				if (messages.length > 0) {
@@ -84,13 +98,16 @@ const FilePreview: React.FC<Props> = ({ fileId, onClose }) => {
 							requestSize: 2048 * 1024, // 2MB chunks
 							chunkSize: 2048 * 1024,
 						})) {
+							if (abortController.signal.aborted) {
+								return;
+							}
 							chunks.push(chunk);
 						}
 
 						const originalBlob = new Blob(chunks, { type: 'image/jpeg' });
 						const fileUrl = URL.createObjectURL(originalBlob);
 						cachedDownloadedFiles.set(message?.id, fileUrl);
-						setImageData(fileUrl);
+						setFileData(fileUrl);
 					}
 				}
 			} catch (error) {
@@ -101,26 +118,30 @@ const FilePreview: React.FC<Props> = ({ fileId, onClose }) => {
 		};
 
 		fetchImageData();
+		return () => {
+			abortController.abort(); // **Abort ongoing download if modal closes**
+		};
 	}, [fileId]);
 
 	const handleDownload = () => {
-		if (imageData) {
+		if (fileData) {
 			const link = document.createElement('a');
-			link.href = imageData;
-			link.download = `image_${fileId}.jpg`;
+			link.href = fileData;
+			link.download = fileName || `file_${fileId}`;
 			link.click();
-			URL.revokeObjectURL(imageData);
+			URL.revokeObjectURL(fileData);
 		}
 	};
+
 	return (
 		<Dialog
 			onClose={onClose}
 			open
 			sx={{
-				'& .css-12laf6f-MuiBackdrop-root-MuiDialog-backdrop': {
-					backgroundColor: '#1f1f1feb',
-					opacity: '0.7 !important',
-				},
+				// '& .css-12laf6f-MuiBackdrop-root-MuiDialog-backdrop': {
+				// 	backgroundColor: '#1f1f1feb',
+				// 	opacity: '0.7 !important',
+				// },
 				'& .MuiDialog-container': {
 					// backgroundColor: '#262626',
 					// backgroundColor: '#1f1f1feb',
@@ -150,7 +171,7 @@ const FilePreview: React.FC<Props> = ({ fileId, onClose }) => {
 			>
 				<Iconify icon="material-symbols:close-small-rounded" />
 			</IconButton>
-			{imageData && (
+			{fileData && (
 				<IconButton
 					onClick={handleDownload}
 					sx={{
@@ -171,7 +192,7 @@ const FilePreview: React.FC<Props> = ({ fileId, onClose }) => {
 			<Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
 				{loading && <Loader />}
 				<Box>
-					{(imageData || thumbnail) && (
+					{fileType?.startsWith('image/') && (fileData || thumbnail) && (
 						<img
 							style={{
 								display: 'block',
@@ -181,9 +202,25 @@ const FilePreview: React.FC<Props> = ({ fileId, onClose }) => {
 								height: imageHeight,
 								width: imageWidth,
 							}}
-							src={imageData || thumbnail || ''}
+							src={fileData || thumbnail || ''}
 							alt="Image"
 						/>
+					)}
+
+					{fileType?.startsWith('video/') &&
+						(fileData ? (
+							<video controls style={{ width: '100%' }}>
+								<source src={fileData} type={fileType} />
+							</video>
+						) : (
+							<Typography sx={{ color: 'white' }}>
+								Your video is downloading, it will show after full download complete!
+							</Typography>
+						))}
+					{!fileType?.startsWith('image/') && !fileType?.startsWith('video/') && (
+						<Typography sx={{ color: 'white' }}>
+							Preview not available for this file type.
+						</Typography>
 					)}
 				</Box>
 			</Box>
