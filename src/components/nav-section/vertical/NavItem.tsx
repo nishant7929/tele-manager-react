@@ -38,7 +38,15 @@ export default function NavItem({
 			)}
 
 			<ListItemText
-				primary={`${translate(title)}`}
+				primary={
+					children ? (
+						<Link sx={{ color: 'unset', textDecoration: 'underline' }} component={RouterLink} to={path} underline="none">
+							{`${translate(title)}`}
+						</Link>
+					) : (
+						`${translate(title)}`
+					)
+				}
 				secondary={
 					caption && (
 						<Tooltip title={`${translate(caption)}`} placement="top-start">
