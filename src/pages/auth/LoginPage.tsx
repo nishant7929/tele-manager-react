@@ -20,6 +20,9 @@ export default function LoginPage() {
 			<Typography variant="h3" paragraph>
 				Sign in to Tele Manager
 			</Typography>
+			<Typography sx={{ color: 'text.secondary' }} paragraph>
+				You will receive a verification code in your Telegram app. If you're not logged in, please login in first.
+			</Typography>
 
 			<AuthLoginForm handleCodeSend={(phoneNumber: string) => setPhoneNumber(phoneNumber)} />
 		</>

@@ -25,7 +25,7 @@ export default function VerifyCodePage({ phoneNumber, setPhoneNumber }: Props) {
 			</Typography>
 
 			<Typography sx={{ color: 'text.secondary', mb: 5 }}>
-				You will receive a 5-digit verification code to your telegram account or in phone number.
+				You will receive a 5-digit verification code to your telegram account.
 			</Typography>
 
 			<AuthVerifyCodeForm phoneNumber={phoneNumber} />

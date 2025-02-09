@@ -218,7 +218,6 @@ export default function FileFolderCard({ folder, selected, sx, ...other }: Props
 				arrow="right-top"
 				sx={{ width: 160 }}
 			>
-
 				<MenuItem
 					onClick={() => {
 						handleClosePopover();
@@ -256,7 +255,13 @@ export default function FileFolderCard({ folder, selected, sx, ...other }: Props
 				open={openConfirm}
 				onClose={handleCloseConfirm}
 				title="Delete"
-				content="Are you sure want to delete?"
+				content={
+					<>
+						This will delete all your folders and files inside this folder.
+						<br />
+						Are you sure want to delete?
+					</>
+				}
 				action={
 					<Button variant="contained" color="error" onClick={handleDeleteItem}>
 						Delete
