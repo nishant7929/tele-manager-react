@@ -32,7 +32,7 @@ jobs:
         run: npm install -g javascript-obfuscator
 
       - name: Obfuscate JS files
-        run: javascript-obfuscator dist/assets --output dist/assets
+        run: javascript-obfuscator dist/assets --output dist/assets --compact true
 
       # Deploy to Firebase Hosting
       - uses: FirebaseExtended/action-hosting-deploy@v0

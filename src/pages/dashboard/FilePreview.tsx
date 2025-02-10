@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { getTelegramClient } from '../../utils/telegram';
 import Loader from '../../components/loader';
 import { cachedDownloadedFiles, cachedThumbnails } from '../../utils/cachedFilesStore';
+import useResponsive from '../../hooks/useResponsive';
 
 interface Props {
 	fileId: number;
@@ -13,11 +14,13 @@ interface Props {
 }
 
 const FilePreview: React.FC<Props> = ({ fileId, onClose }) => {
+	const isMobile = useResponsive('down', 'sm');
 	const { tgMessages } = useUserContext();
 	const [fileData, setFileData] = useState<string | null>(null);
 	const [thumbnail, setThumbnail] = useState<string | null>(null);
 	const [loading, setLoading] = useState<boolean>(true);
 	const [imageWidth, setImageWidth] = useState('auto');
+	const [imageHeight, setImageHeight] = useState('auto');
 
 	const [fileType, setFileType] = useState<string | null>(null);
 	const [fileName, setFileName] = useState<string | null>(null);
@@ -57,7 +60,7 @@ const FilePreview: React.FC<Props> = ({ fileId, onClose }) => {
 								height = maxScreenHeight;
 								width = Math.round(width * scaleFactor);
 							}
-
+							setImageHeight(height);
 							setImageWidth(width);
 						}
 						if (cachedDownloadedFiles.has(message.id)) {
@@ -201,8 +204,8 @@ const FilePreview: React.FC<Props> = ({ fileId, onClose }) => {
 							margin: 'auto',
 							overflowClipMargin: 'content-box',
 							objectFit: 'contain',
-							// height: imageHeight,
-							width: imageWidth,
+							height: isMobile ? '100%': imageHeight,
+							width: isMobile ? imageWidth: '100%',
 						}}
 						src={fileData || thumbnail || ''}
 						alt="Image"
