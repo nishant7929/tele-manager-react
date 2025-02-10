@@ -1,9 +1,9 @@
 import { Box, CircularProgress, Dialog, IconButton, Typography } from '@mui/material';
+import { Api } from 'telegram';
 import Iconify from '../../components/iconify';
 import { useUserContext } from '../../auth/useUserContext';
 import { useEffect, useState } from 'react';
 import { getTelegramClient } from '../../utils/telegram';
-import { Api } from 'telegram';
 import Loader from '../../components/loader';
 import { cachedDownloadedFiles, cachedThumbnails } from '../../utils/cachedFilesStore';
 
@@ -194,38 +194,34 @@ const FilePreview: React.FC<Props> = ({ fileId, onClose }) => {
 			</IconButton>
 			<Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
 				{loading && <Loader />}
-				<Box>
-					{fileType?.startsWith('image/') && (fileData || thumbnail) && (
-						<img
-							style={{
-								display: 'block',
-								margin: 'auto',
-								overflowClipMargin: 'content-box',
-								objectFit: 'contain',
-								// height: imageHeight,
-								width: imageWidth,
-							}}
-							src={fileData || thumbnail || ''}
-							alt="Image"
-						/>
-					)}
+				{fileType?.startsWith('image/') && (fileData || thumbnail) && (
+					<img
+						style={{
+							display: 'block',
+							margin: 'auto',
+							overflowClipMargin: 'content-box',
+							objectFit: 'contain',
+							// height: imageHeight,
+							width: imageWidth,
+						}}
+						src={fileData || thumbnail || ''}
+						alt="Image"
+					/>
+				)}
 
-					{fileType?.startsWith('video/') &&
-						(fileData ? (
-							<video controls style={{ width: '100%' }}>
-								<source src={fileData} type={fileType} />
-							</video>
-						) : (
-							<Typography sx={{ color: 'white' }}>
-								Your video is downloading, it will show after full download complete!
-							</Typography>
-						))}
-					{!fileType?.startsWith('image/') && !fileType?.startsWith('video/') && (
+				{fileType?.startsWith('video/') &&
+					(fileData ? (
+						<video controls style={{ width: window.innerWidth * 0.7, height: '100%' }}>
+							<source src={fileData} type={fileType} />
+						</video>
+					) : (
 						<Typography sx={{ color: 'white' }}>
-							Preview not available for this file type.
+							Your video is downloading, it will show after download finish!
 						</Typography>
-					)}
-				</Box>
+					))}
+				{!fileType?.startsWith('image/') && !fileType?.startsWith('video/') && (
+					<Typography sx={{ color: 'white' }}>Preview not available for this file type.</Typography>
+				)}
 			</Box>
 		</Dialog>
 	);
