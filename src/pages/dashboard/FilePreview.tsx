@@ -37,7 +37,7 @@ const FilePreview: React.FC<Props> = ({ fileId, onClose }) => {
 				const fileNameAttr = document.attributes.find(
 					(attr: any) => attr instanceof Api.DocumentAttributeFilename
 				);
-				const fileName = fileNameAttr ? fileNameAttr.fileName : ｀file_${fileId}｀;
+				const fileName = fileNameAttr ? fileNameAttr.fileName : `file_${fileId}`;
 				setFileType(mimeType);
 				setFileName(fileName);
 
@@ -125,7 +125,7 @@ const FilePreview: React.FC<Props> = ({ fileId, onClose }) => {
 		if (fileData) {
 			const link = document.createElement('a');
 			link.href = fileData;
-			link.download = fileName || ｀file_${fileId}｀;
+			link.download = fileName || `file_${fileId}`;
 			link.click();
 			// URL.revokeObjectURL(fileData);
 		}
@@ -141,8 +141,6 @@ const FilePreview: React.FC<Props> = ({ fileId, onClose }) => {
 					opacity: '1 !important',
 				},
 				'& .MuiDialog-container': {
-					// backgroundColor: '#262626',
-					// backgroundColor: '#1f1f1feb',
 					position: 'relative',
 				},
 				'& .MuiPaper-rounded': {
@@ -161,7 +159,6 @@ const FilePreview: React.FC<Props> = ({ fileId, onClose }) => {
 					top: 16,
 					right: 16,
 					color: '#fff',
-					// backgroundColor: 'rgba(0, 0, 0, 0.5)',
 					zIndex: 1302,
 					'&:hover': {
 						backgroundColor: 'rgba(0, 0, 0, 0.7)',
@@ -178,7 +175,6 @@ const FilePreview: React.FC<Props> = ({ fileId, onClose }) => {
 						top: 16,
 						right: 64,
 						color: '#fff',
-						// backgroundColor: 'rgba(0, 0, 0, 0.5)',
 						zIndex: 1302,
 						'&:hover': {
 							backgroundColor: 'rgba(0, 0, 0, 0.7)',
@@ -204,7 +200,6 @@ const FilePreview: React.FC<Props> = ({ fileId, onClose }) => {
 								margin: 'auto',
 								overflowClipMargin: 'content-box',
 								objectFit: 'contain',
-								// height: imageHeight,
 								width: imageWidth,
 							}}
 							src={fileData || thumbnail || ''}
