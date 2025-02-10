@@ -24,7 +24,7 @@ export default tseslint.config(
 			'no-mixed-spaces-and-tabs': ['error', 'smart-tabs'],
 			// 'prettier/prettier': ['error', { useTabs: true, tabWidth: 2 }],
 			'react-hooks/exhaustive-deps': 'off',
-			'no-console': ['warn'],
+			// 'no-console': ['warn'],
 			'no-unused-vars': [
 				'error',
 				{

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Navigate, useLocation, useRoutes } from 'react-router-dom';
 // auth
 import AuthGuard from '../auth/AuthGuard';
@@ -16,8 +16,9 @@ import FileListPage from '../pages/dashboard/FileListPage';
 import Home from '../pages/dashboard/Home';
 // import ImageView from '../pages/dashboard/ImageView';
 import { getUserData } from '../redux/slices/user';
-import { useDispatch } from '../redux/store';
+import { useDispatch, useSelector } from '../redux/store';
 import ReactGA from 'react-ga4';
+import { userModel } from '../utils/firebase';
 // ----------------------------------------------------------------------
 
 const initializeGA = () => {
@@ -27,9 +28,24 @@ const initializeGA = () => {
 initializeGA();
 
 export default function Router() {
-	const { user } = useUserContext();
+	const [firstLoad, setFirstLoad] = useState(true);
+	const { user, tgMessages } = useUserContext();
+	const { user: firebaseUser } = useSelector((state) => state.user);
 	const dispatch = useDispatch();
 	const location = useLocation();
+
+	useEffect(() => {
+		if (firstLoad && tgMessages.length && firebaseUser) {
+			if (firebaseUser.totalFiles !== tgMessages.length) {
+				userModel.findByIdAndUpdate(firebaseUser.uid, {
+					...firebaseUser,
+					totalFiles: tgMessages.length,
+				});
+			}
+			setFirstLoad(false);
+		}
+	}, [tgMessages, firebaseUser]);
+
 	useEffect(() => {
 		if (user) {
 			dispatch(getUserData(`${user.tgId}${user.phoneNumber.slice(-5)}`));

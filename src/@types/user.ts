@@ -6,6 +6,7 @@ export interface UserTypeFirebase {
 	tgId: string;
 	createdAt?: string;
 	updatedAt?: string;
+	totalFiles?: number;
 }
 
 export interface FolderType {
