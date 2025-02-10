@@ -1,4 +1,4 @@
-import { Box, Dialog, IconButton, Typography } from '@mui/material';
+import { Box, CircularProgress, Dialog, IconButton, Typography } from '@mui/material';
 import Iconify from '../../components/iconify';
 import { useUserContext } from '../../auth/useUserContext';
 import { useEffect, useState } from 'react';
@@ -17,7 +17,6 @@ const FilePreview: React.FC<Props> = ({ fileId, onClose }) => {
 	const [fileData, setFileData] = useState<string | null>(null);
 	const [thumbnail, setThumbnail] = useState<string | null>(null);
 	const [loading, setLoading] = useState<boolean>(true);
-	const [imageHeight, setImageHeight] = useState('auto');
 	const [imageWidth, setImageWidth] = useState('auto');
 
 	const [fileType, setFileType] = useState<string | null>(null);
@@ -38,14 +37,10 @@ const FilePreview: React.FC<Props> = ({ fileId, onClose }) => {
 				const fileNameAttr = document.attributes.find(
 					(attr: any) => attr instanceof Api.DocumentAttributeFilename
 				);
-				const fileName = fileNameAttr ? fileNameAttr.fileName : `file_${fileId}`;
+				const fileName = fileNameAttr ? fileNameAttr.fileName : file_${fileId};
 				setFileType(mimeType);
 				setFileName(fileName);
 
-				if (cachedDownloadedFiles.has(message.id)) {
-					setFileData(cachedDownloadedFiles.get(message.id) || '');
-					return;
-				}
 				if (messages.length > 0) {
 					// Use thumbnail while loading
 					if (message.media?.document?.thumbs) {
@@ -55,8 +50,8 @@ const FilePreview: React.FC<Props> = ({ fileId, onClose }) => {
 						if (imageAttr) {
 							height = imageAttr.h;
 							width = imageAttr.w;
-							const maxScreenHeight = window.innerHeight * 0.8;
-							const scaleFactor = (maxScreenHeight / height) * 0.8;
+							const maxScreenHeight = window.innerHeight * 0.9;
+							const scaleFactor = (maxScreenHeight / height) * 0.9;
 
 							if (height > maxScreenHeight) {
 								height = maxScreenHeight;
@@ -64,7 +59,10 @@ const FilePreview: React.FC<Props> = ({ fileId, onClose }) => {
 							}
 
 							setImageWidth(width);
-							setImageHeight(height);
+						}
+						if (cachedDownloadedFiles.has(message.id)) {
+							setFileData(cachedDownloadedFiles.get(message.id) || '');
+							return;
 						}
 						if (cachedThumbnails.has(message.id)) {
 							setThumbnail(cachedThumbnails.get(message.id) || '');
@@ -127,9 +125,9 @@ const FilePreview: React.FC<Props> = ({ fileId, onClose }) => {
 		if (fileData) {
 			const link = document.createElement('a');
 			link.href = fileData;
-			link.download = fileName || `file_${fileId}`;
+			link.download = fileName || file_${fileId};
 			link.click();
-			URL.revokeObjectURL(fileData);
+			// URL.revokeObjectURL(fileData);
 		}
 	};
 
@@ -138,10 +136,10 @@ const FilePreview: React.FC<Props> = ({ fileId, onClose }) => {
 			onClose={onClose}
 			open
 			sx={{
-				// '& .css-12laf6f-MuiBackdrop-root-MuiDialog-backdrop': {
-				// 	backgroundColor: '#1f1f1feb',
-				// 	opacity: '0.7 !important',
-				// },
+				'& .css-12laf6f-MuiBackdrop-root-MuiDialog-backdrop': {
+					backgroundColor: '#1f1f1feb',
+					opacity: '1 !important',
+				},
 				'& .MuiDialog-container': {
 					// backgroundColor: '#262626',
 					// backgroundColor: '#1f1f1feb',
@@ -151,7 +149,8 @@ const FilePreview: React.FC<Props> = ({ fileId, onClose }) => {
 					overflow: 'hidden',
 					backgroundColor: 'unset',
 					borderRadius: '0 !important',
-					boxShadow: 'none',
+					boxShadow: '0px 4px 15px 2px rgba(0,0,0,0.35)',
+					maxWidth: 'unset',
 				},
 			}}
 		>
@@ -162,16 +161,16 @@ const FilePreview: React.FC<Props> = ({ fileId, onClose }) => {
 					top: 16,
 					right: 16,
 					color: '#fff',
-					backgroundColor: 'rgba(0, 0, 0, 0.5)',
+					// backgroundColor: 'rgba(0, 0, 0, 0.5)',
 					zIndex: 1302,
 					'&:hover': {
 						backgroundColor: 'rgba(0, 0, 0, 0.7)',
 					},
 				}}
 			>
-				<Iconify icon="material-symbols:close-small-rounded" />
+				<Iconify width={25} icon="mingcute:close-line" />
 			</IconButton>
-			{fileData && (
+			{(
 				<IconButton
 					onClick={handleDownload}
 					sx={{
@@ -179,14 +178,20 @@ const FilePreview: React.FC<Props> = ({ fileId, onClose }) => {
 						top: 16,
 						right: 64,
 						color: '#fff',
-						backgroundColor: 'rgba(0, 0, 0, 0.5)',
+						// backgroundColor: 'rgba(0, 0, 0, 0.5)',
 						zIndex: 1302,
 						'&:hover': {
 							backgroundColor: 'rgba(0, 0, 0, 0.7)',
 						},
 					}}
 				>
-					<Iconify icon="material-symbols:download-rounded" />
+					{loading ? (
+						<Box sx={{ width: 25, height: 25 }}>
+							<CircularProgress size={25} />
+						</Box>
+					) : (
+						<Iconify width={25} icon="material-symbols:download-rounded" />
+					)}
 				</IconButton>
 			)}
 			<Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -199,7 +204,7 @@ const FilePreview: React.FC<Props> = ({ fileId, onClose }) => {
 								margin: 'auto',
 								overflowClipMargin: 'content-box',
 								objectFit: 'contain',
-								height: imageHeight,
+								// height: imageHeight,
 								width: imageWidth,
 							}}
 							src={fileData || thumbnail || ''}
