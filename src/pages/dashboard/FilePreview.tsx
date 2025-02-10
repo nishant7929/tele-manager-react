@@ -37,7 +37,7 @@ const FilePreview: React.FC<Props> = ({ fileId, onClose }) => {
 				const fileNameAttr = document.attributes.find(
 					(attr: any) => attr instanceof Api.DocumentAttributeFilename
 				);
-				const fileName = fileNameAttr ? fileNameAttr.fileName : file_${fileId};
+				const fileName = fileNameAttr ? fileNameAttr.fileName : ｀file_${fileId}｀;
 				setFileType(mimeType);
 				setFileName(fileName);
 
@@ -125,7 +125,7 @@ const FilePreview: React.FC<Props> = ({ fileId, onClose }) => {
 		if (fileData) {
 			const link = document.createElement('a');
 			link.href = fileData;
-			link.download = fileName || file_${fileId};
+			link.download = fileName || ｀file_${fileId}｀;
 			link.click();
 			// URL.revokeObjectURL(fileData);
 		}
