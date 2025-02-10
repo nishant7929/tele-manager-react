@@ -330,11 +330,14 @@ export default function FileListPage() {
 						/>
 					</Box>
 				)}
-				{!isTgLoading && !findSubFoldersById(user?.folders, id)?.length && !filesData.length && (
-					<Typography sx={{ display: 'flex', justifyContent: 'center', color: 'text.secondary' }}>
-						No files here!
-					</Typography>
-				)}
+				{!loading &&
+					!isTgLoading &&
+					findSubFoldersById(user?.folders, id)?.length === 0 &&
+					filesData.length === 0 && (
+						<Typography sx={{ display: 'flex', justifyContent: 'center', color: 'text.secondary' }}>
+							No files here!
+						</Typography>
+					)}
 
 				<InfiniteScroll
 					dataLength={filesData.length}

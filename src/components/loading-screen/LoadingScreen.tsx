@@ -13,6 +13,7 @@ import { useUserContext } from '../../auth/useUserContext';
 import Logo from '../logo';
 import ProgressBar from '../progress-bar';
 import { useSettingsContext } from '../settings';
+import { useLocation } from 'react-router-dom';
 
 // ----------------------------------------------------------------------
 
@@ -32,7 +33,7 @@ const StyledRoot = styled('div')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function LoadingScreen() {
-	// const { pathname } = useLocation();
+	const { pathname } = useLocation();
 
 	const isDesktop = useResponsive('up', 'lg');
 
@@ -40,7 +41,7 @@ export default function LoadingScreen() {
 
 	const { themeLayout } = useSettingsContext();
 
-	const isDashboard = isInitialized && isDesktop;
+	const isDashboard = isInitialized && isDesktop && !pathname.includes('/login');
 
 	const size =
 		(themeLayout === 'mini' && NAV.W_DASHBOARD_MINI) ||

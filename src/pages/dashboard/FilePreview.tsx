@@ -141,6 +141,8 @@ const FilePreview: React.FC<Props> = ({ fileId, onClose }) => {
 					opacity: '1 !important',
 				},
 				'& .MuiDialog-container': {
+					// backgroundColor: '#262626',
+					// backgroundColor: '#1f1f1feb',
 					position: 'relative',
 				},
 				'& .MuiPaper-rounded': {
@@ -159,6 +161,7 @@ const FilePreview: React.FC<Props> = ({ fileId, onClose }) => {
 					top: 16,
 					right: 16,
 					color: '#fff',
+					// backgroundColor: 'rgba(0, 0, 0, 0.5)',
 					zIndex: 1302,
 					'&:hover': {
 						backgroundColor: 'rgba(0, 0, 0, 0.7)',
@@ -167,29 +170,28 @@ const FilePreview: React.FC<Props> = ({ fileId, onClose }) => {
 			>
 				<Iconify width={25} icon="mingcute:close-line" />
 			</IconButton>
-			{(
-				<IconButton
-					onClick={handleDownload}
-					sx={{
-						position: 'fixed',
-						top: 16,
-						right: 64,
-						color: '#fff',
-						zIndex: 1302,
-						'&:hover': {
-							backgroundColor: 'rgba(0, 0, 0, 0.7)',
-						},
-					}}
-				>
-					{loading ? (
-						<Box sx={{ width: 25, height: 25 }}>
-							<CircularProgress size={25} />
-						</Box>
-					) : (
-						<Iconify width={25} icon="material-symbols:download-rounded" />
-					)}
-				</IconButton>
-			)}
+			<IconButton
+				onClick={handleDownload}
+				sx={{
+					position: 'fixed',
+					top: 16,
+					right: 64,
+					color: '#fff',
+					// backgroundColor: 'rgba(0, 0, 0, 0.5)',
+					zIndex: 1302,
+					'&:hover': {
+						backgroundColor: 'rgba(0, 0, 0, 0.7)',
+					},
+				}}
+			>
+				{loading ? (
+					<Box sx={{ width: 25, height: 25 }}>
+						<CircularProgress size={25} />
+					</Box>
+				) : (
+					<Iconify width={25} icon="material-symbols:download-rounded" />
+				)}
+			</IconButton>
 			<Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
 				{loading && <Loader />}
 				<Box>
@@ -200,6 +202,7 @@ const FilePreview: React.FC<Props> = ({ fileId, onClose }) => {
 								margin: 'auto',
 								overflowClipMargin: 'content-box',
 								objectFit: 'contain',
+								// height: imageHeight,
 								width: imageWidth,
 							}}
 							src={fileData || thumbnail || ''}

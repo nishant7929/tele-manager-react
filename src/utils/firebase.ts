@@ -37,11 +37,28 @@ export class BaseModel {
 			const docRef = doc(this.db, this.collection, uid);
 			const docSnap = await getDoc(docRef);
 			if (docSnap.exists()) {
-				return { uid: uid, ...docSnap.data()};
+				return { uid: uid, ...docSnap.data() };
 			} else {
 				return null;
 			}
 		} catch (error: any) {
+			throw error;
+		}
+	}
+
+	async findAll() {
+		try {
+			const colRef = collection(db, this.collection);
+			const querySnapshot = await getDocs(colRef);
+
+			const records = querySnapshot.docs.map((doc) => ({
+				uid: doc.id,
+				...doc.data(),
+			}));
+
+			return records;
+		} catch (error) {
+			console.error('Error fetching records:', error);
 			throw error;
 		}
 	}
@@ -99,10 +116,13 @@ export class BaseModel {
 				}
 				return existingUser;
 			} else {
-				const newUser = await this.create({
-					...data,
-					folders: data.folders || [],
-				}, uid);
+				const newUser = await this.create(
+					{
+						...data,
+						folders: data.folders || [],
+					},
+					uid
+				);
 				return newUser;
 			}
 		} catch (error: any) {
