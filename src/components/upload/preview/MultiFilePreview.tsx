@@ -106,7 +106,7 @@ function MultiFilePreview({ thumbnail, files, onRemove, sx }: UploadProps) {
 								sx={{ color: 'text.secondary', display: 'flex', justifyContent: 'space-between' }}
 							>
 								{isNotFormatFile ? '' : fData(size)}
-								<span>{file.progress === 100 ? 'Completed' : `${file.progress}/100%`}</span>
+								<span>{file.progress === 100 ? 'Completed' : `${file.progress}%`}</span>
 							</Typography>
 
 							{file.progress !== 100 && (

@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /folders
+Disallow: /folder/
+Allow: /login
+Allow: /
+
+Sitemap: https://tele-manager.web.app/sitemap.xml

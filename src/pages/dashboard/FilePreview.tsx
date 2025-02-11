@@ -139,8 +139,8 @@ const FilePreview: React.FC<Props> = ({ fileId, onClose }) => {
 			onClose={onClose}
 			open
 			sx={{
-				'& .css-12laf6f-MuiBackdrop-root-MuiDialog-backdrop': {
-					backgroundColor: '#1f1f1feb',
+				'& .MuiBackdrop-root': {
+					backgroundColor: '#1f1f1feb !important',
 					opacity: '1 !important',
 				},
 				'& .MuiDialog-container': {
