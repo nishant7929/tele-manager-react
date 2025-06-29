@@ -189,7 +189,7 @@ const FilePreview: React.FC<Props> = ({ fileId, onClose }) => {
 			>
 				{loading ? (
 					<Box sx={{ width: 25, height: 25 }}>
-						<CircularProgress size={25} />
+						<CircularProgress disableShrink size={25} />
 					</Box>
 				) : (
 					<Iconify width={25} icon="material-symbols:download-rounded" />
