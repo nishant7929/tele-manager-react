@@ -1,4 +1,4 @@
-# GetIntoTele
+# TELE MANAGER
 
 ## Incoming feachers
 - Nested folder - [Released]
@@ -16,3 +16,10 @@
 
 Idea:
 - Public channel view
+
+
+
+## Deploy:
+- Deploy using firebase cli
+- create build in your local and use this command to push your build into firebase hosting
+	- command: `firebase deploy`
