@@ -1,12 +1,17 @@
+import React, { useEffect, useMemo, useState } from 'react';
 import { Box, CircularProgress, Dialog, IconButton, Typography } from '@mui/material';
 import { Api } from 'telegram';
 import Iconify from '../../components/iconify';
 import { useUserContext } from '../../auth/useUserContext';
-import { useEffect, useState } from 'react';
 import { getTelegramClient } from '../../utils/telegram';
 import Loader from '../../components/loader';
 import { cachedDownloadedFiles, cachedThumbnails } from '../../utils/cachedFilesStore';
 import useResponsive from '../../hooks/useResponsive';
+import {
+	filePreviewDialogCloseButtonSx,
+	filePreviewDialogDownloadButtonSx,
+	filePreviewDialogSx,
+} from './style';
 
 interface Props {
 	fileId: number;
@@ -134,69 +139,30 @@ const FilePreview: React.FC<Props> = ({ fileId, onClose }) => {
 		}
 	};
 
-	return (
-		<Dialog
-			onClose={onClose}
-			open
-			sx={{
-				'& .MuiBackdrop-root': {
-					backgroundColor: '#1f1f1feb !important',
-					opacity: '1 !important',
-				},
-				'& .MuiDialog-container': {
-					// backgroundColor: '#262626',
-					// backgroundColor: '#1f1f1feb',
-					position: 'relative',
-				},
-				'& .MuiPaper-rounded': {
-					overflow: 'hidden',
-					backgroundColor: 'unset',
-					borderRadius: '0 !important',
-					boxShadow: '0px 4px 15px 2px rgba(0,0,0,0.35)',
-					maxWidth: 'unset',
-				},
-			}}
-		>
-			<IconButton
-				onClick={onClose}
-				sx={{
-					position: 'fixed',
-					top: 16,
-					right: 16,
-					color: '#fff',
-					// backgroundColor: 'rgba(0, 0, 0, 0.5)',
-					zIndex: 1302,
-					'&:hover': {
-						backgroundColor: 'rgba(0, 0, 0, 0.7)',
-					},
-				}}
-			>
-				<Iconify width={25} icon="mingcute:close-line" />
-			</IconButton>
-			<IconButton
-				onClick={handleDownload}
-				sx={{
-					position: 'fixed',
-					top: 16,
-					right: 64,
-					color: '#fff',
-					// backgroundColor: 'rgba(0, 0, 0, 0.5)',
-					zIndex: 1302,
-					'&:hover': {
-						backgroundColor: 'rgba(0, 0, 0, 0.7)',
-					},
-				}}
-			>
-				{loading ? (
-					<Box sx={{ width: 25, height: 25 }}>
-						<CircularProgress disableShrink size={25} />
-					</Box>
-				) : (
-					<Iconify width={25} icon="material-symbols:download-rounded" />
-				)}
-			</IconButton>
-			<Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+	const renderTopSection = useMemo(() => {
+		return (
+			<React.Fragment>
 				{loading && <Loader />}
+				<IconButton onClick={onClose} sx={filePreviewDialogCloseButtonSx}>
+					<Iconify width={25} icon="mingcute:close-line" />
+				</IconButton>
+				<IconButton onClick={handleDownload} sx={filePreviewDialogDownloadButtonSx}>
+					{loading ? (
+						<Box sx={{ width: 25, height: 25 }}>
+							<CircularProgress size={25} />
+						</Box>
+					) : (
+						<Iconify width={25} icon="material-symbols:download-rounded" />
+					)}
+				</IconButton>
+			</React.Fragment>
+		);
+	}, [onClose, handleDownload, loading]);
+
+	return (
+		<Dialog onClose={onClose} open sx={filePreviewDialogSx}>
+			{renderTopSection}
+			<Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
 				{fileType?.startsWith('image/') && (fileData || thumbnail) && (
 					<img
 						style={{
@@ -204,8 +170,8 @@ const FilePreview: React.FC<Props> = ({ fileId, onClose }) => {
 							margin: 'auto',
 							overflowClipMargin: 'content-box',
 							objectFit: 'contain',
-							height: isMobile ? '100%': imageHeight,
-							width: isMobile ? imageWidth: '100%',
+							height: isMobile ? '100%' : imageHeight,
+							width: isMobile ? imageWidth : '100%',
 						}}
 						src={fileData || thumbnail || ''}
 						alt="Image"

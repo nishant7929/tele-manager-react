@@ -117,6 +117,7 @@ export default function Button(theme: Theme) {
 		MuiButton: {
 			defaultProps: {
 				disableElevation: true,
+				disableRipple: true,
 			},
 
 			styleOverrides: {
