@@ -153,7 +153,7 @@ const FilePreview: React.FC<Props> = ({ fileId, onClose }) => {
 		);
 	}, [onClose, handleDownload, loading]);
 
-	const ColoredCircularProgress = () => {
+	const ColoredCircularProgress = useMemo(() => {
 		return (
 			<React.Fragment>
 				<svg width={0} height={0}>
@@ -163,7 +163,7 @@ const FilePreview: React.FC<Props> = ({ fileId, onClose }) => {
 								<animate
 									attributeName="stop-color"
 									values="#4285F4;#EA4335;#FBBC05;#34A853;#4285F4"
-									dur="2s"
+									dur="1.5s"
 									repeatCount="indefinite"
 								/>
 							</stop>
@@ -171,7 +171,7 @@ const FilePreview: React.FC<Props> = ({ fileId, onClose }) => {
 								<animate
 									attributeName="stop-color"
 									values="#4285F4;#EA4335;#FBBC05;#34A853;#4285F4"
-									dur="2s"
+									dur="1.5s"
 									repeatCount="indefinite"
 								/>
 							</stop>
@@ -181,7 +181,7 @@ const FilePreview: React.FC<Props> = ({ fileId, onClose }) => {
 				<CircularProgress sx={{ 'svg circle': { stroke: 'url(#my_gradient)' } }} />
 			</React.Fragment>
 		);
-	};
+	}, []);
 
 	return (
 		<Dialog onClose={onClose} open sx={filePreviewDialogSx}>
@@ -190,7 +190,7 @@ const FilePreview: React.FC<Props> = ({ fileId, onClose }) => {
 				{loading && (
 					<Box sx={filePreviewDialogLoadingSx}>
 						<Box sx={{ opacity: 1 }}>
-							<ColoredCircularProgress />
+							{ColoredCircularProgress}
 						</Box>
 					</Box>
 				)}
