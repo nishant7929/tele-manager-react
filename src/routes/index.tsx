@@ -14,11 +14,11 @@ import { Page404, LoginPage } from './elements';
 import FileManagerPage from '../pages/dashboard/FileManagerPage';
 import FileListPage from '../pages/dashboard/FileListPage';
 import Home from '../pages/dashboard/Home';
-// import ImageView from '../pages/dashboard/ImageView';
-import { getUserData } from '../redux/slices/user';
+import { getUserData, updateUser } from '../redux/slices/user';
 import { useDispatch, useSelector } from '../redux/store';
 import ReactGA from 'react-ga4';
 import { userModel } from '../utils/firebase';
+import { formatBytes } from '../utils/formatNumber';
 // ----------------------------------------------------------------------
 
 const initializeGA = () => {
@@ -36,11 +36,23 @@ export default function Router() {
 
 	useEffect(() => {
 		if (firstLoad && tgMessages.length && firebaseUser) {
-			if (firebaseUser.totalFiles !== tgMessages.length) {
-				userModel.findByIdAndUpdate(firebaseUser.uid, {
-					...firebaseUser,
-					totalFiles: tgMessages.length,
-				});
+			const totalSize = tgMessages?.reduce((acc: number, message: any) => {
+				const mediaSize = message.media?.document?.size ? parseInt(message.media.document.size) : 0;
+				return acc + mediaSize;
+			}, 0);
+			if (
+				firebaseUser.totalFiles !== tgMessages.length ||
+				firebaseUser.totalSize !== formatBytes(totalSize)
+			) {
+				const updateFirebase = async () => {
+					const newUser = await userModel.findByIdAndUpdate(firebaseUser.uid, {
+						...firebaseUser,
+						totalFiles: tgMessages.length,
+						totalSize: formatBytes(totalSize),
+					});
+					dispatch(updateUser(newUser));
+				};
+				updateFirebase();
 			}
 			setFirstLoad(false);
 		}

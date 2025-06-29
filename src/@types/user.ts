@@ -7,6 +7,7 @@ export interface UserTypeFirebase {
 	createdAt?: string;
 	updatedAt?: string;
 	totalFiles?: number;
+	totalSize?: string;
 }
 
 export interface FolderType {
