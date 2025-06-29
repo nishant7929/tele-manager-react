@@ -4,12 +4,13 @@ import { Api } from 'telegram';
 import Iconify from '../../components/iconify';
 import { useUserContext } from '../../auth/useUserContext';
 import { getTelegramClient } from '../../utils/telegram';
-import Loader from '../../components/loader';
 import { cachedDownloadedFiles, cachedThumbnails } from '../../utils/cachedFilesStore';
 import useResponsive from '../../hooks/useResponsive';
 import {
 	filePreviewDialogCloseButtonSx,
 	filePreviewDialogDownloadButtonSx,
+	filePreviewDialogLoadingSx,
+	filePreviewDialogMainBox,
 	filePreviewDialogSx,
 } from './style';
 
@@ -142,27 +143,58 @@ const FilePreview: React.FC<Props> = ({ fileId, onClose }) => {
 	const renderTopSection = useMemo(() => {
 		return (
 			<React.Fragment>
-				{loading && <Loader />}
 				<IconButton onClick={onClose} sx={filePreviewDialogCloseButtonSx}>
 					<Iconify width={25} icon="mingcute:close-line" />
 				</IconButton>
 				<IconButton onClick={handleDownload} sx={filePreviewDialogDownloadButtonSx}>
-					{loading ? (
-						<Box sx={{ width: 25, height: 25 }}>
-							<CircularProgress size={25} />
-						</Box>
-					) : (
-						<Iconify width={25} icon="material-symbols:download-rounded" />
-					)}
+					{!loading && <Iconify width={25} icon="material-symbols:download-rounded" />}
 				</IconButton>
 			</React.Fragment>
 		);
 	}, [onClose, handleDownload, loading]);
 
+	const ColoredCircularProgress = () => {
+		return (
+			<React.Fragment>
+				<svg width={0} height={0}>
+					<defs>
+						<linearGradient id="my_gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+							<stop offset="0%" stopColor="#4285F4">
+								<animate
+									attributeName="stop-color"
+									values="#4285F4;#EA4335;#FBBC05;#34A853;#4285F4"
+									dur="2s"
+									repeatCount="indefinite"
+								/>
+							</stop>
+							<stop offset="100%" stopColor="#4285F4">
+								<animate
+									attributeName="stop-color"
+									values="#4285F4;#EA4335;#FBBC05;#34A853;#4285F4"
+									dur="2s"
+									repeatCount="indefinite"
+								/>
+							</stop>
+						</linearGradient>
+					</defs>
+				</svg>
+				<CircularProgress sx={{ 'svg circle': { stroke: 'url(#my_gradient)' } }} />
+			</React.Fragment>
+		);
+	};
+
 	return (
 		<Dialog onClose={onClose} open sx={filePreviewDialogSx}>
 			{renderTopSection}
-			<Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+			<Box sx={filePreviewDialogMainBox}>
+				{loading && (
+					<Box sx={filePreviewDialogLoadingSx}>
+						<Box sx={{ opacity: 1 }}>
+							<ColoredCircularProgress />
+						</Box>
+					</Box>
+				)}
+
 				{fileType?.startsWith('image/') && (fileData || thumbnail) && (
 					<img
 						style={{

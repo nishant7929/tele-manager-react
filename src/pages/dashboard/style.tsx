@@ -40,3 +40,23 @@ export const filePreviewDialogDownloadButtonSx = () => ({
 		backgroundColor: 'rgba(0, 0, 0, 0.7)',
 	},
 });
+
+export const filePreviewDialogLoadingSx = () => ({
+	position: 'absolute',
+	top: 0,
+	left: 0,
+	right: 0,
+	bottom: 0,
+	backgroundColor: 'rgba(0, 0, 0, 0.4)',
+	display: 'flex',
+	justifyContent: 'center',
+	alignItems: 'center',
+	zIndex: 1,
+});
+
+export const filePreviewDialogMainBox = () => ({
+	display: 'flex',
+	justifyContent: 'center',
+	alignItems: 'center',
+	position: 'relative',
+});
